@@ -61,7 +61,8 @@
         M,
         L,
         XL,
-        XXL
+        XXL,
+        OneSize
     }
 
     public enum ShoeSize
