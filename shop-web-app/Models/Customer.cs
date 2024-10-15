@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using shop_web_app.Enums;
+using shop_web_app.Interfaces;
 
 namespace shop_web_app.Models
 {
-    public class AppUser
+    public class Customer : IUser
     {
         [Key]
         public int Id { get; set; }

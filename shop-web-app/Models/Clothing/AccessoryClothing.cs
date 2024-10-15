@@ -1,10 +1,11 @@
 ﻿using shop_web_app.Enums;
 using shop_web_app.Interfaces;
+using shop_web_app.Models.SizeQuantity;
 using System.ComponentModel.DataAnnotations;
 
 namespace shop_web_app.Models.Clothing
 {
-    public class AccessoryClothing : IClothingItem<InternationalSize>
+    public class AccessoryClothing : IClothingItem<InternationalSizeQuantity>
     {
         [Key]
         public int Id { get; set; }
@@ -15,6 +16,6 @@ namespace shop_web_app.Models.Clothing
         public ClothingGender Gender { get; set; }
         public List<Color> Colors { get; set; } = new List<Color>();
         public List<Material> Materials { get; set; } = new List<Material>();
-        public InternationalSize Size { get; set; }
+        public List<InternationalSizeQuantity> SizeQuantity { get; set; } = new List<InternationalSizeQuantity>();
     }
 }
