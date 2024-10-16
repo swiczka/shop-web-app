@@ -12,7 +12,7 @@ namespace shop_web_app.Models.Clothing
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public BottomType Type { get; set; }
+        public ShoeType Type { get; set; }
         public ClothingGender Gender { get; set; }
         public List<Color> Colors { get; set; } = new List<Color>();
         public List<Material> Materials { get; set; } = new List<Material>();

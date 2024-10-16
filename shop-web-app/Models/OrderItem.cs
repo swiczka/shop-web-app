@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace shop_web_app.Models
 {
-    public class OrderItem<ISizeQuantity>
+    public class OrderItem<TSizeQuantity> where TSizeQuantity : ISizeQuantity<object>
     {
         [Key]
         public int Id { get; set; }
-        public IClothingItem<ISizeQuantity> Product { get; set; }
+        public IClothingItem<TSizeQuantity> Product { get; set; }
         public decimal TotalPrice {
             get
             {
@@ -22,7 +22,7 @@ namespace shop_web_app.Models
             {
                 return 0;
             }
-            return Product.SizeQuantity.Sum(sq => Product.SizeQuantity.Quantity) * Product.Price;
+            return Product.SizeQuantity.Sum(sq => sq.Quantity) * Product.Price;
         }
 
     }

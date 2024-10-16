@@ -140,4 +140,17 @@
         Bag,         
         Jewelry      
     }
+
+    public enum OrderStatus
+    {
+        OrderPlaced,
+        OrderConfirmed,
+        Shipped,
+        InTransit,
+        Out,
+        Delivered,
+        Canceled,
+        Delayed,
+        Lost
+    }
 }

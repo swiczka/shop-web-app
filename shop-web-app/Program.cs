@@ -1,5 +1,7 @@
 using shop_web_app.Models.Clothing;
 using shop_web_app.Enums;
+using shop_web_app.Models.SizeQuantity;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +13,23 @@ var app = builder.Build();
 
 Console.WriteLine("Hej");
 ShoeClothing shoe = new ShoeClothing();
-shoe.Size = ShoeSize.Size42_5;
-Console.WriteLine(ShoeSize.Size40.ToFriendlyString());
-Console.WriteLine(EnumExtensions.ToFriendlyString(shoe.Size));
+shoe.SizeQuantity.Add
+    (
+    new ShoeSizeQuantity { Size = ShoeSize.Size42_5, Quantity = 1 }
+    );
+shoe.Description = "Najwy¿szej jakoœci materia³y specjalnie dla polaka";
+shoe.Name = "Mokasyny moj¿esza";
+shoe.Gender = ClothingGender.M;
+shoe.Price = 100.99m;
+shoe.Colors.Add(Color.White);
+shoe.Colors.Add(Color.Black);
+shoe.Materials = new List<Material> { Material.Cotton, Material.Plastic };
+shoe.Type = ShoeType.Loafers;
+
+foreach(var element in shoe.SizeQuantity)
+{
+    Console.WriteLine(element.Size.ToFriendlyString() + ", " + element.Quantity);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
