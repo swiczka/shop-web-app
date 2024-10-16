@@ -92,20 +92,34 @@
             return s1;
         }
 
-        public static string ToFriendlyString(this TopType t)
+        public static string ToFriendlyString(this ClothingType t)
         {
             return t switch
             {
-                TopType.TShirt => "T-Shirt",
-                TopType.Shirt => "Koszula",
-                TopType.Longsleeve => "Koszulka z długim rękawem",
-                TopType.Crewneck => "Crewneck",
-                TopType.Hoodie => "Bluza z kapturem",
-                TopType.Sweater => "Sweter",
-                TopType.Jacket => "Kurtka",
-                TopType.Coat => "Płaszcz",
-                TopType.Suit => "Garnitur",
-                TopType.Dress => "Sukienka",
+                ClothingType.TShirt => "T-Shirt",
+                ClothingType.Shirt => "Koszula",
+                ClothingType.Longsleeve => "Koszulka z długim rękawem",
+                ClothingType.Crewneck => "Crewneck",
+                ClothingType.Hoodie => "Bluza z kapturem",
+                ClothingType.Sweater => "Sweter",
+                ClothingType.Jacket => "Kurtka",
+                ClothingType.Coat => "Płaszcz",
+                ClothingType.Suit => "Garnitur",
+                ClothingType.Dress => "Sukienka",
+                ClothingType.Jeans => "Dżinsy",
+                ClothingType.Trousers => "Spodnie",
+                ClothingType.Shorts => "Szorty",
+                ClothingType.Skirt => "Spódnica",
+                ClothingType.Leggings => "Legginsy",
+                ClothingType.Sweatpants => "Spodnie dresowe",
+                ClothingType.Belt => "Pasek",
+                ClothingType.Hat => "Czapka",
+                ClothingType.Scarf => "Szalik",
+                ClothingType.Gloves => "Rękawice",
+                ClothingType.Sunglasses => "Okulary przeciwsłoneczne",
+                ClothingType.Watch => "Zegarek",
+                ClothingType.Bag => "Torebka",
+                ClothingType.Jewelry => "Biżuteria",
                 _ => throw new NotImplementedException()
             };
         }
@@ -127,34 +141,34 @@
             };
         }
 
-        public static string ToFriendlyString(this BottomType b)
-        {
-            return b switch
-            {
-                BottomType.Jeans => "Dżinsy",
-                BottomType.Trousers => "Spodnie",
-                BottomType.Shorts => "Szorty",
-                BottomType.Skirt => "Spódnica",
-                BottomType.Leggings => "Legginsy",
-                BottomType.Sweatpants => "Spodnie dresowe",
-                _ => throw new NotImplementedException()
-            };
-        }
+        //public static string ToFriendlyString(this BottomType b)
+        //{
+        //    return b switch
+        //    {
+        //        BottomType.Jeans => "Dżinsy",
+        //        BottomType.Trousers => "Spodnie",
+        //        BottomType.Shorts => "Szorty",
+        //        BottomType.Skirt => "Spódnica",
+        //        BottomType.Leggings => "Legginsy",
+        //        BottomType.Sweatpants => "Spodnie dresowe",
+        //        _ => throw new NotImplementedException()
+        //    };
+        //}
 
-        public static string ToFriendlyString(this AccessoryType a)
-        {
-            return a switch
-            {
-                AccessoryType.Belt => "Pasek",
-                AccessoryType.Hat => "Czapka",
-                AccessoryType.Scarf => "Szalik",
-                AccessoryType.Gloves => "Rękawice",
-                AccessoryType.Sunglasses => "Okulary przeciwsłoneczne",
-                AccessoryType.Watch => "Zegarek",
-                AccessoryType.Bag => "Torebka",
-                AccessoryType.Jewelry => "Biżuteria",
-                _ => throw new NotImplementedException()
-            };
-        }
+        //public static string ToFriendlyString(this AccessoryType a)
+        //{
+        //    return a switch
+        //    {
+        //        AccessoryType.Belt => "Pasek",
+        //        AccessoryType.Hat => "Czapka",
+        //        AccessoryType.Scarf => "Szalik",
+        //        AccessoryType.Gloves => "Rękawice",
+        //        AccessoryType.Sunglasses => "Okulary przeciwsłoneczne",
+        //        AccessoryType.Watch => "Zegarek",
+        //        AccessoryType.Bag => "Torebka",
+        //        AccessoryType.Jewelry => "Biżuteria",
+        //        _ => throw new NotImplementedException()
+        //    };
+        //}
     }
 }

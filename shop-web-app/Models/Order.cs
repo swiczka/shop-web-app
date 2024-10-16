@@ -9,7 +9,10 @@ namespace shop_web_app.Models
         [Key]
         public int Id { get; set; }
         public List<OrderItem<ISizeQuantity<object>>> OrderItems { get; set; }
+
+        public int OrdererId { get; set; }
         public Customer Orderer { get; set; }
+
         public DateTime OrderDate { get; set; }
         public OrderStatus Status {  get; set; } 
     }

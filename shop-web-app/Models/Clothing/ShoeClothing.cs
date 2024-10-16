@@ -5,9 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace shop_web_app.Models.Clothing
 {
-    public class ShoeClothing : ClothingItem
+    public class ShoeClothing : ClothingItem<ShoeSizeQuantity, ShoeType>
     {
-        public new List<ShoeSizeQuantity> SizeQuantity { get; set; } = new List<ShoeSizeQuantity>();   
-        public new ShoeType Type { get; set; }
     }
 }

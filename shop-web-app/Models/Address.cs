@@ -10,5 +10,6 @@ namespace shop_web_app.Models
         public string Street { get; set; }
         public string PostalCode { get; set; }
         public string Voivodship { get; set; }
+        public int UserId { get; set; }
     }
 }
