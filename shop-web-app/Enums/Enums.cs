@@ -92,8 +92,9 @@
         Size46
     }
 
-    public enum TopType
+    public enum ClothingType
     {
+        // tops
         TShirt,      
         Shirt,       
         Longsleeve,  
@@ -103,7 +104,23 @@
         Jacket,      
         Coat,        
         Suit,
-        Dress
+        Dress,
+        // bottoms
+        Jeans,
+        Trousers,
+        Shorts,
+        Skirt,
+        Leggings,
+        Sweatpants,
+        // accessories
+        Belt,
+        Hat,
+        Scarf,
+        Gloves,
+        Sunglasses,
+        Watch,
+        Bag,
+        Jewelry
     }
 
     public enum ShoeType
@@ -117,28 +134,6 @@
         Slippers,     
         RunningShoes, 
         WorkShoes     
-    }
-
-    public enum BottomType
-    {
-        Jeans,        
-        Trousers,     
-        Shorts,       
-        Skirt,        
-        Leggings,     
-        Sweatpants     
-    }
-
-    public enum AccessoryType
-    {
-        Belt,        
-        Hat,         
-        Scarf,       
-        Gloves,      
-        Sunglasses,  
-        Watch,       
-        Bag,         
-        Jewelry      
     }
 
     public enum OrderStatus

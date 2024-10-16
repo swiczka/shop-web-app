@@ -11,7 +11,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-Console.WriteLine("Hej");
 ShoeClothing shoe = new ShoeClothing();
 shoe.SizeQuantity.Add
     (

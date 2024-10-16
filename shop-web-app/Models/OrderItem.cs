@@ -1,5 +1,6 @@
 ﻿using shop_web_app.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace shop_web_app.Models
 {
@@ -7,6 +8,11 @@ namespace shop_web_app.Models
     {
         [Key]
         public int Id { get; set; }
+
+        public int OrderId { get; set; }
+        [ForeignKey("OrderId")]
+        public Order Order { get; set; }
+
         public IClothingItem<TSizeQuantity> Product { get; set; }
         public decimal TotalPrice {
             get
