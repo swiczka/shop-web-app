@@ -92,6 +92,56 @@
         Size46
     }
 
+    public enum Category
+    {
+        Top,
+        Bottom,
+        Accessory,
+        Shoes,
+    }
+
+    public enum SubCategory
+    {
+        // tops
+        TTShirt,
+        TShirt,
+        TLongsleeve,
+        TCrewneck,
+        THoodie,
+        TSweater,
+        TJacket,
+        TCoat,
+        TSuit,
+        TDress,
+        // bottoms
+        BJeans,
+        BTrousers,
+        BShorts,
+        BSkirt,
+        BLeggings,
+        BSweatpants,
+        // accessories
+        ABelt,
+        AHat,
+        AScarf,
+        AGloves,
+        ASunglasses,
+        AWatch,
+        ABag,
+        AJewelry,
+        // shoes
+        SSneakers,
+        SBoots,
+        SSandals,
+        SLoafers,
+        SHeels,
+        SFlats,
+        SSlippers,
+        SRunningShoes,
+        SWorkShoes
+    }
+
+
     public enum ClothingType
     {
         // tops
