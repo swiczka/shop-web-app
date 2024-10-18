@@ -8,7 +8,7 @@ namespace shop_web_app.Models
     {
         [Key]
         public int Id { get; set; }
-        public List<OrderItem<ISizeQuantity<object>>> OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
         public int OrdererId { get; set; }
         public Customer Orderer { get; set; }

@@ -5,10 +5,11 @@ using shop_web_app.Models.SizeQuantity;
 
 namespace shop_web_app.Models
 {
-    public class ClothingColor
+    public class VariantColor
     {
-        public int ProductId { get; set; }
-        public ClothingItem<ISizeQuantity, > Product { get; set; }
+        public int Id { get; set; }
+        public int VariantId { get; set; }
+        public ProductVariant Variant { get; set; }
         public Color Color { get; set; }
     }
 }

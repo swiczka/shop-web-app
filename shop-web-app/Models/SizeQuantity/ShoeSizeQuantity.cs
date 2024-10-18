@@ -10,8 +10,8 @@ namespace shop_web_app.Models.SizeQuantity
         [Key]
         public string Id { get; set; }
 
-        public int ShoeId { get; set; }
-        public ShoeClothing Shoe { get; set; }
+        public int VariantId { get; set; }
+        public ProductVariant Variant { get; set; }
 
         public ShoeSize Size { get; set; }
         public int Quantity { get; set; }

@@ -2,12 +2,18 @@ using shop_web_app.Models.Clothing;
 using shop_web_app.Enums;
 using shop_web_app.Models.SizeQuantity;
 using Microsoft.AspNetCore.Mvc;
+using shop_web_app.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 

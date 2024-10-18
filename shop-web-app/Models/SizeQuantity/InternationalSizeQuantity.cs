@@ -12,8 +12,8 @@ namespace shop_web_app.Models.SizeQuantity
         public int Id { get; set; }
 
 
-        public int ProductId { get; set; }
-        public ClothingItem Product { get; set; }
+        public int VariantId { get; set; }
+        public ProductVariant Variant { get; set; }
         
         public InternationalSize Size { get; set; }
         public int Quantity { get; set; }
