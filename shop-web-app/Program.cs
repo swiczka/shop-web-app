@@ -17,24 +17,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
-ShoeClothing shoe = new ShoeClothing();
-shoe.SizeQuantity.Add
-    (
-    new ShoeSizeQuantity { Size = ShoeSize.Size42_5, Quantity = 1 }
-    );
-shoe.Description = "Najwy¿szej jakoœci materia³y specjalnie dla polaka";
-shoe.Name = "Mokasyny moj¿esza";
-shoe.Gender = ClothingGender.M;
-shoe.Price = 100.99m;
-shoe.Colors.Add(Color.White);
-shoe.Colors.Add(Color.Black);
-shoe.Materials = new List<Material> { Material.Cotton, Material.Plastic };
-shoe.Type = ShoeType.Loafers;
-
-foreach(var element in shoe.SizeQuantity)
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
-    Console.WriteLine(element.Size.ToFriendlyString() + ", " + element.Quantity);
+    Seed.SeedUsersAndRolesAsync(app);
 }
+
+//ShoeClothing shoe = new ShoeClothing();
+//shoe.SizeQuantity.Add
+//    (
+//    new ShoeSizeQuantity { Size = ShoeSize.Size42_5, Quantity = 1 }
+//    );
+//shoe.Description = "Najwy¿szej jakoœci materia³y specjalnie dla polaka";
+//shoe.Name = "Mokasyny moj¿esza";
+//shoe.Gender = ClothingGender.M;
+//shoe.Price = 100.99m;
+//shoe.Colors.Add(Color.White);
+//shoe.Colors.Add(Color.Black);
+//shoe.Materials = new List<Material> { Material.Cotton, Material.Plastic };
+//shoe.Type = ShoeType.Loafers;
+
+//foreach(var element in shoe.SizeQuantity)
+//{
+//    Console.WriteLine(element.Size.ToFriendlyString() + ", " + element.Quantity);
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

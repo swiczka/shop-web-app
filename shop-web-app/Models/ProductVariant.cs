@@ -12,7 +12,9 @@ namespace shop_web_app.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        public ICollection<VariantMaterial> VariantMaterials { get; set; } = new List<VariantMaterial>();
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+
         public ICollection<VariantColor> VariantColors { get; set; } = new List<VariantColor>();
 
         //depending of clothing kind, one remains null

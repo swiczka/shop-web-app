@@ -38,7 +38,8 @@
         Linen,        
         Viscoze,      
         Plastic,     
-        Rubber        
+        Rubber,
+        Wool
     }
 
     public enum Color
