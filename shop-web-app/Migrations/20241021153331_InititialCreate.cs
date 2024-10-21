@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shop_web_app.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InititialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,12 +86,34 @@ namespace shop_web_app.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductMaterials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Material = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductMaterials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductMaterials_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductVariants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,26 +209,6 @@ namespace shop_web_app.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VariantMaterials",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VariantId = table.Column<int>(type: "int", nullable: false),
-                    Material = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VariantMaterials", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VariantMaterials_ProductVariants_VariantId",
-                        column: x => x.VariantId,
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -258,6 +260,11 @@ namespace shop_web_app.Migrations
                 column: "OrdererId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductMaterials_ProductId",
+                table: "ProductMaterials",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_ProductId",
                 table: "ProductVariants",
                 column: "ProductId");
@@ -270,11 +277,6 @@ namespace shop_web_app.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_VariantColors_VariantId",
                 table: "VariantColors",
-                column: "VariantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VariantMaterials_VariantId",
-                table: "VariantMaterials",
                 column: "VariantId");
         }
 
@@ -291,13 +293,13 @@ namespace shop_web_app.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
+                name: "ProductMaterials");
+
+            migrationBuilder.DropTable(
                 name: "ShoeSizeQuantities");
 
             migrationBuilder.DropTable(
                 name: "VariantColors");
-
-            migrationBuilder.DropTable(
-                name: "VariantMaterials");
 
             migrationBuilder.DropTable(
                 name: "Orders");

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Product>
+@using shop_web_app.Enums;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="collapse text-bg-dark" id="navbarHeader">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-md-7 py-4">
+                <h4>Arabskie gogle</h4>
+                <p class="text-body-secondary">Może i nic nie widać za to ciepło w oczy</p>
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+                <h4>Super sprawa</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
+            <strong>الألبوم</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="تبديل التنقل">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">SIEMA</h1>
+                <p class="lead text-body-secondary">Lalalalaa</p>
+                <p>  <!-- TU PRZYCISKI z GÓRY -->
+                    <a href="#" class="btn btn-primary my-2">Świat według kiepskich</a>
+                    <a href="#" class="btn btn-secondary my-2">Czemu oni piszą od tyłu.</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach(var item in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm" style="border-radius: 4px 20px 20px 20px;">
+                        <img src=@item.ProductVariants.ElementAt(0).ImageUrl alt="Obraz przedstawiający @item.Name" width=100% height=255 style="border-radius: 4px 20px 4px 4px" />
+                        <div class="overlay-category" style="position: absolute; top: 0; left: 0; width: 30%; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 5px; text-align: center; border-radius: 4px;">
+                            @item.Category.ToFriendlyString() / @item.SubCategory.ToFriendlyString()
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@item.Name</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">button 1</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">button 2</button>
+                                </div>
+                                <p class="text-body-secondary" style="font-size: 20px">@item.Price PLN</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -12,8 +12,8 @@ using shop_web_app.Data;
 namespace shop_web_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241018124642_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241021153331_InititialCreate")]
+    partial class InititialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,6 +203,27 @@ namespace shop_web_app.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("shop_web_app.Models.ProductMaterial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Material")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductMaterials");
+                });
+
             modelBuilder.Entity("shop_web_app.Models.ProductVariant", b =>
                 {
                     b.Property<int>("Id")
@@ -210,6 +231,14 @@ namespace shop_web_app.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -287,27 +316,6 @@ namespace shop_web_app.Migrations
                     b.ToTable("VariantColors");
                 });
 
-            modelBuilder.Entity("shop_web_app.Models.VariantMaterial", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Material")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VariantId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VariantId");
-
-                    b.ToTable("VariantMaterials");
-                });
-
             modelBuilder.Entity("shop_web_app.Models.Customer", b =>
                 {
                     b.HasOne("shop_web_app.Models.Address", "Address")
@@ -345,6 +353,17 @@ namespace shop_web_app.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("ProductVariant");
+                });
+
+            modelBuilder.Entity("shop_web_app.Models.ProductMaterial", b =>
+                {
+                    b.HasOne("shop_web_app.Models.Product", "Product")
+                        .WithMany("ProductMaterials")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("shop_web_app.Models.ProductVariant", b =>
@@ -391,17 +410,6 @@ namespace shop_web_app.Migrations
                     b.Navigation("Variant");
                 });
 
-            modelBuilder.Entity("shop_web_app.Models.VariantMaterial", b =>
-                {
-                    b.HasOne("shop_web_app.Models.ProductVariant", "Variant")
-                        .WithMany("VariantMaterials")
-                        .HasForeignKey("VariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Variant");
-                });
-
             modelBuilder.Entity("shop_web_app.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
@@ -414,6 +422,8 @@ namespace shop_web_app.Migrations
 
             modelBuilder.Entity("shop_web_app.Models.Product", b =>
                 {
+                    b.Navigation("ProductMaterials");
+
                     b.Navigation("ProductVariants");
                 });
 
@@ -424,8 +434,6 @@ namespace shop_web_app.Migrations
                     b.Navigation("ShoeSizeQuantity");
 
                     b.Navigation("VariantColors");
-
-                    b.Navigation("VariantMaterials");
                 });
 #pragma warning restore 612, 618
         }

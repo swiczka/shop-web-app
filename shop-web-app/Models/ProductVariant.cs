@@ -13,6 +13,8 @@ namespace shop_web_app.Models
         public Product Product { get; set; }
 
         public string Name { get; set; }
+
+        [StringLength(255)]
         public string ImageUrl { get; set; }
 
         public ICollection<VariantColor> VariantColors { get; set; } = new List<VariantColor>();

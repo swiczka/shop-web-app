@@ -14,23 +14,24 @@ namespace shop_web_app.Models
         public ICollection<ProductMaterial> ProductMaterials { get; set; } = new List<ProductMaterial>();
         public Category Category { get; set; }
         public SubCategory SubCategory { 
-            get
-            {
-                return SubCategory;
-            }
-            set 
-            {
-                if(Category == null)
-                {
-                    throw new Exception("Category has to be picked first");
-                }
+            //get
+            //{
+            //    return SubCategory;
+            //}
+            //set 
+            //{
+            //    if(Category == null)
+            //    {
+            //        throw new Exception("Category has to be picked first");
+            //    }
                 
-                if (Category.ToString()[0] != value.ToString()[0])
-                {
-                    throw new Exception("No valid Subcategory was picked");
-                }
-                SubCategory = value;
-            }
+            //    if (Category.ToString()[0] != value.ToString()[0])
+            //    {
+            //        throw new Exception("No valid Subcategory was picked");
+            //    }
+            //    SubCategory = value;
+            //}
+            get; set;
         }
          
     }

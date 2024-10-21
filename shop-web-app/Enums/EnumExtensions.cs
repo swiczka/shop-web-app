@@ -23,6 +23,7 @@
             };
         }
 
+
         public static string ToFriendlyString(this Voivodship v)
         {
             return v switch
@@ -92,34 +93,43 @@
             return s1;
         }
 
-        public static string ToFriendlyString(this ClothingType t)
+        public static string ToFriendlyString(this SubCategory s)
         {
-            return t switch
+            return s switch
             {
-                ClothingType.TShirt => "T-Shirt",
-                ClothingType.Shirt => "Koszula",
-                ClothingType.Longsleeve => "Koszulka z długim rękawem",
-                ClothingType.Crewneck => "Crewneck",
-                ClothingType.Hoodie => "Bluza z kapturem",
-                ClothingType.Sweater => "Sweter",
-                ClothingType.Jacket => "Kurtka",
-                ClothingType.Coat => "Płaszcz",
-                ClothingType.Suit => "Garnitur",
-                ClothingType.Dress => "Sukienka",
-                ClothingType.Jeans => "Dżinsy",
-                ClothingType.Trousers => "Spodnie",
-                ClothingType.Shorts => "Szorty",
-                ClothingType.Skirt => "Spódnica",
-                ClothingType.Leggings => "Legginsy",
-                ClothingType.Sweatpants => "Spodnie dresowe",
-                ClothingType.Belt => "Pasek",
-                ClothingType.Hat => "Czapka",
-                ClothingType.Scarf => "Szalik",
-                ClothingType.Gloves => "Rękawice",
-                ClothingType.Sunglasses => "Okulary przeciwsłoneczne",
-                ClothingType.Watch => "Zegarek",
-                ClothingType.Bag => "Torebka",
-                ClothingType.Jewelry => "Biżuteria",
+                SubCategory.TTShirt => "T-Shirt",
+                SubCategory.TShirt => "Koszula",
+                SubCategory.TLongsleeve => "Koszulka z długim rękawem",
+                SubCategory.TCrewneck => "Crewneck",
+                SubCategory.THoodie => "Bluza z kapturem",
+                SubCategory.TSweater => "Sweter",
+                SubCategory.TJacket => "Kurtka",
+                SubCategory.TCoat => "Płaszcz",
+                SubCategory.TSuit => "Garnitur",
+                SubCategory.TDress => "Sukienka",
+                SubCategory.BJeans => "Dżinsy",
+                SubCategory.BTrousers => "Spodnie",
+                SubCategory.BShorts => "Szorty",
+                SubCategory.BSkirt => "Spódnica",
+                SubCategory.BLeggings => "Legginsy",
+                SubCategory.BSweatpants => "Spodnie dresowe",
+                SubCategory.ABelt => "Pasek",
+                SubCategory.AHat => "Czapka",
+                SubCategory.AScarf => "Szalik",
+                SubCategory.AGloves => "Rękawice",
+                SubCategory.ASunglasses => "Okulary przeciwsłoneczne",
+                SubCategory.AWatch => "Zegarek",
+                SubCategory.ABag => "Torebka",
+                SubCategory.AJewelry => "Biżuteria",
+                SubCategory.SSneakers => "Sneakersy",
+                SubCategory.SBoots => "Botki",
+                SubCategory.SSandals => "Sandały",
+                SubCategory.SLoafers => "Mokasyny",
+                SubCategory.SHeels => "Obcasy",
+                SubCategory.SFlats => "Płaskie buty",
+                SubCategory.SSlippers => "Kapcie",
+                SubCategory.SRunningShoes => "Buty do biegania",
+                SubCategory.SWorkShoes => "Buty robocze",
                 _ => throw new NotImplementedException()
             };
         }
@@ -128,47 +138,21 @@
         {
             return s switch
             {
-                ShoeType.Sneakers => "Sneakersy",
-                ShoeType.Boots => "Botki",
-                ShoeType.Sandals => "Sandały",
-                ShoeType.Loafers => "Mokasyny",
-                ShoeType.Heels => "Obcasy",
-                ShoeType.Flats => "Płaskie buty",
-                ShoeType.Slippers => "Kapcie",
-                ShoeType.RunningShoes => "Buty do biegania",
-                ShoeType.WorkShoes => "Buty robocze",
+                
                 _ => throw new NotImplementedException()
             };
         }
 
-        //public static string ToFriendlyString(this BottomType b)
-        //{
-        //    return b switch
-        //    {
-        //        BottomType.Jeans => "Dżinsy",
-        //        BottomType.Trousers => "Spodnie",
-        //        BottomType.Shorts => "Szorty",
-        //        BottomType.Skirt => "Spódnica",
-        //        BottomType.Leggings => "Legginsy",
-        //        BottomType.Sweatpants => "Spodnie dresowe",
-        //        _ => throw new NotImplementedException()
-        //    };
-        //}
-
-        //public static string ToFriendlyString(this AccessoryType a)
-        //{
-        //    return a switch
-        //    {
-        //        AccessoryType.Belt => "Pasek",
-        //        AccessoryType.Hat => "Czapka",
-        //        AccessoryType.Scarf => "Szalik",
-        //        AccessoryType.Gloves => "Rękawice",
-        //        AccessoryType.Sunglasses => "Okulary przeciwsłoneczne",
-        //        AccessoryType.Watch => "Zegarek",
-        //        AccessoryType.Bag => "Torebka",
-        //        AccessoryType.Jewelry => "Biżuteria",
-        //        _ => throw new NotImplementedException()
-        //    };
-        //}
+        public static string ToFriendlyString(this Category c)
+        {
+            return c switch
+            {
+                Category.Top => "Góra",
+                Category.Bottom => "Dół",
+                Category.Shoes => "Buty",
+                Category.Accessory => "Akcesoria",
+                _ => throw new NotImplementedException()
+            };
+        }
     }
 }
