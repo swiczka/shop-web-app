@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using shop_web_app.Data;
+using shop_web_app.Models;
 
 namespace shop_web_app.Controllers
 {
@@ -26,6 +27,21 @@ namespace shop_web_app.Controllers
             }
 
             return View(products);
+        }
+
+        public async Task<IActionResult> Details(int id) 
+        {
+            var product = await _context.Products
+                .Include(p => p.ProductVariants)
+                .Include(p => p.ProductMaterials)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
         }
     }
 }

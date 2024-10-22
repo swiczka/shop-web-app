@@ -58,7 +58,7 @@
                             <p class="card-text">@item.Name</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">button 1</button>
+                                    <a type="button" asp-controller="Product" asp-action="Details" asp-route-id=@item.Id class="btn btn-sm btn-outline-secondary">Szczegóły</a>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">button 2</button>
                                 </div>
                                 <p class="text-body-secondary" style="font-size: 20px">@item.Price PLN</p>
