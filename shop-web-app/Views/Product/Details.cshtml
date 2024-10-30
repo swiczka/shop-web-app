@@ -11,13 +11,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-7 mb-4 mb-sm-0">
-                    <img alt="Image" src="@Model.ProductVariants.ElementAt(0).ImageUrl" class="rounded img-fluid" />
+                    <img alt="Image" src="@Model.ProductVariants.ElementAtOrDefault(0).Photos.First().PhotoUrl" class="rounded img-fluid" />
                 </div>
                 <!--end of col-->
                 <div class="col-lg-4 d-flex flex-column justify-content-between mr-auto ml-auto">
                     <div>
                         <h1 class="mb-2">@Model.Name</h1>
-                        <h2 class="lead mb-3">@Model.Category.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
+                        <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
                         <div>
                             <p class="badge badge-secondary mr-3">dddd</p>
                         </div>

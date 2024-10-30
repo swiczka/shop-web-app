@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using shop_web_app.Data;
 
@@ -11,9 +12,11 @@ using shop_web_app.Data;
 namespace shop_web_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241026182714_GenderUpdate")]
+    partial class GenderUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,29 +173,6 @@ namespace shop_web_app.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("shop_web_app.Models.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PhotoUrl")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("VariantId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VariantId");
-
-                    b.ToTable("Photos");
-                });
-
             modelBuilder.Entity("shop_web_app.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -254,6 +234,11 @@ namespace shop_web_app.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -374,17 +359,6 @@ namespace shop_web_app.Migrations
                     b.Navigation("ProductVariant");
                 });
 
-            modelBuilder.Entity("shop_web_app.Models.Photo", b =>
-                {
-                    b.HasOne("shop_web_app.Models.ProductVariant", "Variant")
-                        .WithMany("Photos")
-                        .HasForeignKey("VariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Variant");
-                });
-
             modelBuilder.Entity("shop_web_app.Models.ProductMaterial", b =>
                 {
                     b.HasOne("shop_web_app.Models.Product", "Product")
@@ -460,8 +434,6 @@ namespace shop_web_app.Migrations
             modelBuilder.Entity("shop_web_app.Models.ProductVariant", b =>
                 {
                     b.Navigation("InternationalSizeQuantity");
-
-                    b.Navigation("Photos");
 
                     b.Navigation("ShoeSizeQuantity");
 

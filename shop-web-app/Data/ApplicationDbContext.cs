@@ -21,6 +21,7 @@ namespace shop_web_app.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<VariantColor> VariantColors { get; set; }
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
     }
 }

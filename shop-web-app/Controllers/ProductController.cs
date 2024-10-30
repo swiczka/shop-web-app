@@ -1,25 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using shop_web_app.Data;
+using shop_web_app.Interfaces;
 using shop_web_app.Models;
+using shop_web_app.Services;
+using shop_web_app.ViewModels;
 
 namespace shop_web_app.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly BlobStorageService _blobService;
 
-        public ProductController(ApplicationDbContext context) 
+        public ProductController(IProductRepository productRepository, BlobStorageService blobService) 
         {
-            _context = context;
+            _productRepository = productRepository;
+            _blobService = blobService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products
-                .Include(p => p.ProductVariants)
-                .Include(p => p.ProductMaterials)
-                .ToListAsync();
+            var products = await _productRepository.GetAll();
 
             if (products == null)
             {
@@ -31,10 +33,7 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> Details(int id) 
         {
-            var product = await _context.Products
-                .Include(p => p.ProductVariants)
-                .Include(p => p.ProductMaterials)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _productRepository.GetByIdAsync(id);
 
             if(product == null)
             {
@@ -42,6 +41,22 @@ namespace shop_web_app.Controllers
             }
 
             return View(product);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateProductViewModel product)
+        {
+            if (ModelState.IsValid) 
+            {   
+                //var result = await _blobService.UploadFileAsync(product.ProductVariants.)
+            }
+            //_productRepository.Add(product);
+            return RedirectToAction("Index");
         }
     }
 }

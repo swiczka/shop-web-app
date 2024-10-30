@@ -5,12 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using shop_web_app.Data;
 using Microsoft.EntityFrameworkCore;
 using shop_web_app.Models;
+using shop_web_app.Interfaces;
+using shop_web_app.Repository;
+using shop_web_app.Helpers;
+using shop_web_app.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<BlobStorageService, BlobStorageService>();
+builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSection("BlobStorageSettings"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

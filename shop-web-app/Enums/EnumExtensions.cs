@@ -56,6 +56,7 @@
                 Material.Polyester => "Poliester",
                 Material.Rubber => "Guma",
                 Material.Viscoze => "Wiskoza",
+                Material.Wool => "Wełna",
                 _ => throw new NotImplementedException()
             };
         }

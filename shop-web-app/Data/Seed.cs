@@ -28,6 +28,7 @@ namespace shop_web_app.Data
                             Description = "Wykonana z najlepszej bawełny.",
                             Category = Category.Top,
                             SubCategory = SubCategory.TTShirt,
+                            Gender = ClothingGender.M,
                             ProductMaterials = new List<ProductMaterial>()
                             {
                                 new ProductMaterial()
@@ -43,7 +44,6 @@ namespace shop_web_app.Data
                             {
                                 new ProductVariant()
                                 {
-                                    ImageUrl = "https://www.hipanda.pl/wp-content/uploads/2021/07/019_42_101_f-2018_01.jpg_l.jpg",
                                     Name = "Czarny",
                                     VariantColors = new List<VariantColor>()
                                     {
@@ -79,11 +79,17 @@ namespace shop_web_app.Data
                                             Size = InternationalSize.XXL,
                                             Quantity = 3
                                         }
+                                    },
+                                    Photos = new List<Photo>()
+                                    {
+                                        new Photo()
+                                        {
+                                            PhotoUrl = "https://www.hipanda.pl/wp-content/uploads/2021/07/019_42_101_f-2018_01.jpg_l.jpg"
+                                        }
                                     }
                                 },
                                 new ProductVariant()
                                 {
-                                    ImageUrl = "https://www.hipanda.pl/wp-content/uploads/2024/10/koszulka-damska-Grzaniec-Dzwoni-biala.png",
                                     Name = "Biały z nadrukiem",
                                     VariantColors = new List<VariantColor>()
                                     {
@@ -119,6 +125,13 @@ namespace shop_web_app.Data
                                             Size = InternationalSize.XXL,
                                             Quantity = 0
                                         }
+                                    },
+                                    Photos = new List<Photo>()
+                                    {
+                                        new Photo()
+                                        {
+                                            PhotoUrl = "https://www.hipanda.pl/wp-content/uploads/2024/10/koszulka-damska-Grzaniec-Dzwoni-biala.png"
+                                        }
                                     }
                                 },
                             }
@@ -130,6 +143,7 @@ namespace shop_web_app.Data
                             Description = "Granatowe spodnie marki Vestus to doskonały wybór do formalnych stylizacji. Wykonane z wysokiej jakości wełny z dodatkiem poliestru, łączą elegancję z funkcjonalnością.",
                             Category = Category.Bottom,
                             SubCategory = SubCategory.BTrousers,
+                            Gender = ClothingGender.M,
                             ProductMaterials = new List<ProductMaterial>()
                             {
                                 new ProductMaterial()
@@ -145,7 +159,6 @@ namespace shop_web_app.Data
                             {
                                 new ProductVariant()
                                 {
-                                    ImageUrl = "https://www.hipanda.pl/wp-content/uploads/2021/07/019_42_101_f-2018_01.jpg_l.jpg",
                                     Name = "Granatowe",
                                     VariantColors = new List<VariantColor>()
                                     {
@@ -180,6 +193,13 @@ namespace shop_web_app.Data
                                         {
                                             Size = InternationalSize.XXL,
                                             Quantity = 4
+                                        }
+                                    },
+                                    Photos = new List<Photo>()
+                                    {
+                                        new Photo()
+                                        {
+                                            PhotoUrl = "https://vistula.pl/mis/b/-30392.webp"
                                         }
                                     }
                                 }

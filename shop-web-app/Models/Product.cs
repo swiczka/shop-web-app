@@ -10,6 +10,7 @@ namespace shop_web_app.Models
         public string Name { get; set; } = "";
         public decimal Price { get; set; }
         public string Description { get; set; } = "";
+        public ClothingGender Gender { get; set; }
         public ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
         public ICollection<ProductMaterial> ProductMaterials { get; set; } = new List<ProductMaterial>();
         public Category Category { get; set; }

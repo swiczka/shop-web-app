@@ -50,9 +50,9 @@
             {
                 <div class="col">
                     <div class="card shadow-sm" style="border-radius: 4px 20px 20px 20px;">
-                        <img src=@item.ProductVariants.ElementAt(0).ImageUrl alt="Obraz przedstawiający @item.Name" width=100% height=255 style="border-radius: 4px 20px 4px 4px" />
+                        <img src=@item.ProductVariants.ElementAtOrDefault(0).Photos.ElementAtOrDefault(0).PhotoUrl alt="Obraz przedstawiający @item.Name" width=100% height=255 style="border-radius: 4px 20px 4px 4px" />
                         <div class="overlay-category" style="position: absolute; top: 0; left: 0; width: 30%; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 5px; text-align: center; border-radius: 4px;">
-                            @item.Category.ToFriendlyString() / @item.SubCategory.ToFriendlyString()
+                            @item.Gender.ToFriendlyString() / @item.SubCategory.ToFriendlyString()
                         </div>
                         <div class="card-body">
                             <p class="card-text">@item.Name</p>

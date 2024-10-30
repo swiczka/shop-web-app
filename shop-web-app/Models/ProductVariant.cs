@@ -14,10 +14,8 @@ namespace shop_web_app.Models
 
         public string Name { get; set; }
 
-        [StringLength(255)]
-        public string ImageUrl { get; set; }
-
         public ICollection<VariantColor> VariantColors { get; set; } = new List<VariantColor>();
+        public ICollection<Photo> Photos { get; set; }
 
         //depending of clothing kind, one remains null
         public ICollection<InternationalSizeQuantity> ?InternationalSizeQuantity { get; set; }

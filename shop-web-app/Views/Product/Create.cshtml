@@ -1,0 +1,322 @@
+﻿@model CreateProductViewModel 
+@using shop_web_app.Enums;
+@using shop_web_app.ViewModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<form method="post" asp-action="Create" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Name">Nazwa produktu</label>
+        <input asp-for="Name" class="form-control" placeholder="Wprowadź zwięzłą nazwę produktu">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Opis produktu</label>
+        <input asp-for="Description" style="height: 100%; width: 100%" class="form-control" placeholder="Wprowadź bogaty opis produktu">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Category">Kategoria</label>
+        <select asp-for="Category" class="form-control" id="categorySelect" onchange="updateSubCategories()">
+            <option value=@null>--- Wybierz kategorię ---</option>
+            <option value=@Category.Top>@Category.Top.ToFriendlyString()</option>
+            <option value=@Category.Bottom>@Category.Bottom.ToFriendlyString()</option>
+            <option value=@Category.Accessory>@Category.Accessory.ToFriendlyString()</option>
+            <option value=@Category.Shoes>@Category.Shoes.ToFriendlyString()</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SubCategory">Podkategoria</label>
+        <select asp-for="SubCategory" class="form-control" id="subCategorySelect">
+@*            options will be added with js  *@
+        </select>
+        <span asp-validation-for="SubCategory" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Gender">Płeć</label>
+        <select asp-for="Gender" class="form-control" id="genderSelect">
+            <option value=@ClothingGender.F>@ClothingGender.F.ToFriendlyString()</option>
+            <option value=@ClothingGender.M>@ClothingGender.M.ToFriendlyString()</option>
+            <option value=@ClothingGender.U>@ClothingGender.U.ToFriendlyString()</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    @*                      MATERIAŁY                   *@
+    <div class="form-group">
+        <label>Materiały</label>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Cotton" id="Cotton">
+            <label class="form-check-label" for="Cotton">
+                Bawełna
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Polyester" id="Polyester">
+            <label class="form-check-label" for="Polyester">
+                Poliester
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Leather" id="Leather">
+            <label class="form-check-label" for="Leather">
+                Skóra naturalna
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Linen" id="Linen">
+            <label class="form-check-label" for="Linen">
+                Len
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Viscoze" id="Viscoze">
+            <label class="form-check-label" for="Viscoze">
+                Wiskoza
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Plastic" id="Plastic">
+            <label class="form-check-label" for="Plastic">
+                Tworzywo sztuczne
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Rubber" id="Rubber">
+            <label class="form-check-label" for="Rubber">
+                Guma
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="SelectedMaterials" value="Wool" id="Wool">
+            <label class="form-check-label" for="Wool">
+                Wełna
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Cena produktu</label>
+        <div style="display: flex; align-items: center;">
+            <input asp-for="Price" style="height: 100%; width: 100px; margin-right: 8px;" class="form-control" id="exampleInputPassword1" placeholder="np. '79.99'">
+            <span asp-validation-for="Price" class="text-danger"></span>
+            <span>PLN</span>
+        </div>
+    </div>
+
+    <div class="form-group "id="variantsContainer">
+        <!-- Dynamicznie dodawane warianty pojawią się tutaj -->
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" onclick="addVariant()">Dodaj Wariant</button>
+    </div>
+
+    <script>
+        function updateSubCategories() {
+            const category = document.getElementById("categorySelect").value;
+            const subCategorySelect = document.getElementById("subCategorySelect");
+
+            subCategorySelect.innerHTML = "";
+
+            let options = [];    
+
+            if (category === "Top") {
+                options = [
+                    { id: "TTShirt", name: "T-shirt" },
+                    { id: "TShirt", name: "Koszula" },
+                    { id: "TLongsleeve", name: "Koszulka z długim rękawem" },
+                    { id: "TCrewneck", name: "Crewneck" },
+                    { id: "THoodie", name: "Bluza z kapturem" },
+                    { id: "TSweater", name: "Sweter" },
+                    { id: "TJacket", name: "Kurtka" },
+                    { id: "TCoat", name: "Płaszcz" },
+                    { id: "TSuit", name: "Garnitur" },
+                    { id: "TDress", name: "Sukienka" }
+                ];
+            } else if (category === "Bottom") {
+                options = [
+                    { id: "BJeans", name: "Jeansy" },
+                    { id: "BTrousers", name: "Spodnie" },
+                    { id: "BShorts", name: "Szorty" },
+                    { id: "BSkirt", name: "Spódnica" },
+                    { id: "BLeggings", name: "Legginsy" },
+                    { id: "BSweatpants", name: "Dresy" }
+                ];
+            } else if (category === "Accessory") {
+                options = [
+                    { id: "ABelt", name: "Pasek" },
+                    { id: "AHat", name: "Kapelusz" },
+                    { id: "AScarf", name: "Szalik" },
+                    { id: "AGloves", name: "Rękawiczki" },
+                    { id: "ASunglasses", name: "Okulary przeciwsłoneczne" },
+                    { id: "AWatch", name: "Zegarek" },
+                    { id: "ABag", name: "Torba" },
+                    { id: "AJewelry", name: "Biżuteria" }
+                ];
+            } else if (category === "Shoes") {
+                options = [
+                    { id: "SSneakers", name: "Sneakersy" },
+                    { id: "SBoots", name: "Buty" },
+                    { id: "SSandals", name: "Sandały" },
+                    { id: "SLoafers", name: "Loafersy" },
+                    { id: "SHeels", name: "Szpilki" },
+                    { id: "SFlats", name: "Baleriny" },
+                    { id: "SSlippers", name: "Kapcie" },
+                    { id: "SRunningShoes", name: "Buty do biegania" },
+                    { id: "SWorkShoes", name: "Buty robocze" }
+                ];
+            }
+
+            options.forEach(subCategory => {
+                const option = document.createElement("option");
+                option.value = subCategory.id;
+                option.text = subCategory.name;
+                subCategorySelect.appendChild(option);
+            });
+        }
+    </script>
+
+    <script>
+        let variantIndex = 0;
+
+        function addVariant() {
+            const variantContainer = document.createElement('div');
+            variantContainer.id = `variant-${variantIndex}`;
+            const category = document.getElementById("categorySelect").value;
+            variantContainer.innerHTML = `
+                <h3>Wariant ${variantIndex + 1}</h3>
+                        <input type="text" name="ProductVariants[${variantIndex}].Name" placeholder="Nazwa Wariantu" class="form-control">
+
+                <div class="photos">
+                    <label>Zdjęcia:</label>
+                    <input type="file" name="ProductVariants[${variantIndex}].Photos" multiple>
+                </div>
+
+                        <div id="variant-${variantIndex}-colors" class="form-group">
+
+            <label>Kolory</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Red" id="color1-variant${variantIndex}">
+                <label class="form-check-label" for="color1-variant${variantIndex}">
+                    Czerwony
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Green" id="color2-variant${variantIndex}">
+                <label class="form-check-label" for="color2-variant${variantIndex}">
+                    Zielony
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Blue" id="color3-variant${variantIndex}">
+                <label class="form-check-label" for="color3-variant${variantIndex}">
+                    Niebieski
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Yellow" id="color4-variant${variantIndex}">
+                <label class="form-check-label" for="color4-variant${variantIndex}">
+                    Żółty
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="White" id="color5-variant${variantIndex}">
+                <label class="form-check-label" for="color5-variant${variantIndex}">
+                    Biały
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Black" id="color6-variant${variantIndex}">
+                <label class="form-check-label" for="color6-variant${variantIndex}">
+                    Czarny
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Gray" id="color7-variant${variantIndex}">
+                <label class="form-check-label" for="color7-variant${variantIndex}">
+                    Szary
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Purple" id="color8-variant${variantIndex}">
+                <label class="form-check-label" for="color8-variant${variantIndex}">
+                    Fioletowy
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Pink" id="color9-variant${variantIndex}">
+                <label class="form-check-label" for="color9-variant${variantIndex}">
+                    Różowy
+                </label>
+            </div>
+        </div>
+
+                <div class="sizes">
+                    <h4>Rozmiary i Ilości:</h4>
+                    ${getSizeChooseHtml(category, variantIndex)}
+                </div>
+                <button type="button" onclick="removeVariant(${variantIndex})">Usuń wariant</button>
+            `;
+
+            document.getElementById('variantsContainer').appendChild(variantContainer);
+            variantIndex++;
+        }
+
+        function removeVariant(index) {
+            const variantDiv = document.getElementById(`variant-${index}`);
+            if (variantDiv) {
+                variantDiv.remove();
+            }
+            variantIndex--;
+        }
+        
+        function getSizeChooseHtml(category, variantIndex) {
+            let sizeChooseHtml = '';
+
+            if (category === "Shoes") {
+                const shoeSizes = [
+                    "Size35", "Size35_5", "Size36", "Size36_5", "Size37", "Size37_5",
+                    "Size38", "Size38_5", "Size39", "Size39_5", "Size40", "Size40_5",
+                    "Size41", "Size41_5", "Size42", "Size42_5", "Size43", "Size43_5",
+                    "Size44", "Size44_5", "Size45", "Size45_5", "Size46"
+                ];
+                shoeSizes.forEach((size, index) => {
+                    sizeChooseHtml += `
+                        <label>${size.replace("Size", "")}</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="hidden" name="ProductVariants.ElementAtOrDefault(${variantIndex}).ShoeSizeQuantity[${index}].Size" value="${size}">
+                                    <input type="number" name="ProductVariants.ElementAtOrDefault(${variantIndex}).ShoeSizeQuantity[${index}].Quantity"
+                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px; value="0";>
+                        </div>
+                    `;
+                });
+            } else {
+                const internationalSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+                internationalSizes.forEach((size, index) => {
+                    sizeChooseHtml += `
+                        <label>${size}</label>
+                        <div style="display: flex; align-items: center;">
+                                    <input type="hidden" name="ProductVariants.ElementAtOrDefault(${variantIndex}).InternationalSizeQuantity[${index}].Size" value="${size}">
+                                    <input type="number" name="ProductVariants.ElementAtOrDefault(${variantIndex}).InternationalSizeQuantity[${index}].Quantity"
+                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                        </div>
+                    `;
+                });
+            }
+
+            return sizeChooseHtml;
+        }
+
+ 
+    </script>
+
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
