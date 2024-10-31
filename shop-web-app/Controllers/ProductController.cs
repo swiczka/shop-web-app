@@ -51,6 +51,8 @@ namespace shop_web_app.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductViewModel product)
         {
+            //nie ma materiałów, kolorów
+            Console.WriteLine(product);
             if (ModelState.IsValid) 
             {   
                 //var result = await _blobService.UploadFileAsync(product.ProductVariants.)
