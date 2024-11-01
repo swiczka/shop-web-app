@@ -81,69 +81,88 @@ function addVariant() {
 
             <label>Kolory</label>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Red" id="color1-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Red" id="color1-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color1-variant${variantIndex}">
                     Czerwony
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Green" id="color2-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Green" id="color2-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color2-variant${variantIndex}">
                     Zielony
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Blue" id="color3-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Blue" id="color3-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color3-variant${variantIndex}">
                     Niebieski
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Yellow" id="color4-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Yellow" id="color4-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color4-variant${variantIndex}">
                     Żółty
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="White" id="color5-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="White" id="color5-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color5-variant${variantIndex}">
                     Biały
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Black" id="color6-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Black" id="color6-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color6-variant${variantIndex}">
                     Czarny
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Gray" id="color7-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Gray" id="color7-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color7-variant${variantIndex}">
                     Szary
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Purple" id="color8-variant${variantIndex}">
+                <input class="col-form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Purple" id="color8-variant${variantIndex} onclick="setColorIndexes()">
                 <label class="form-check-label" for="color8-variant${variantIndex}">
                     Fioletowy
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="ProductVariants[${variantIndex}].Colors" value="Pink" id="color9-variant${variantIndex}">
+                <input class="col-form-check-input"
+                       type="checkbox"
+                       name="ProductVariants[${variantIndex}].Colors" 
+                       value="Pink" 
+                       id="color9-variant${variantIndex}" 
+                       onclick="setColorIndexes(${variantIndex})">
                 <label class="form-check-label" for="color9-variant${variantIndex}">
                     Różowy
                 </label>
             </div>
         </div>
-
                 <div class="sizes">
                     <h4>Rozmiary i Ilości:</h4>
                     ${getSizeChooseHtml(category, variantIndex)}
                 </div>
-                <button type="button" onclick="removeVariant(${variantIndex})">Usuń wariant</button>
-            `;
+                <div id="removeVariant-${variantIndex}">
+                </div>
+
+                `;
+    const button = document.getElementById("removeVariantButton");
+    if (button) {
+        const parent = document.getElementById("removeVariantContainer");
+        parent.removeChild(button);
+
+    }
+    variantContainer.innerHTML +=
+        `<div id="removeVariantContainer">
+            <button type="button" class="btn btn-secondary" id="removeVariantButton" onclick="removeVariant(${variantIndex})">Usuń wariant</button>
+        </div>`;
 
     document.getElementById('variantsContainer').appendChild(variantContainer);
+    document.querySelectorAll('.col-form-check-input').forEach((checkbox) => {
+        checkbox.addEventListener('click', setColorIndexes);
+    });
     variantIndex++;
 }
 
@@ -169,8 +188,8 @@ function getSizeChooseHtml(category, variantIndex) {
             sizeChooseHtml += `
                         <label>${size.replace("Size", "")}</label>
                         <div style="display: flex; align-items: center;">
-                                    <input type="hidden" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Size" value="${size}">
-                                            <input type="number" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Quantity"
+                                    <input type="hidden" name="ProductVariants[${variantIndex}].ShoeSizeQuantities[${index}].Size" value="${size}">
+                                            <input type="number" name="ProductVariants[${variantIndex}].ShoeSizeQuantities[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px; value="0";>
                         </div>
                     `;
@@ -181,8 +200,8 @@ function getSizeChooseHtml(category, variantIndex) {
             sizeChooseHtml += `
                         <label>${size}</label>
                         <div style="display: flex; align-items: center;">
-                                            <input type="hidden" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Size" value="${size}">
-                                            <input type="number" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Quantity"
+                                            <input type="hidden" name="ProductVariants[${variantIndex}].InternationalSizeQuantities[${index}].Size" value="${size}">
+                                            <input type="number" name="ProductVariants[${variantIndex}].InternationalSizeQuantities[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
                         </div>
                     `;
@@ -203,6 +222,33 @@ function setMaterialIndexes() {
         }
         else {
             checkBox.name = `doesntmatter`;
+        }
+    });
+}
+
+function setColorIndexes() {
+    
+    const checkBoxes = document.querySelectorAll('.col-form-check-input');
+
+    var index = 0;
+    let varIndex = null;
+
+    checkBoxes.forEach(checkBox => {
+        const currentVarIndex = checkBox.name.split("[")[1].split("]")[0];
+  
+        if (varIndex !== currentVarIndex) {
+            index = 0; 
+            varIndex = currentVarIndex; 
+        }
+
+        console.log(varIndex);
+        if (checkBox.checked) {
+            checkBox.name = `ProductVariants[${varIndex}].Colors[${index}].Color`;
+            console.log(checkBox.name);
+            index++;
+        }
+        else {
+            checkBox.name = `ProductVariants[${varIndex}].Colors`;
         }
     });
 }
