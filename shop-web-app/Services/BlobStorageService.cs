@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Blobs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using shop_web_app.Helpers;
+using shop_web_app.Models;
 
 namespace shop_web_app.Services
 {
@@ -15,12 +17,13 @@ namespace shop_web_app.Services
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(settings.ContainerName);
         }
 
-        public async Task<string> UploadFileAsync(string blobName, Stream fileStream)
+        public async Task<string> UploadFileAsync(IFormFile file)
         {
-            var blobClient = _blobContainerClient.GetBlobClient(blobName);
-            await blobClient.UploadAsync(fileStream, overwrite: true);
-
-            return blobClient.Uri.ToString();
+            using var stream = file.OpenReadStream();
+            var blobClient = _blobContainerClient.GetBlobClient(file.FileName);    
+            await blobClient.UploadAsync(stream, overwrite: true);
+            var url = blobClient.Uri.ToString();     
+            return url;
         }
 
         public async Task<bool> DeleteFileAsync(string blobName)

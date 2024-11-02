@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using shop_web_app.Enums;
 
 namespace shop_web_app.ViewModels
 {

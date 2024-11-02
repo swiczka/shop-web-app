@@ -16,18 +16,18 @@ namespace shop_web_app.Controllers
             _context = context;
         }
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
-        {
-            using var stream = file.OpenReadStream();
-            var url = await _blobStorageService.UploadFileAsync(file.FileName, stream);
+        //[HttpPost("upload")]
+        //public async Task<IActionResult> Upload(IFormFile file)
+        //{
+        //    //using var stream = file.OpenReadStream();
+        //    ////var url = await _blobStorageService.UploadFileAsync(file.FileName, stream);
 
-            var photo = new Photo { PhotoUrl = url };
-            _context.Photos.Add(photo);
-            await _context.SaveChangesAsync();
+        //    //var photo = new Photo { PhotoUrl = url };
+        //    //_context.Photos.Add(photo);
+        //    //await _context.SaveChangesAsync();
 
-            return Ok(new { Url = url });
-        }
+        //    //return Ok(new { Url = url });
+        //}
 
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string blobName)

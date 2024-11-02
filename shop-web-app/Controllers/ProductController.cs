@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using shop_web_app.Data;
+using shop_web_app.Enums;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
+using shop_web_app.Models.SizeQuantity;
 using shop_web_app.Services;
 using shop_web_app.ViewModels;
 
@@ -51,13 +54,97 @@ namespace shop_web_app.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductViewModel product)
         {
-            //nie ma materiałów, kolorów
-            Console.WriteLine(product);
             if (ModelState.IsValid) 
-            {   
-                //var result = await _blobService.UploadFileAsync(product.ProductVariants.)
+            {
+                List<ProductVariant> newVariants = new List<ProductVariant>();
+                foreach (var variant in product.ProductVariants)
+                {
+                    List<VariantColor> newColors = new List<VariantColor>();
+                    foreach (var color in variant.Colors)
+                    {
+                        newColors.Add(new VariantColor() { Color =  color.Color });
+                    }
+
+
+                    List<InternationalSizeQuantity> newInternationalSizeQuantities = new List<InternationalSizeQuantity>();
+                    List<ShoeSizeQuantity> newShoeSizeQuantities = new List<ShoeSizeQuantity>();
+
+                    if (variant.InternationalSizeQuantities != null) 
+                    {
+                        
+                        foreach (var sizeQuantity in variant.InternationalSizeQuantities)
+                        {
+                            newInternationalSizeQuantities.Add(new InternationalSizeQuantity()
+                            {
+                                Size = sizeQuantity.Size,
+                                Quantity = sizeQuantity.Quantity
+                            });
+                        }
+                    }
+                    else
+                    {
+                        
+                        foreach (var sizeQuantity in variant.ShoeSizeQuantities)
+                        {
+                            newShoeSizeQuantities.Add(new ShoeSizeQuantity()
+                            {
+                                Size = sizeQuantity.Size,
+                                Quantity = sizeQuantity.Quantity
+                            });
+                        }
+                    }
+
+                    List<Photo> newPhotos = new List<Photo>();
+                    foreach (var photo in variant.Photos) 
+                    {
+                        var photoUrl = await _blobService.UploadFileAsync(photo);
+                        newPhotos.Add(new Photo()
+                        {
+                            PhotoUrl = photoUrl
+                        });
+                    }
+
+                    ProductVariant newVariant = new ProductVariant()
+                    {
+                        Name = variant.Name,
+                        VariantColors = newColors,
+                        InternationalSizeQuantity = newInternationalSizeQuantities,
+                        ShoeSizeQuantity = newShoeSizeQuantities,
+                        Photos = newPhotos
+                        //{
+                        //    new Photo()
+                        //    {
+                        //        PhotoUrl = "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
+                        //    }
+                        //}
+                    };
+
+                    newVariants.Add(newVariant);
+                }
+
+                List<ProductMaterial> newMaterials = new List<ProductMaterial>();
+                foreach (var material in product.ProductMaterials)
+                {
+                    newMaterials.Add(new ProductMaterial()
+                    {
+                        Material = material.Material
+                    });
+                }
+
+                Product newProduct = new Product()
+                {
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Gender = product.Gender,
+                    Category = product.Category,
+                    SubCategory = product.SubCategory,
+                    ProductVariants = newVariants,
+                    ProductMaterials = newMaterials
+                };
+                _productRepository.Add(newProduct);
             }
-            //_productRepository.Add(product);
+
             return RedirectToAction("Index");
         }
     }

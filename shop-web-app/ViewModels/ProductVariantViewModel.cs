@@ -10,7 +10,7 @@ namespace shop_web_app.ViewModels
 
         public List<VariantColorViewModel> Colors { get; set; } = new List<VariantColorViewModel>();
 
-        public List<PhotoViewModel> Photos { get; set; } = new List<PhotoViewModel>();
+        public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
 
         public List<InternationalSizeQuantityViewModel> InternationalSizeQuantities { get; set; } = new List<InternationalSizeQuantityViewModel>();
 

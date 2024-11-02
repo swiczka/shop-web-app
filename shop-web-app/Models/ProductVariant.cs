@@ -15,7 +15,7 @@ namespace shop_web_app.Models
         public string Name { get; set; }
 
         public ICollection<VariantColor> VariantColors { get; set; } = new List<VariantColor>();
-        public ICollection<Photo> Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
         //depending of clothing kind, one remains null
         public ICollection<InternationalSizeQuantity> ?InternationalSizeQuantity { get; set; }
