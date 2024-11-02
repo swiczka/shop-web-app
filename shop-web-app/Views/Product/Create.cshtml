@@ -103,16 +103,19 @@
     <div class="form-group">
         <label>Cena produktu</label>
         <div style="display: flex; align-items: center;">
-            <input asp-for="Price" style="height: 100%; width: 100px; margin-right: 8px;" class="form-control" id="exampleInputPassword1" placeholder="np. '79.99'">
+            <input asp-for="Price" style="height: 100%; width: 100px; margin-right: 8px;" class="form-control" id="exampleInputPassword1" placeholder="np. '79,99'">
             <span asp-validation-for="Price" class="text-danger"></span>
             <span>PLN</span>
         </div>
     </div>
 
-    <div class="form-group "id="variantsContainer">
+    <div class="form-group mb-1 "id="variantsContainer">
         <!-- Dynamicznie dodawane warianty pojawią się tutaj -->
     </div>
-    <div class="form-group">
+    <div class="form-group mb-2" id="removeVariantContainer">
+        <!-- button for variant removal will be here -->
+    </div>
+    <div class="form-group mb-2">
         <button type="button" class="btn btn-primary" onclick="addVariant()">Dodaj Wariant</button>
     </div>
 

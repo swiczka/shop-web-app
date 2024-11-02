@@ -148,18 +148,28 @@ function addVariant() {
                 </div>
 
                 `;
-    const button = document.getElementById("removeVariantButton");
-    if (button) {
-        const parent = document.getElementById("removeVariantContainer");
-        parent.removeChild(button);
-
-    }
-    variantContainer.innerHTML +=
-        `<div id="removeVariantContainer">
-            <button type="button" class="btn btn-secondary" id="removeVariantButton" onclick="removeVariant(${variantIndex})">Usuń wariant</button>
-        </div>`;
-
+    
     document.getElementById('variantsContainer').appendChild(variantContainer);
+
+    if (variantIndex === 0) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-secondary";
+        button.id = "removeVariantButton";
+        button.onclick = function () {
+            removeVariant(variantIndex);
+        };
+        button.innerHTML = "Usuń wariant";
+        document.getElementById('removeVariantContainer').appendChild(button);
+    }
+    else {
+        const button = document.getElementById("removeVariantButton");
+        button.onclick = function () {
+            removeVariant(variantIndex);
+        };
+    }
+
+   
     document.querySelectorAll('.col-form-check-input').forEach((checkbox) => {
         checkbox.addEventListener('click', setColorIndexes);
     });
@@ -167,7 +177,18 @@ function addVariant() {
 }
 
 function removeVariant(index) {
-    const variantDiv = document.getElementById(`variant-${index}`);
+    const variantButton = document.getElementById("removeVariantButton");
+    if (variantIndex === 1) {
+        if (variantButton) {
+            variantButton.remove();
+        }
+    }
+    else {
+        variantButton.onclick = function () {
+            removeVariant(variantIndex-1);
+        };
+    }
+    const variantDiv = document.getElementById(`variant-${variantIndex-1}`);
     if (variantDiv) {
         variantDiv.remove();
     }
