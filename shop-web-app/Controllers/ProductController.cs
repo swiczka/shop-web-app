@@ -69,10 +69,10 @@ namespace shop_web_app.Controllers
                     List<InternationalSizeQuantity> newInternationalSizeQuantities = new List<InternationalSizeQuantity>();
                     List<ShoeSizeQuantity> newShoeSizeQuantities = new List<ShoeSizeQuantity>();
 
-                    if (variant.InternationalSizeQuantities != null) 
+                    if (variant.InternationalSizeQuantity != null) 
                     {
                         
-                        foreach (var sizeQuantity in variant.InternationalSizeQuantities)
+                        foreach (var sizeQuantity in variant.InternationalSizeQuantity)
                         {
                             newInternationalSizeQuantities.Add(new InternationalSizeQuantity()
                             {
@@ -84,7 +84,7 @@ namespace shop_web_app.Controllers
                     else
                     {
                         
-                        foreach (var sizeQuantity in variant.ShoeSizeQuantities)
+                        foreach (var sizeQuantity in variant.ShoeSizeQuantity)
                         {
                             newShoeSizeQuantities.Add(new ShoeSizeQuantity()
                             {
@@ -146,6 +146,28 @@ namespace shop_web_app.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var product = await _productRepository.GetByIdAsync(id);
+            
+            if(product == null)
+                return View("Error");
+
+            var productVM = new EditProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Gender = product.Gender,
+                Category = product.Category,
+                SubCategory = product.SubCategory,
+                ProductMaterials= product.ProductMaterials,
+                ProductVariants = product.ProductVariants
+            };
+            return View(productVM);
         }
     }
 }

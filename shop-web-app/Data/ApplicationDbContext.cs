@@ -15,8 +15,8 @@ namespace shop_web_app.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
-        public DbSet<InternationalSizeQuantity> InternationalSizeQuantities { get; set; }
-        public DbSet<ShoeSizeQuantity> ShoeSizeQuantities { get; set; }
+        public DbSet<InternationalSizeQuantity> InternationalSizeQuantity { get; set; }
+        public DbSet<ShoeSizeQuantity> ShoeSizeQuantity { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<VariantColor> VariantColors { get; set; }

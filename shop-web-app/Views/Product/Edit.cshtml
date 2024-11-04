@@ -1,0 +1,187 @@
+﻿@using shop_web_app.Enums
+@using shop_web_app.ViewModels
+@using shop_web_app.Models.SizeQuantity
+@model EditProductViewModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<form method="post" asp-action="Edit" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Name">Nazwa produktu</label>
+        <input asp-for="Name" class="form-control" placeholder="Wprowadź zwięzłą nazwę produktu">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Opis produktu</label>
+        <input asp-for="Description" style="height: 100%; width: 100%" class="form-control" placeholder="Wprowadź bogaty opis produktu">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Category">Kategoria</label>
+        <select asp-for="Category" class="form-control" id="categorySelect" onchange="updateSubCategories()">
+            <option value=@null>--- Wybierz kategorię ---</option>
+            <option value=@Category.Top>@Category.Top.ToFriendlyString()</option>
+            <option value=@Category.Bottom>@Category.Bottom.ToFriendlyString()</option>
+            <option value=@Category.Accessory>@Category.Accessory.ToFriendlyString()</option>
+            <option value=@Category.Shoes>@Category.Shoes.ToFriendlyString()</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SubCategory">Podkategoria</label>
+        <select asp-for="SubCategory" asp-items="@Html.GetEnumSelectList<SubCategory>()" class="form-control" id="subCategorySelect"> 
+        </select>
+        <span asp-validation-for="SubCategory" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Gender">Płeć</label>
+        <select asp-for="Gender" class="form-control" id="genderSelect">
+            <option value=@ClothingGender.F>@ClothingGender.F.ToFriendlyString()</option>
+            <option value=@ClothingGender.M>@ClothingGender.M.ToFriendlyString()</option>
+            <option value=@ClothingGender.U>@ClothingGender.U.ToFriendlyString()</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    @*                      MATERIAŁY                   *@
+    <div class="form-group">
+        <label>Materiały</label>
+        @{
+            int i = 0;
+        }
+        @foreach(Material material in Enum.GetValues(typeof(Material)))
+        {
+            bool present = false;
+            foreach(ProductMaterial productMaterial in Model.ProductMaterials)
+            {
+                if (productMaterial.Material == material)
+                    present = true;
+            }
+            if (present)
+            {
+                <div class="form-check">
+                    <input class="mat-form-check-input" type="checkbox" name="ProductMaterials[@i].Material" value=@material id=@material onclick="setMaterialIndexes()" checked>
+                    <label class="form-check-label">
+                        @material.ToFriendlyString()
+                    </label>
+                </div>
+                i++;
+            }
+            else
+            {
+                <div class="form-check">
+                    <input class="mat-form-check-input" type="checkbox" name="ProductMaterials" value=@material id=@material onclick="setMaterialIndexes()">
+                    <label class="form-check-label">
+                        @material.ToFriendlyString()
+                    </label>
+                </div>
+            }
+
+        }
+    </div>
+    <div class="form-group">
+        <label>Cena produktu</label>
+        <div style="display: flex; align-items: center;">
+            <input asp-for="Price" style="height: 100%; width: 100px; margin-right: 8px;" class="form-control" id="exampleInputPassword1" placeholder="np. '79,99'">
+            <span asp-validation-for="Price" class="text-danger"></span>
+            <span>PLN</span>
+        </div>
+    </div>
+    <div class="form-group mb-1 " id="variantsContainer">
+        @{
+            int variantIndex = 0;
+        }
+        @foreach(ProductVariant variant in Model.ProductVariants)
+        {
+            <h3>Wariant @(variantIndex+1)</h3>
+            <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
+
+            <div class="photos">
+                <label>Zdjęcia:</label>
+                <input type="file" name="ProductVariants[@variantIndex].Photos" multiple>
+            </div>
+
+            <div class="form-group">
+                <label>Kolory</label>
+                @{
+                    int k = 0;
+                }
+                @foreach (Color color in Enum.GetValues(typeof(Color)))
+                {
+                    bool present = false;
+                    foreach (VariantColor variantColor in variant.VariantColors)
+                    {
+                        if (variantColor.Color == color)
+                            present = true;
+                    }
+                    if (present)
+                    {
+                        <div class="form-check">
+                            <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors[@k].Color" value="@color" onclick="setColorIndexes()" checked>
+                            <label class="form-check-label">
+                                @color.ToFriendlyString()
+                            </label>
+                        </div>
+                        k++;
+                    }
+                    else
+                    {
+                        <div class="form-check">
+                            <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors" value="@color" onclick="setColorIndexes()">
+                            <label class="form-check-label">
+                                @color.ToFriendlyString()
+                            </label>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="form-group">
+                <label>Rozmiary i ilość</label>
+                @if(Model.Category == Category.Shoes)
+                {
+                    int sizeIndex = 0;
+                    foreach(ShoeSizeQuantity sizeQuantity in variant.ShoeSizeQuantity)
+                    {
+                        <label>@sizeQuantity.Size</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
+                            <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity"
+                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                        </div>
+                        sizeIndex++;
+                    }
+                }
+                else
+                {
+                    int sizeIndex = 0;
+                    foreach (InternationalSizeQuantity sizeQuantity in variant.InternationalSizeQuantity)
+                    {
+                        <label>@sizeQuantity.Size</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
+                            <input type="number" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Quantity"
+                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                        </div>
+                        sizeIndex++;
+                    }
+                }
+                @variantIndex++;
+            </div>
+        }
+    </div>
+    <div class="form-group mb-2" id="removeVariantContainer">
+        <!-- button for variant removal will be here -->
+    </div>
+    <div class="form-group mb-2">
+        <button type="button" class="btn btn-primary" onclick="addVariant()">Dodaj Wariant</button>
+    </div>
+
+    <script>
+        updateSubCategories();
+    </script>
+
+</form>

@@ -42,6 +42,8 @@ namespace shop_web_app.Repository
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductVariants)
+                    .ThenInclude(v => v.VariantColors)
+                .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.InternationalSizeQuantity)
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.ShoeSizeQuantity)

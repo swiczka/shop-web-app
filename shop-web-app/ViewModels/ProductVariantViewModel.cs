@@ -12,8 +12,8 @@ namespace shop_web_app.ViewModels
 
         public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
 
-        public List<InternationalSizeQuantityViewModel> InternationalSizeQuantities { get; set; } = new List<InternationalSizeQuantityViewModel>();
+        public List<InternationalSizeQuantityViewModel> InternationalSizeQuantity { get; set; } = new List<InternationalSizeQuantityViewModel>();
 
-        public List<ShoeSizeQuantityViewModel> ShoeSizeQuantities { get; set; } = new List<ShoeSizeQuantityViewModel>();
+        public List<ShoeSizeQuantityViewModel> ShoeSizeQuantity { get; set; } = new List<ShoeSizeQuantityViewModel>();
     }
 }

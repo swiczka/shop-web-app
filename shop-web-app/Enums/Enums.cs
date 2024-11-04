@@ -1,4 +1,6 @@
-﻿namespace shop_web_app.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace shop_web_app.Enums
 {
     public enum Gender
     {
@@ -32,26 +34,58 @@
 
     public enum Material
     {
-        Cotton,       
-        Polyester,    
-        Leather,      
-        Linen,        
-        Viscoze,      
-        Plastic,     
+        [Display(Name = "Bawełna")]
+        Cotton,
+
+        [Display(Name = "Poliester")]
+        Polyester,
+
+        [Display(Name = "Skóra")]
+        Leather,
+
+        [Display(Name = "Len")]
+        Linen,
+
+        [Display(Name = "Wiskoza")]
+        Viscoze,
+
+        [Display(Name = "Tworzywo sztuczne")]
+        Plastic,
+
+        [Display(Name = "Guma")]
         Rubber,
+
+        [Display(Name = "Wełna")]
         Wool
     }
 
     public enum Color
     {
+        [Display(Name = "Czerwony")]
         Red,
+
+        [Display(Name = "Zielony")]
         Green,
+
+        [Display(Name = "Niebieski")]
         Blue,
+
+        [Display(Name = "Zółty")]
         Yellow,
+
+        [Display(Name = "Biały")]
         White,
+
+        [Display(Name = "Czarny")]
         Black,
+
+        [Display(Name = "Szary")]
         Gray,
+
+        [Display(Name = "Fioletowy")]
         Purple,
+
+        [Display(Name = "Różowy")]
         Pink
     }
 
@@ -104,43 +138,109 @@
     public enum SubCategory
     {
         // tops
+        [Display(Name = "T-Shirt")]
         TTShirt,
+
+        [Display(Name = "Koszula")]
         TShirt,
+
+        [Display(Name = "Koszulka z długim rękawem")]
         TLongsleeve,
+
+        [Display(Name = "Crewneck")]
         TCrewneck,
+
+        [Display(Name = "Bluza z kapturem")]
         THoodie,
+
+        [Display(Name = "Sweter")]
         TSweater,
+
+        [Display(Name = "Kurtka")]
         TJacket,
+
+        [Display(Name = "Płaszcz")]
         TCoat,
+
+        [Display(Name = "Garnitur")]
         TSuit,
+
+        [Display(Name = "Sukienka")]
         TDress,
+
         // bottoms
+        [Display(Name = "Dżinsy")]
         BJeans,
+
+        [Display(Name = "Spodnie")]
         BTrousers,
+
+        [Display(Name = "Szorty")]
         BShorts,
+
+        [Display(Name = "Spódnica")]
         BSkirt,
+
+        [Display(Name = "Legginsy")]
         BLeggings,
+
+        [Display(Name = "Spodnie dresowe")]
         BSweatpants,
+
         // accessories
+        [Display(Name = "Pasek")]
         ABelt,
+
+        [Display(Name = "Czapka")]
         AHat,
+
+        [Display(Name = "Szalik")]
         AScarf,
+
+        [Display(Name = "Rękawice")]
         AGloves,
+
+        [Display(Name = "Okulary przeciwsłoneczne")]
         ASunglasses,
+
+        [Display(Name = "Zegarek")]
         AWatch,
+
+        [Display(Name = "Torebka")]
         ABag,
+
+        [Display(Name = "Biżuteria")]
         AJewelry,
+
         // shoes
+        [Display(Name = "Sneakersy")]
         SSneakers,
+
+        [Display(Name = "Botki")]
         SBoots,
+
+        [Display(Name = "Sandały")]
         SSandals,
+
+        [Display(Name = "Mokasyny")]
         SLoafers,
+
+        [Display(Name = "Obcasy")]
         SHeels,
+
+        [Display(Name = "Płaskie buty")]
         SFlats,
+
+        [Display(Name = "Kapcie")]
         SSlippers,
+
+        [Display(Name = "Buty do biegania")]
         SRunningShoes,
+
+        [Display(Name = "Buty robocze")]
         SWorkShoes
     }
+
 
 
     public enum ClothingType
