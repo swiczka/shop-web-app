@@ -97,81 +97,90 @@
         }
         @foreach(ProductVariant variant in Model.ProductVariants)
         {
-            <h3>Wariant @(variantIndex+1)</h3>
-            <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
+            <div id="variant-@variantIndex">
+                <h3>Wariant @(variantIndex+1)</h3>
+                <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
 
-            <div class="photos">
-                <label>Zdjęcia:</label>
-                <input type="file" name="ProductVariants[@variantIndex].Photos" multiple>
-            </div>
+                <div class="photos">
+                    <label>Zdjęcia:</label>
+                    <input type="file" name="ProductVariants[@variantIndex].Photos" multiple>
+                </div>
 
-            <div class="form-group">
-                <label>Kolory</label>
-                @{
-                    int k = 0;
-                }
-                @foreach (Color color in Enum.GetValues(typeof(Color)))
-                {
-                    bool present = false;
-                    foreach (VariantColor variantColor in variant.VariantColors)
-                    {
-                        if (variantColor.Color == color)
-                            present = true;
+                <div class="form-group">
+                    <label>Kolory</label>
+                    @{
+                        int k = 0;
                     }
-                    if (present)
+                    @foreach (Color color in Enum.GetValues(typeof(Color)))
                     {
-                        <div class="form-check">
-                            <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors[@k].Color" value="@color" onclick="setColorIndexes()" checked>
-                            <label class="form-check-label">
-                                @color.ToFriendlyString()
-                            </label>
-                        </div>
-                        k++;
+                        bool present = false;
+                        foreach (VariantColor variantColor in variant.VariantColors)
+                        {
+                            if (variantColor.Color == color)
+                                present = true;
+                        }
+                        if (present)
+                        {
+                            <div class="form-check">
+                                <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors[@k].Color" value="@color" onclick="setColorIndexes()" checked>
+                                <label class="form-check-label">
+                                    @color.ToFriendlyString()
+                                </label>
+                            </div>
+                            k++;
+                        }
+                        else
+                        {
+                            <div class="form-check">
+                                <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors" value="@color" onclick="setColorIndexes()">
+                                <label class="form-check-label">
+                                    @color.ToFriendlyString()
+                                </label>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="form-group">
+                    <h4>Rozmiary i Ilości:</h4> 
+                    @if(Model.Category == Category.Shoes)
+                    {
+                        int sizeIndex = 0;
+                        foreach(ShoeSizeQuantity sizeQuantity in variant.ShoeSizeQuantity)
+                        {
+                            <label>@sizeQuantity.Size</label>
+                            <div style="display: flex; align-items: center;">
+                                <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
+                                <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
+                                       placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                            </div>
+                            sizeIndex++;
+                        }
                     }
                     else
                     {
-                        <div class="form-check">
-                            <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors" value="@color" onclick="setColorIndexes()">
-                            <label class="form-check-label">
-                                @color.ToFriendlyString()
-                            </label>
-                        </div>
+                        int sizeIndex = 0;
+                        foreach (InternationalSizeQuantity sizeQuantity in variant.InternationalSizeQuantity)
+                        {
+                            <label>@sizeQuantity.Size</label>
+                            <div style="display: flex; align-items: center;">
+                                <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
+                                <input type="number" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
+                                       placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                            </div>
+                            sizeIndex++;
+                        }
                     }
-                }
-            </div>
-            <div class="form-group">
-                <label>Rozmiary i ilość</label>
-                @if(Model.Category == Category.Shoes)
-                {
-                    int sizeIndex = 0;
-                    foreach(ShoeSizeQuantity sizeQuantity in variant.ShoeSizeQuantity)
-                    {
-                        <label>@sizeQuantity.Size</label>
-                        <div style="display: flex; align-items: center;">
-                            <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
-                            <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity"
-                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
-                        </div>
-                        sizeIndex++;
+                    @{
+                        variantIndex++;
                     }
-                }
-                else
-                {
-                    int sizeIndex = 0;
-                    foreach (InternationalSizeQuantity sizeQuantity in variant.InternationalSizeQuantity)
-                    {
-                        <label>@sizeQuantity.Size</label>
-                        <div style="display: flex; align-items: center;">
-                            <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
-                            <input type="number" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Quantity"
-                                   placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
-                        </div>
-                        sizeIndex++;
-                    }
-                }
-                @variantIndex++;
+
+                </div>
+                <div id="removeVariant-${variantIndex}">
+                    <button type="button" class="btn btn-danger" id="removeVariantButton" onclick="removeVariant(@variantIndex)">Usuń wariant</button>
+                </div>
             </div>
         }
+
     </div>
     <div class="form-group mb-2" id="removeVariantContainer">
         <!-- button for variant removal will be here -->
@@ -181,7 +190,10 @@
     </div>
 
     <script>
-        updateSubCategories();
+        document.addEventListener("DOMContentLoaded", function () {
+            updateSubCategories();
+            adjustVariantIndex();
+        });
     </script>
 
 </form>

@@ -154,7 +154,7 @@ function addVariant() {
     if (variantIndex === 0) {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "btn btn-secondary";
+        button.className = "btn btn-danger";
         button.id = "removeVariantButton";
         button.onclick = function () {
             removeVariant(variantIndex);
@@ -230,6 +230,22 @@ function getSizeChooseHtml(category, variantIndex) {
     }
 
     return sizeChooseHtml;
+}
+
+function adjustVariantIndex() {
+    finish = false;
+    i = 0;
+
+    while (!finish) {
+        let variantDiv = document.getElementById(`variant-${i}`);
+        if (variantDiv) {
+            i++;
+            variantIndex = i;
+        }
+        else {
+            finish = true;
+        }
+    }
 }
 
 function setMaterialIndexes() {
