@@ -155,6 +155,57 @@ namespace shop_web_app.Controllers
             if(product == null)
                 return View("Error");
 
+
+
+            List<ProductVariantViewModel> newVariants = new List<ProductVariantViewModel>();
+            foreach (var variant in product.ProductVariants)
+            {
+                List<VariantColorViewModel> newColors = new List<VariantColorViewModel>();
+                foreach (var color in variant.VariantColors)
+                {
+                    newColors.Add(new VariantColorViewModel() { Color = color.Color });
+                }
+
+
+                List<InternationalSizeQuantityViewModel> newInternationalSizeQuantities = new List<InternationalSizeQuantityViewModel>();
+                List<ShoeSizeQuantityViewModel> newShoeSizeQuantities = new List<ShoeSizeQuantityViewModel>();
+
+                if (variant.InternationalSizeQuantity != null)
+                {
+
+                    foreach (var sizeQuantity in variant.InternationalSizeQuantity)
+                    {
+                        newInternationalSizeQuantities.Add(new InternationalSizeQuantityViewModel()
+                        {
+                            Size = sizeQuantity.Size,
+                            Quantity = sizeQuantity.Quantity
+                        });
+                    }
+                }
+                else
+                {
+
+                    foreach (var sizeQuantity in variant.ShoeSizeQuantity)
+                    {
+                        newShoeSizeQuantities.Add(new ShoeSizeQuantityViewModel()
+                        {
+                            Size = sizeQuantity.Size,
+                            Quantity = sizeQuantity.Quantity
+                        });
+                    }
+                }
+
+                ProductVariantViewModel newVariant = new ProductVariantViewModel()
+                {
+                    Name = variant.Name,
+                    Colors = newColors,
+                    InternationalSizeQuantity = newInternationalSizeQuantities,
+                    ShoeSizeQuantity = newShoeSizeQuantities
+                };
+
+                newVariants.Add(newVariant);
+            }
+
             var productVM = new EditProductViewModel
             {
                 Id = product.Id,
@@ -165,9 +216,72 @@ namespace shop_web_app.Controllers
                 Category = product.Category,
                 SubCategory = product.SubCategory,
                 ProductMaterials= product.ProductMaterials,
-                ProductVariants = product.ProductVariants
+                ProductVariants = newVariants
             };
             return View(productVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditProductViewModel productVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Failed to edit product");
+                return View("Edit", productVM);
+            }
+
+            var userProduct = await _productRepository.GetByIdAsync(id);
+
+            if(userProduct != null)
+            {
+                try
+                {
+                    foreach(var variant in userProduct.ProductVariants)
+                    {
+                        foreach(var photo in variant.Photos)
+                        {
+                            await _blobService.DeleteFileAsync(photo.PhotoUrl);
+                        }
+                    }     
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Could not delete photo");
+                    return View(productVM);
+                }
+
+                List<Photo> newPhotos = new List<Photo>();
+
+                foreach (var variant in productVM.ProductVariants)
+                {
+                    
+                    foreach (var photo in variant.Photos)
+                    {
+                        var photoUrl = await _blobService.UploadFileAsync(photo);
+                        newPhotos.Add(new Photo()
+                        {
+                            PhotoUrl = photoUrl
+                        });
+                    }
+                }
+
+
+                var product = new Product()
+                {
+                    Id = id,
+                    Name = productVM.Name,
+                    Description = productVM.Description,
+                    Price = productVM.Price,
+                    Gender = productVM.Gender,
+                    Category = productVM.Category,
+                    SubCategory = productVM.SubCategory,
+                    ProductMaterials = productVM.ProductMaterials,
+                    ProductVariants = productVM.ProductVariants
+                };
+                //TODO przekleić warianty z VM na normalny model
+
+                _productRepository.Update(product);
+            }
         }
     }
 }

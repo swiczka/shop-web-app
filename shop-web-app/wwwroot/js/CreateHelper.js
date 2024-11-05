@@ -64,6 +64,24 @@
 
 let variantIndex = 0;
 
+function adjustVariantIndex() {
+    finish = false;
+    i = 0;
+
+    while (!finish) {
+        let variantDiv = document.getElementById(`variant-${i}`);
+        if (variantDiv) {
+            i++;
+            variantIndex = i;
+        }
+        else {
+            finish = true;
+        }
+    }
+    console.log("Na wyjściu funkcji adjustVariantIndex: ", variantIndex);
+}
+
+
 function addVariant() {
     const variantContainer = document.createElement('div');
     variantContainer.id = `variant-${variantIndex}`;
@@ -150,6 +168,7 @@ function addVariant() {
                 `;
     
     document.getElementById('variantsContainer').appendChild(variantContainer);
+    console.log("W funkcji dodawwania: ", variantIndex);
 
     if (variantIndex === 0) {
         const button = document.createElement("button");
@@ -175,6 +194,8 @@ function addVariant() {
     });
     variantIndex++;
 }
+
+let editVariantIndex = 0;
 
 function removeVariant(index) {
     const variantButton = document.getElementById("removeVariantButton");
@@ -232,21 +253,7 @@ function getSizeChooseHtml(category, variantIndex) {
     return sizeChooseHtml;
 }
 
-function adjustVariantIndex() {
-    finish = false;
-    i = 0;
 
-    while (!finish) {
-        let variantDiv = document.getElementById(`variant-${i}`);
-        if (variantDiv) {
-            i++;
-            variantIndex = i;
-        }
-        else {
-            finish = true;
-        }
-    }
-}
 
 function setMaterialIndexes() {
     const checkBoxes = document.querySelectorAll('.mat-form-check-input');
