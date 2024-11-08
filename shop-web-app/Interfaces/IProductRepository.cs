@@ -6,6 +6,7 @@ namespace shop_web_app.Interfaces
     {
         Task<IEnumerable<Product>> GetAll();
         Task<Product> GetByIdAsync(int id);
+        Task<Product> GetByIdAsyncNoTracking(int id);
         Task<IEnumerable<Product>> GetByNameAsync(string name);
         bool Add(Product product);
         bool Update(Product product);

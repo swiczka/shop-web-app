@@ -56,7 +56,7 @@
         @foreach(Material material in Enum.GetValues(typeof(Material)))
         {
             bool present = false;
-            foreach(ProductMaterial productMaterial in Model.ProductMaterials)
+            foreach(ProductMaterialViewModel productMaterial in Model.ProductMaterials)
             {
                 if (productMaterial.Material == material)
                     present = true;
@@ -74,7 +74,7 @@
             else
             {
                 <div class="form-check">
-                    <input class="mat-form-check-input" type="checkbox" name="ProductMaterials" value=@material id=@material onclick="setMaterialIndexes()">
+                    <input class="mat-form-check-input" type="checkbox" name="doesntmatter" value=@material id=@material onclick="setMaterialIndexes()">
                     <label class="form-check-label">
                         @material.ToFriendlyString()
                     </label>
@@ -95,7 +95,7 @@
         @{
             int variantIndex = 0;
         }
-        @foreach(ProductVariant variant in Model.ProductVariants)
+        @foreach(ProductVariantViewModel variant in Model.ProductVariants)
         {
             <div id="variant-@variantIndex">
                 <h3>Wariant @(variantIndex+1)</h3>
@@ -114,7 +114,7 @@
                     @foreach (Color color in Enum.GetValues(typeof(Color)))
                     {
                         bool present = false;
-                        foreach (VariantColor variantColor in variant.VariantColors)
+                        foreach (VariantColorViewModel variantColor in variant.Colors)
                         {
                             if (variantColor.Color == color)
                                 present = true;
@@ -145,7 +145,7 @@
                     @if(Model.Category == Category.Shoes)
                     {
                         int sizeIndex = 0;
-                        foreach(ShoeSizeQuantity sizeQuantity in variant.ShoeSizeQuantity)
+                        foreach(ShoeSizeQuantityViewModel sizeQuantity in variant.ShoeSizeQuantity)
                         {
                             <label>@sizeQuantity.Size</label>
                             <div style="display: flex; align-items: center;">
@@ -159,7 +159,7 @@
                     else
                     {
                         int sizeIndex = 0;
-                        foreach (InternationalSizeQuantity sizeQuantity in variant.InternationalSizeQuantity)
+                        foreach (InternationalSizeQuantityViewModel sizeQuantity in variant.InternationalSizeQuantity)
                         {
                             <label>@sizeQuantity.Size</label>
                             <div style="display: flex; align-items: center;">
@@ -183,7 +183,7 @@
         <button type="button" class="btn btn-danger" id="removeVariantButton" onclick="removeVariant(@variantIndex)">Usuń wariant</button>
     </div>
     <div class="form-group mb-2">
-        <button type="button" class="btn btn-primary" onclick="addVariant()">Dodaj Wariant</button>
+        <button type="button" class="btn btn-secondary" onclick="addVariant()">Dodaj Wariant</button>
     </div>
 
     <script>
@@ -192,5 +192,5 @@
             adjustVariantIndex();
         });
     </script>
-
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
