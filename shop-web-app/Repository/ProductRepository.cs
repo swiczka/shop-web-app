@@ -3,6 +3,7 @@ using shop_web_app.Data;
 using shop_web_app.Enums;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
+using shop_web_app.Models.SizeQuantity;
 
 namespace shop_web_app.Repository
 {
@@ -24,6 +25,61 @@ namespace shop_web_app.Repository
         public bool Delete(Product product)
         {
             _context.Products.Remove(product);
+            return Save();
+        }
+
+        public async Task<ProductMaterial> GetProductMaterialByIdAsync(int id)
+        {
+            return await _context.ProductMaterials.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<ProductVariant> GetProductVariantByIdAsync(int id)
+        {
+            return await _context.ProductVariants.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<VariantColor>> GetVariantColorsByVariantIdAsync(int variantId)
+        {
+            return await _context.VariantColors.Where(c => c.VariantId == variantId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<InternationalSizeQuantity>> GetInternationalSQByVariantIdAsync(int variantId)
+        {
+            return await _context.InternationalSizeQuantity.Where(c => c.VariantId == variantId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ShoeSizeQuantity>> GetShoeSQByVariantIdAsync(int variantId)
+        {
+            return await _context.ShoeSizeQuantity.Where(c => c.VariantId == variantId).ToListAsync();
+        }
+
+        public bool DeleteShoeSizeQuantity(ShoeSizeQuantity sq)
+        {
+            _context.ShoeSizeQuantity.Remove(sq);
+            return Save();
+        }
+
+        public bool DeleteProductVariant(ProductVariant variant)
+        {
+            _context.ProductVariants.Remove(variant);
+            return Save();
+        }
+
+        public bool DeleteInternationalSizeQuantity(InternationalSizeQuantity sq)
+        {
+            _context.InternationalSizeQuantity.Remove(sq);
+            return Save();
+        }
+
+        public bool DeleteVariantColor(VariantColor color)
+        {
+            _context.VariantColors.Remove(color);
+            return Save();
+        }
+
+        public bool DeleteProductMaterial(ProductMaterial material)
+        {
+            _context.ProductMaterials.Remove(material);
             return Save();
         }
 

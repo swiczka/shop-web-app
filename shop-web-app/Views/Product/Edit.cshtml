@@ -56,14 +56,20 @@
         @foreach(Material material in Enum.GetValues(typeof(Material)))
         {
             bool present = false;
+            int materialId = 0;
+
             foreach(ProductMaterialViewModel productMaterial in Model.ProductMaterials)
             {
                 if (productMaterial.Material == material)
+                {
                     present = true;
+                    materialId = productMaterial.Id.Value;
+                }
             }
             if (present)
             {
                 <div class="form-check">
+                    <input type="hidden" name="ProductMaterials[@i].Id" value=@materialId>
                     <input class="mat-form-check-input" type="checkbox" name="ProductMaterials[@i].Material" value=@material id=@material onclick="setMaterialIndexes()" checked>
                     <label class="form-check-label">
                         @material.ToFriendlyString()
@@ -94,11 +100,16 @@
     <div class="form-group mb-1 " id="variantsContainer">
         @{
             int variantIndex = 0;
+            int variantId = 0;
         }
         @foreach(ProductVariantViewModel variant in Model.ProductVariants)
         {
+            variantId = variant.Id.Value;
+
             <div id="variant-@variantIndex">
                 <h3>Wariant @(variantIndex+1)</h3>
+
+                <input type="hidden" name="ProductVariants[@variantIndex].Id" value=@variantId>
                 <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
 
                 <div class="photos">
@@ -110,6 +121,7 @@
                     <label>Kolory</label>
                     @{
                         int k = 0;
+                        int colorId = 0;
                     }
                     @foreach (Color color in Enum.GetValues(typeof(Color)))
                     {
@@ -117,11 +129,16 @@
                         foreach (VariantColorViewModel variantColor in variant.Colors)
                         {
                             if (variantColor.Color == color)
+                            {
+                                colorId = variantColor.Id.Value;
                                 present = true;
+                            }
+                            
                         }
                         if (present)
                         {
                             <div class="form-check">
+                                <input type="hidden" name="ProductVariants[@variantIndex].Colors[@k].Id" value=@colorId>
                                 <input class="col-form-check-input" type="checkbox" name="ProductVariants[@variantIndex].Colors[@k].Color" value="@color" onclick="setColorIndexes()" checked>
                                 <label class="form-check-label">
                                     @color.ToFriendlyString()
@@ -144,11 +161,14 @@
                     <h4>Rozmiary i Ilości:</h4> 
                     @if(Model.Category == Category.Shoes)
                     {
+                        int sqId = 0;
                         int sizeIndex = 0;
                         foreach(ShoeSizeQuantityViewModel sizeQuantity in variant.ShoeSizeQuantity)
                         {
+                            sqId = sizeQuantity.Id.Value;
                             <label>@sizeQuantity.Size</label>
                             <div style="display: flex; align-items: center;">
+                                <input type="hidden" name="ProductVariants[@variantIndex]ShoeSizeQuantity[@sizeIndex].Id" value=@sqId>
                                 <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
                                 <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
                                        placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
@@ -158,11 +178,14 @@
                     }
                     else
                     {
+                        int sqId = 0;
                         int sizeIndex = 0;
                         foreach (InternationalSizeQuantityViewModel sizeQuantity in variant.InternationalSizeQuantity)
                         {
+                            sqId = sizeQuantity.Id.Value;
                             <label>@sizeQuantity.Size</label>
                             <div style="display: flex; align-items: center;">
+                                <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Id" value=@sqId>
                                 <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
                                 <input type="number" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
                                        placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">

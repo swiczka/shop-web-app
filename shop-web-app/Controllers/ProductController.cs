@@ -158,12 +158,17 @@ namespace shop_web_app.Controllers
 
 
             List<ProductVariantViewModel> newVariants = new List<ProductVariantViewModel>();
+
             foreach (var variant in product.ProductVariants)
             {
                 List<VariantColorViewModel> newColors = new List<VariantColorViewModel>();
                 foreach (var color in variant.VariantColors)
                 {
-                    newColors.Add(new VariantColorViewModel() { Color = color.Color });
+                    newColors.Add(new VariantColorViewModel() 
+                    { 
+                        Id = variant.Id,
+                        Color = color.Color 
+                    });
                 }
                 
 
@@ -177,6 +182,7 @@ namespace shop_web_app.Controllers
                     {
                         newInternationalSizeQuantities.Add(new InternationalSizeQuantityViewModel()
                         {
+                            Id = sizeQuantity.Id,
                             Size = sizeQuantity.Size,
                             Quantity = sizeQuantity.Quantity
                         });
@@ -189,6 +195,7 @@ namespace shop_web_app.Controllers
                     {
                         newShoeSizeQuantities.Add(new ShoeSizeQuantityViewModel()
                         {
+                            Id= sizeQuantity.Id,
                             Size = sizeQuantity.Size,
                             Quantity = sizeQuantity.Quantity
                         });
@@ -197,6 +204,7 @@ namespace shop_web_app.Controllers
 
                 ProductVariantViewModel newVariant = new ProductVariantViewModel()
                 {
+                    Id = variant.Id,
                     Name = variant.Name,
                     Colors = newColors,
                     InternationalSizeQuantity = newInternationalSizeQuantities,
@@ -211,6 +219,7 @@ namespace shop_web_app.Controllers
             {
                 newMaterials.Add(new ProductMaterialViewModel()
                 {
+                    Id = material.Id,
                     Material = material.Material
                 });
             }
@@ -240,11 +249,18 @@ namespace shop_web_app.Controllers
             }
 
             var userProduct = await _productRepository.GetByIdAsyncNoTracking(id);
+       
 
             if(userProduct != null)
             {
+                List<int> materialIds;
+                List<int> variantIds;
+
                 try
                 {
+                    materialIds = userProduct.ProductMaterials.Select(x => x.Id).ToList();
+                    variantIds = userProduct.ProductVariants.Select(x => x.Id).ToList();
+
                     foreach(var variant in userProduct.ProductVariants)
                     {
                         foreach(var photo in variant.Photos)
@@ -260,14 +276,38 @@ namespace shop_web_app.Controllers
                 }
 
                 
-
+                ///////////////
+                ///
+                ///            VARIANTS
+                ///
+                ///////////////
+                
                 List<ProductVariant> newVariants = new List<ProductVariant>();
+                List<int> newVariantIds = new List<int>();
+
                 foreach (ProductVariantViewModel variant in productVM.ProductVariants)
                 {
+                    bool isVariantOld = variant.Id.HasValue;
                     List<VariantColor> newColors = new List<VariantColor>();
+
                     foreach (VariantColorViewModel color in variant.Colors)
                     {
-                        newColors.Add(new VariantColor() { Color = color.Color });
+                        if (color.Id.HasValue)
+                        {
+                            newColors.Add(new VariantColor()
+                            {
+                                Id = color.Id.Value,
+                                Color = color.Color
+                            });
+                        }
+                        else
+                        {
+                            newColors.Add(new VariantColor()
+                            {
+                                Color = color.Color
+                            });
+                        }
+                        
                     }
 
                     List<InternationalSizeQuantity> newInternationalSizeQuantities = new List<InternationalSizeQuantity>();
@@ -278,11 +318,23 @@ namespace shop_web_app.Controllers
 
                         foreach (InternationalSizeQuantityViewModel sizeQuantity in variant.InternationalSizeQuantity)
                         {
-                            newInternationalSizeQuantities.Add(new InternationalSizeQuantity()
+                            if (isVariantOld)
                             {
-                                Size = sizeQuantity.Size,
-                                Quantity = sizeQuantity.Quantity
-                            });
+                                newInternationalSizeQuantities.Add(new InternationalSizeQuantity()
+                                {
+                                    Id = sizeQuantity.Id.Value,
+                                    Size = sizeQuantity.Size,
+                                    Quantity = sizeQuantity.Quantity
+                                });
+                            }
+                            else
+                            {
+                                newInternationalSizeQuantities.Add(new InternationalSizeQuantity()
+                                {
+                                    Size = sizeQuantity.Size,
+                                    Quantity = sizeQuantity.Quantity
+                                });
+                            }
                         }
                     }
                     else
@@ -290,11 +342,23 @@ namespace shop_web_app.Controllers
 
                         foreach (ShoeSizeQuantityViewModel sizeQuantity in variant.ShoeSizeQuantity)
                         {
-                            newShoeSizeQuantities.Add(new ShoeSizeQuantity()
+                            if (isVariantOld)
                             {
-                                Size = sizeQuantity.Size,
-                                Quantity = sizeQuantity.Quantity
-                            });
+                                newShoeSizeQuantities.Add(new ShoeSizeQuantity()
+                                {
+                                    Id = sizeQuantity.Id.Value,
+                                    Size = sizeQuantity.Size,
+                                    Quantity = sizeQuantity.Quantity
+                                });
+                            }
+                            else
+                            {
+                                newShoeSizeQuantities.Add(new ShoeSizeQuantity()
+                                {
+                                    Size = sizeQuantity.Size,
+                                    Quantity = sizeQuantity.Quantity
+                                });
+                            } 
                         }
                     }
 
@@ -308,28 +372,119 @@ namespace shop_web_app.Controllers
                             PhotoUrl = photoUrl
                         });
                     }
-                  
-                    ProductVariant newVariant = new ProductVariant()
+
+                    ProductVariant newVariant;
+
+                    if (variant.Id.HasValue)
                     {
-                        Name = variant.Name,
-                        VariantColors = newColors,
-                        InternationalSizeQuantity = newInternationalSizeQuantities,
-                        ShoeSizeQuantity = newShoeSizeQuantities,
-                        Photos = newPhotos
-                    };
+                        newVariantIds.Add(variant.Id.Value);
+                        newVariant = new ProductVariant()
+                        {
+                            Id = variant.Id.Value,
+                            Name = variant.Name,
+                            VariantColors = newColors,
+                            InternationalSizeQuantity = newInternationalSizeQuantities,
+                            ShoeSizeQuantity = newShoeSizeQuantities,
+                            Photos = newPhotos
+                        };
+                    }
+                    else
+                    {
+                        newVariant = new ProductVariant()
+                        {
+                            Name = variant.Name,
+                            VariantColors = newColors,
+                            InternationalSizeQuantity = newInternationalSizeQuantities,
+                            ShoeSizeQuantity = newShoeSizeQuantities,
+                            Photos = newPhotos
+                        };
+                    }
+                    
 
                     newVariants.Add(newVariant);
                 }
 
-                List<ProductMaterial> newMaterials = new List<ProductMaterial>();
-                foreach (var material in productVM.ProductMaterials)
+
+                
+
+                foreach (var ogId in variantIds)
                 {
-                    newMaterials.Add(new ProductMaterial()
+                    if (!newVariantIds.Contains(ogId))
                     {
-                        Material = material.Material
-                    });
+                        ProductVariant toDelete = await _productRepository.GetProductVariantByIdAsync(ogId);
+                        if (toDelete != null)
+                        {
+                            var colorsToDelete = await _productRepository.GetVariantColorsByVariantIdAsync(ogId);
+                            var internationalSQToDelete = await _productRepository.GetInternationalSQByVariantIdAsync(ogId);
+                            var shoeSQToDelete = await _productRepository.GetShoeSQByVariantIdAsync(ogId);
+                            
+                            if(colorsToDelete != null)
+                            {
+                                foreach(var color in colorsToDelete)
+                                {
+                                    _productRepository.DeleteVariantColor(color);
+                                }
+                            }
+                            if(internationalSQToDelete != null)
+                            {
+                                foreach (var sq in internationalSQToDelete)
+                                {
+                                    _productRepository.DeleteInternationalSizeQuantity(sq);
+                                }
+                            }
+                            if(shoeSQToDelete != null)
+                            {
+                                foreach (var sq in shoeSQToDelete)
+                                {
+                                    _productRepository.DeleteShoeSizeQuantity(sq);
+                                }
+                            }
+                            _productRepository.DeleteProductVariant(toDelete);
+                        }
+
+                    }
                 }
 
+   
+
+                List<ProductMaterial> newMaterials = new List<ProductMaterial>();
+                List<int> newMaterialIds = new List<int>();
+                foreach (var material in productVM.ProductMaterials)
+                {
+                    if (material.Id.HasValue)
+                    {
+                        newMaterialIds.Add(material.Id.Value);
+                        newMaterials.Add(new ProductMaterial()
+                        {
+                            Id = material.Id.Value,
+                            Material = material.Material
+                        });
+                    }
+                    else
+                    {
+                        newMaterials.Add(new ProductMaterial()
+                        {
+                            Material = material.Material
+                        });
+                    }
+                }
+
+                ///
+                ///
+                //////////////////      Deleting removed materials      ///////////////////
+                ///
+                ///
+                foreach (var ogId in materialIds)
+                {
+                    if (!newMaterialIds.Contains(ogId))
+                    {
+                        ProductMaterial toDelete = await _productRepository.GetProductMaterialByIdAsync(ogId);
+                        if (toDelete != null)
+                        {
+                            _productRepository.DeleteProductMaterial(toDelete);
+                        }
+                    }
+                }
 
                 var product = new Product()
                 {
