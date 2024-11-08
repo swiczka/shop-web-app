@@ -230,8 +230,8 @@ function getSizeChooseHtml(category, variantIndex) {
             sizeChooseHtml += `
                         <label>${size.replace("Size", "")}</label>
                         <div style="display: flex; align-items: center;">
-                                    <input type="hidden" name="ProductVariants[${variantIndex}].ShoeSizeQuantities[${index}].Size" value="${size}">
-                                            <input type="number" name="ProductVariants[${variantIndex}].ShoeSizeQuantities[${index}].Quantity"
+                                    <input type="hidden" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Size" value="${size}">
+                                            <input type="number" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px; value="0";>
                         </div>
                     `;
@@ -242,8 +242,8 @@ function getSizeChooseHtml(category, variantIndex) {
             sizeChooseHtml += `
                         <label>${size}</label>
                         <div style="display: flex; align-items: center;">
-                                            <input type="hidden" name="ProductVariants[${variantIndex}].InternationalSizeQuantities[${index}].Size" value="${size}">
-                                            <input type="number" name="ProductVariants[${variantIndex}].InternationalSizeQuantities[${index}].Quantity"
+                                            <input type="hidden" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Size" value="${size}">
+                                            <input type="number" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
                         </div>
                     `;

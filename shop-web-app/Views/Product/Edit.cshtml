@@ -102,12 +102,12 @@
             int variantIndex = 0;
             int variantId = 0;
         }
-        @foreach(ProductVariantViewModel variant in Model.ProductVariants)
+        @foreach (ProductVariantViewModel variant in Model.ProductVariants)
         {
             variantId = variant.Id.Value;
 
             <div id="variant-@variantIndex">
-                <h3>Wariant @(variantIndex+1)</h3>
+                <h3>Wariant @(variantIndex + 1)</h3>
 
                 <input type="hidden" name="ProductVariants[@variantIndex].Id" value=@variantId>
                 <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
@@ -172,6 +172,7 @@
                                 <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
                                 <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
                                        placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                                
                             </div>
                             sizeIndex++;
                         }

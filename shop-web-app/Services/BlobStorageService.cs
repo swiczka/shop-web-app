@@ -17,10 +17,10 @@ namespace shop_web_app.Services
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(settings.ContainerName);
         }
 
-        public async Task<string> UploadFileAsync(IFormFile file)
+        public async Task<string> UploadFileAsync(IFormFile file, string filename)
         {
             using var stream = file.OpenReadStream();
-            var blobClient = _blobContainerClient.GetBlobClient(file.FileName);    
+            var blobClient = _blobContainerClient.GetBlobClient(filename);    
             await blobClient.UploadAsync(stream, overwrite: true);
             var url = blobClient.Uri.ToString();     
             return url;

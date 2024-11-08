@@ -27,17 +27,17 @@
                                     <li class="list-inline-item">@Model.Description<i class="icon-thumbs-up"></i></li>
                                 </div>
                                 <div>
-                                    <li class="list-inline-item"><br>Materiał:<i class="icon-thumbs-up"></i></li>
+                                    <ol class="list-inline-item"><br>Materiały:<br><i class="icon-thumbs-up"></i></ol>
                                     @foreach (var mat in Model.ProductMaterials)
                                     {
-                                        <li class="list-inline-item">@mat.Material<i class="icon-thumbs-up"></i></li>
+                                        <li class="list-inline-item">@mat.Material<br><i class="icon-thumbs-up"></i></li>
                                     }
                                 </div>
                                 <div>
-                                    <li class="list-inline-item">Dostępne warianty:<i class="icon-message"></i></li>
+                                    <li class="list-inline-item">Dostępne warianty:<br><i class="icon-message"></i></li>
                                     @foreach (ProductVariant variant in Model.ProductVariants)
                                     {
-                                        <li class="list-inline-item">@variant.Name<i class="icon-message"></i></li>
+                                <li class="list-inline-item"><b>@variant.Name</b><i class="icon-message"></i></li>
                                         foreach (var col in variant.VariantColors)
                                         {
                                             <li class="list-inline-item">@col.Color<i class="icon-message"></i></li>
