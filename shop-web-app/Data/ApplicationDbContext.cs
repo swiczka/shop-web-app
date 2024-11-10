@@ -1,18 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using shop_web_app.Models;
 using shop_web_app.Models.Clothing;
 using shop_web_app.Models.SizeQuantity;
 
 namespace shop_web_app.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser> //any custom app roles should be put next to AppUser argument
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {   
             
         }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<AppUser> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<InternationalSizeQuantity> InternationalSizeQuantity { get; set; }

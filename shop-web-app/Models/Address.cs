@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using shop_web_app.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace shop_web_app.Models
 {
@@ -9,7 +10,6 @@ namespace shop_web_app.Models
         public string City { get; set; }
         public string Street { get; set; }
         public string PostalCode { get; set; }
-        public string Voivodship { get; set; }
-        public int UserId { get; set; }
+        public Voivodship Voivodship { get; set; }
     }
 }

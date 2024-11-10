@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using shop_web_app.Data;
 
@@ -11,9 +12,11 @@ using shop_web_app.Data;
 namespace shop_web_app.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110194744_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,8 +178,9 @@ namespace shop_web_app.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Voivodship")
-                        .HasColumnType("int");
+                    b.Property<string>("Voivodship")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -199,6 +203,7 @@ namespace shop_web_app.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -225,6 +230,10 @@ namespace shop_web_app.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -275,7 +284,10 @@ namespace shop_web_app.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrdererId")
+                    b.Property<int>("OrdererId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrdererId1")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -284,7 +296,7 @@ namespace shop_web_app.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdererId");
+                    b.HasIndex("OrdererId1");
 
                     b.ToTable("Orders");
                 });
@@ -546,7 +558,7 @@ namespace shop_web_app.Migrations
                 {
                     b.HasOne("shop_web_app.Models.AppUser", "Orderer")
                         .WithMany("Orders")
-                        .HasForeignKey("OrdererId")
+                        .HasForeignKey("OrdererId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
