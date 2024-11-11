@@ -56,7 +56,50 @@ namespace shop_web_app.Controllers
 
         public IActionResult Register()
         {
+            var response = new RegisterViewModel();
+            response.Gender = null;
+            return View(response);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel registerVM)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user != null)
+            {
+                TempData["Error"] = "Konto o podanym adresie e-mail już istnieje.";
+                return View(registerVM);
+            }
+
+            var newUser = new AppUser()
+            {
+                Name = registerVM.Name,
+                Surname = registerVM.Surname,
+                UserName = registerVM.Email.Split('@')[0],
+                Email = registerVM.Email,
+                Gender = registerVM.Gender
+            };
+
+            var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
+
+            if (newUserResponse.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newUser, UserRoles.Customer);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -4,7 +4,9 @@ namespace shop_web_app.Enums
 {
     public enum Gender
     {
+        [Display(Name = "Mężczyzna")]
         M,
+        [Display(Name = "Kobieta")]
         F  
     }
 
