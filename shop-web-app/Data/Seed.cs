@@ -248,7 +248,7 @@ namespace shop_web_app.Data
                             Voivodship = Voivodship.Masovia
                         }
                     };
-                    await userManager.CreateAsync(newAdminUser, "abc-1234");
+                    await userManager.CreateAsync(newAdminUser, "Abc-1234");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
@@ -273,7 +273,7 @@ namespace shop_web_app.Data
                             Voivodship = Voivodship.Masovia
                         }
                     };
-                    await userManager.CreateAsync(newAppUser, "abc-1234");
+                    await userManager.CreateAsync(newAppUser, "Abc-1234");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Customer);
                 }
             }
