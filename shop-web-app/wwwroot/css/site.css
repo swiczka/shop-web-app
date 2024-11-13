@@ -8,6 +8,12 @@ html {
   }
 }
 
+.footer-fixed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .col-form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -18,7 +24,19 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    padding-top: 28px; /* Dostosuj do wysokoœci navbar */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
 }
 
 .col-form-check-input {
