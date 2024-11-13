@@ -95,7 +95,6 @@ namespace shop_web_app.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
