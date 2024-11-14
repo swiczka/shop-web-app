@@ -1,4 +1,5 @@
-﻿using shop_web_app.Interfaces;
+﻿using shop_web_app.Enums;
+using shop_web_app.Interfaces;
 using shop_web_app.Models.Clothing;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,51 +11,20 @@ namespace shop_web_app.Models
         [Key]
         public int Id { get; set; }
 
-        public int OrderId { get; set; }
+        public int ?OrderId { get; set; }
+        public Order ?Order { get; set; }
 
-        [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public int VariantId { get; set; }
+        public ProductVariant Variant { get; set; }
 
-        public ProductVariant ProductVariant { get; set; }
-        public decimal TotalPrice {
-            get
-            {
-                return CalculateTotalPrice();
-            }
-        }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
 
-        private decimal CalculateTotalPrice()
-        {
-            if (ProductVariant == null)
-            {
-                return 0;
-            }
+        public InternationalSize ?InternationalSize { get; set; }
+        public ShoeSize ?ShoeSize {  get; set; }
+        public int Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
 
-            if (ProductVariant.InternationalSizeQuantity != null)
-            {
-                try
-                {
-                    return ProductVariant.InternationalSizeQuantity.Sum(sq => sq.Quantity) * ProductVariant.Product.Price;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return 0;
-                }
-            }
-            else if (ProductVariant.ShoeSizeQuantity != null)
-            {
-                try
-                {
-                    return ProductVariant.ShoeSizeQuantity.Sum(sq => sq.Quantity) * ProductVariant.Product.Price;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return 0;
-                }
-            }
-            else return 0;
-        }
+       
     }
 }

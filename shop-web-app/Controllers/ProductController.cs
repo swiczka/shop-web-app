@@ -205,7 +205,7 @@ namespace shop_web_app.Controllers
                     List<InternationalSizeQuantity> newInternationalSizeQuantities = new List<InternationalSizeQuantity>();
                     List<ShoeSizeQuantity> newShoeSizeQuantities = new List<ShoeSizeQuantity>();
 
-                    if (variant.InternationalSizeQuantity != null) 
+                    if (product.Category != Category.Shoes) 
                     {
                         
                         foreach (var sizeQuantity in variant.InternationalSizeQuantity)
@@ -219,7 +219,6 @@ namespace shop_web_app.Controllers
                     }
                     else
                     {
-                        
                         foreach (var sizeQuantity in variant.ShoeSizeQuantity)
                         {
                             newShoeSizeQuantities.Add(new ShoeSizeQuantity()

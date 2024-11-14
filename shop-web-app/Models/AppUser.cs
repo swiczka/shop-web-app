@@ -13,6 +13,7 @@ namespace shop_web_app.Models
         public Address ?Address { get; set; }
         public Gender ?Gender { get; set; }
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<OrderItem> Cart {  get; set; }
 
     }
 }

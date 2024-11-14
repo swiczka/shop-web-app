@@ -10,8 +10,9 @@ namespace shop_web_app.Models
         public int Id { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        public string OrdererId { get; set; }
-        public AppUser Orderer { get; set; }
+        public string ?OrdererId { get; set; }
+        public AppUser ?Orderer { get; set; }
+        public decimal TotalPrice { get; set; }
 
         public DateTime OrderDate { get; set; }
         public OrderStatus Status {  get; set; } 

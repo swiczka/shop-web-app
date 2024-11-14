@@ -1,5 +1,6 @@
 ﻿@model Product
 @using shop_web_app.Enums;
+@using shop_web_app.Models.SizeQuantity
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -10,58 +11,100 @@
     <section class="bg-white space-sm">
         <div class="container">
             <div class="row">
+                @{
+                    ProductVariant defaultVariant = Model.ProductVariants.ElementAtOrDefault(0);
+                }
                 <div class="col-lg-7 mb-4 mb-sm-0">
-                    <img alt="Image" src="@Model.ProductVariants.ElementAtOrDefault(0).Photos.First().PhotoUrl" class="rounded img-fluid" />
+                    <img alt="Image" id="mainImage" src="@defaultVariant.Photos.First().PhotoUrl" class="rounded img-fluid" />
                 </div>
                 <!--end of col-->
-                <div class="col-lg-4 d-flex flex-column justify-content-between mr-auto ml-auto">
-                    <div>
+                <div class="col-lg-5 d-flex flex-column justify-content-between mr-auto ml-auto">
+                    <div class="mb-3">
                         <h1 class="mb-2">@Model.Name</h1>
                         <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
-                        <div>
-                            <p class="badge badge-secondary mr-3">dddd</p>
+            
+                       
+                        <div class="mt-5 mb-5">
+                            <h4>Materiały:</h4>
+                            <ul>
+                                @foreach(ProductMaterial material in Model.ProductMaterials)
+                                {
+                                    <li>@material.Material.ToFriendlyString()</li>
+                                }
+                            </ul>
                         </div>
-                        <div>
-                            <ul class="list-inline text-small d-inline-block mb-3">
-                                <div>
-                                    <li class="list-inline-item">@Model.Description<i class="icon-thumbs-up"></i></li>
+                        
+
+                        <div class="row mb-4">
+                            <h4>Dostępne warianty:</h4>
+                            @{
+                                int i = 0;
+                            }
+                            @foreach(ProductVariant variant in Model.ProductVariants)
+                            {
+                                <div class="col">
+                                    <div class="img-container">
+                                        <img 
+                                            alt="@variant.Name Thumbnail" 
+                                            src="@variant.Photos.First().PhotoUrl" 
+                                            class="img-fluid img-thumbnail"
+                                            onclick="changeVariant(this)"
+                                            data-variant-index="@i"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <ol class="list-inline-item"><br>Materiały:<br><i class="icon-thumbs-up"></i></ol>
-                                    @foreach (var mat in Model.ProductMaterials)
+                                if(i % 3 == 0 && i != 0)
+                                {
+                                    <div class="mb-4"></div>
+                                }
+                                i++;
+                            } 
+                        </div>
+
+                        <h4 class="mb-3">Wybierz rozmiar</h4>
+                        <div class="mb-3" id="sizesContainer">
+                            @if(Model.Category != Category.Shoes){
+                                <select class="form-select form-select mb-3" style="width: 180px;">
+                                    <option selected>Wybierz rozmiar</option>
+                                    @foreach(InternationalSizeQuantity sq in defaultVariant.InternationalSizeQuantity)
                                     {
-                                        <li class="list-inline-item">@mat.Material<br><i class="icon-thumbs-up"></i></li>
-                                    }
-                                </div>
-                                <div>
-                                    <li class="list-inline-item">Dostępne warianty:<br><i class="icon-message"></i></li>
-                                    @foreach (ProductVariant variant in Model.ProductVariants)
-                                    {
-                                <li class="list-inline-item"><b>@variant.Name</b><i class="icon-message"></i></li>
-                                        foreach (var col in variant.VariantColors)
+                                        if(sq.Quantity > 0)
                                         {
-                                            <li class="list-inline-item">@col.Color<i class="icon-message"></i></li>
+                                            <option value="@sq.Size">@sq.Size</option>
+                                        }
+                                        else
+                                        {
+                                            <option disabled class="text-muted" value="@sq.Size">@sq.Size (niedostępne)</option>
                                         }
                                     }
-                                </div>
-                                
-                            </ul>
+                                </select>
+                            }
+                            else
+                            {
+                                <select class="form-select form-select mb-3" style="width: 180px;">
+                                    <option selected>Wybierz rozmiar</option>
+                                    @foreach (ShoeSizeQuantity sq in defaultVariant.ShoeSizeQuantity)
+                                    {
+                                        if (sq.Quantity > 0)
+                                        {
+                                            <option value="@sq.Size">@sq.Size</option>
+                                        }
+                                        else
+                                        {
+                                            <option disabled class="text-muted" value="@sq.Size">@sq.Size (niedostępne)</option>
+                                        }
+                                    }
+                                </select>
+                            }
                         </div>
                     </div>
                     <div>
                         <div class="btn-group mb-2">
+                            <input type="hidden" id="selectedVariantIndex" name="SelectedVariantIndex" value="0" />
                             <button type="button" class="btn btn-success btn-lg">@Model.Price PLN</button>
-                            <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split dropdown-toggle-no-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-dots-three-horizontal"></i>
+                            <button type="button" class="btn btn-success" aria-haspopup="true" aria-expanded="false">
                                 <span class="sr-only">Dodaj do koszyka</span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-sm">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -72,44 +115,14 @@
         <!--end of container-->
     </section>
     <!--end of section-->
-    <section class="space-sm">
+    <section class="bg-white space-sm">
+        <hr />
         <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-12 col-md-8 col-lg-7">
-                    <h5 class="mb-4">Overview</h5>
-                    <article>
-                        @Model.Description
-                    </article>
-                    <hr>
-                    <h5 class="mb-4">Discussion</h5>
-                    <div class="card">
-                        <div class="card-header bg-secondary d-flex justify-content-between">
-                            <button class="btn btn-secondary" type="button" data-target="#comment-reply" data-toggle="collapse" aria-expanded="false" aria-controls="comment-reply">Post a reply</button>
-                            <form class="d-flex align-items-center">
-                                <span class="mr-2 text-muted text-small text-nowrap">Sort by:</span>
-                                <select class="custom-select">
-                                    <option value="alpha">Alphabetical</option>
-                                    <option value="old-new" selected>Newest</option>
-                                    <option value="new-old">Popular</option>
-                                    <option value="recent">Recently Updated</option>
-                                </select>
-                            </form>
-                        </div>
-                        <div class="collapse" id="comment-reply">
-                            <form class="card-body">
-                                <div class="form-group">
-                                    <textarea class="form-control from-control-lg" id="comment-reply-text" name="comment-reply" rows="4" placeholder="Type your reply here"></textarea>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" name="notify-reply" id="check-notify">
-                                        <label class="custom-control-label text-small" for="check-notify">Notify me when someone replies</label>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <button type="submit" class="btn btn-success mr-3">Submit reply</button>
-                                    <a href="#comment-reply" class="text-small text-muted" data-toggle="collapse" aria-expanded="true" aria-controls="comment-reply">Cancel</a>
-                                </div>
-                            </form>
-                        </div>
-                        <ul class="list-group list-group-flush list-group-comments">
+            <h4>O produkcie</h4>
+            <p>@Model.Description</p>
+        </div>
+    </section>
+</div>
+<script>
+    const variantData = @Html.Raw(Json.Serialize(Model.ProductVariants));
+</script>
