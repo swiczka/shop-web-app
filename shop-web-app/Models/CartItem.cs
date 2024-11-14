@@ -9,10 +9,6 @@ namespace shop_web_app.Models
         public AppUser ?AppUser {  get; set; }
         public int VariantId { get; set; }
         public ProductVariant Variant { get; set; }
-
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-
         public InternationalSize? InternationalSize { get; set; }
         public ShoeSize? ShoeSize { get; set; }
         public int Quantity { get; set; }

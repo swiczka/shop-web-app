@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shop_web_app.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class ProductReduction : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,7 +66,7 @@ namespace shop_web_app.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -90,8 +90,7 @@ namespace shop_web_app.Migrations
                         name: "FK_AspNetUsers_Address_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -246,7 +245,8 @@ namespace shop_web_app.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrdererId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrdererId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -257,6 +257,35 @@ namespace shop_web_app.Migrations
                         name: "FK_Orders_AspNetUsers_OrdererId",
                         column: x => x.OrdererId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    VariantId = table.Column<int>(type: "int", nullable: false),
+                    InternationalSize = table.Column<int>(type: "int", nullable: true),
+                    ShoeSize = table.Column<int>(type: "int", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CartItems_ProductVariants_VariantId",
+                        column: x => x.VariantId,
+                        principalTable: "ProductVariants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -349,8 +378,12 @@ namespace shop_web_app.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductVariantId = table.Column<int>(type: "int", nullable: false)
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    VariantId = table.Column<int>(type: "int", nullable: false),
+                    InternationalSize = table.Column<int>(type: "int", nullable: true),
+                    ShoeSize = table.Column<int>(type: "int", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,11 +392,10 @@ namespace shop_web_app.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_OrderItems_ProductVariants_ProductVariantId",
-                        column: x => x.ProductVariantId,
+                        name: "FK_OrderItems_ProductVariants_VariantId",
+                        column: x => x.VariantId,
                         principalTable: "ProductVariants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -414,6 +446,16 @@ namespace shop_web_app.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_AppUserId",
+                table: "CartItems",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_VariantId",
+                table: "CartItems",
+                column: "VariantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InternationalSizeQuantity_VariantId",
                 table: "InternationalSizeQuantity",
                 column: "VariantId");
@@ -424,9 +466,9 @@ namespace shop_web_app.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ProductVariantId",
+                name: "IX_OrderItems_VariantId",
                 table: "OrderItems",
-                column: "ProductVariantId");
+                column: "VariantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_OrdererId",
@@ -476,6 +518,9 @@ namespace shop_web_app.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "InternationalSizeQuantity");

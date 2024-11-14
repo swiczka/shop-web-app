@@ -25,7 +25,7 @@
             
                        
                         <div class="mt-5 mb-5">
-                            <h4>Materiały:</h4>
+                            <p class="lead"><b>Materiały:</b></p>
                             <ul>
                                 @foreach(ProductMaterial material in Model.ProductMaterials)
                                 {
@@ -36,18 +36,27 @@
                         
 
                         <div class="row mb-4">
-                            <h4>Dostępne warianty:</h4>
+                            <p class="lead" id="variantName"><b>Wariant:</b> @defaultVariant.Name</p>
                             @{
                                 int i = 0;
+                                string classToInsert;
                             }
                             @foreach(ProductVariant variant in Model.ProductVariants)
                             {
+                                if (i == 0)
+                                {
+                                    classToInsert = "img-thumbnail selected";
+                                }
+                                else
+                                    classToInsert = "img-thumbnail";
+
                                 <div class="col">
                                     <div class="img-container">
                                         <img 
+                                            id="variant-@i-thumbnail"
                                             alt="@variant.Name Thumbnail" 
                                             src="@variant.Photos.First().PhotoUrl" 
-                                            class="img-fluid img-thumbnail"
+                                            class="img-fluid @classToInsert"
                                             onclick="changeVariant(this)"
                                             data-variant-index="@i"
                                         />
@@ -61,10 +70,10 @@
                             } 
                         </div>
 
-                        <h4 class="mb-3">Wybierz rozmiar</h4>
+                        <p class="lead">Wybierz rozmiar:</p>
                         <div class="mb-3" id="sizesContainer">
                             @if(Model.Category != Category.Shoes){
-                                <select class="form-select form-select mb-3" style="width: 180px;">
+                                <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
                                     <option selected>Wybierz rozmiar</option>
                                     @foreach(InternationalSizeQuantity sq in defaultVariant.InternationalSizeQuantity)
                                     {
@@ -81,7 +90,7 @@
                             }
                             else
                             {
-                                <select class="form-select form-select mb-3" style="width: 180px;">
+                                <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
                                     <option selected>Wybierz rozmiar</option>
                                     @foreach (ShoeSizeQuantity sq in defaultVariant.ShoeSizeQuantity)
                                     {
@@ -101,10 +110,19 @@
                     <div>
                         <div class="btn-group mb-2">
                             <input type="hidden" id="selectedVariantIndex" name="SelectedVariantIndex" value="0" />
-                            <button type="button" class="btn btn-success btn-lg">@Model.Price PLN</button>
-                            <button type="button" class="btn btn-success" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Dodaj do koszyka</span>
-                            </button>
+                            <a class="btn btn-success btn-lg">@Model.Price PLN</a>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <button type="button" class="btn btn-success" id="addToCart" onclick="addToCart()">
+                                    <span class="sr-only">Dodaj do koszyka</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <a type="button" class="btn btn-success" id="addToCart" asp-area="" asp-controller="Account" asp-action="Login">
+                                    <span class="sr-only">Dodaj do koszyka</span>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>

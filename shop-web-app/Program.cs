@@ -19,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<BlobStorageService, BlobStorageService>();
 builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSection("BlobStorageSettings"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -43,7 +44,7 @@ var app = builder.Build();
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
     await Seed.SeedUsersAndRolesAsync(app);
-    //Seed.SeedData(app);
+    Seed.SeedData(app);
 } 
 
 // Configure the HTTP request pipeline.

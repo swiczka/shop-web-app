@@ -22,7 +22,21 @@ namespace shop_web_app.Data
         public DbSet<VariantColor> VariantColors { get; set; }
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Konfiguracja relacji CartItem -> AppUser
+            modelBuilder.Entity<CartItem>()
+                .HasOne(c => c.AppUser)
+                .WithMany(u => u.CartItems)
+                .HasForeignKey(c => c.AppUserId)
+                .OnDelete(DeleteBehavior.Restrict);  // Zamiast Cascade użyj Restrict
+            // Możesz także skonfigurować inne relacje, jeżeli masz problem z innymi tabelami
+        }
     }
 }
 

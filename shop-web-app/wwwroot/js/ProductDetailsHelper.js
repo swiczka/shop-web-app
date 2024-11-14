@@ -1,4 +1,4 @@
-﻿sizes = [
+﻿const sizes = [
     { id: "1", name: "S" },
     { id: "2", name: "M" },
     { id: "3", name: "L" },
@@ -6,24 +6,32 @@
     { id: "5", name: "XXL" }
 ];
 
-shoeSizes = [
-    { id: "1", name: "S" },
-    { id: "2", name: "M" },
-    { id: "3", name: "L" },
-    { id: "4", name: "XL" },
-    { id: "5", name: "XXL" }
+const shoeSizes = [
+    "Size35", "Size35_5", "Size36", "Size36_5", "Size37", "Size37_5",
+    "Size38", "Size38_5", "Size39", "Size39_5", "Size40", "Size40_5",
+    "Size41", "Size41_5", "Size42", "Size42_5", "Size43", "Size43_5",
+    "Size44", "Size44_5", "Size45", "Size45_5", "Size46"
 ];
 
+let currentVariantIndex = 0;
 
-// Funkcja, która zmienia główny obrazek i dostępne rozmiary.
 function changeVariant(thumbnail) {
-    // Pobranie id wariantu z klikniętej miniaturki.
-    const variantIndex = thumbnail.getAttribute("data-variant-index");
 
-    // Znajdź element głównego obrazka i zaktualizuj jego `src`.
+    if (!thumbnail.classList.contains('selected')) {
+        thumbnail.classList.toggle('selected');
+    }
+   
+    document.querySelectorAll('.img-thumbnail').forEach((img) => {
+        if (img.classList.contains('selected') && img.id !== thumbnail.id) {
+            img.classList.remove('selected');
+        }
+    });
+
+    currentVariantIndex = thumbnail.getAttribute("data-variant-index");
+
     const mainImage = document.getElementById("mainImage");
 
-    const variant = variantData.$values[variantIndex];
+    const variant = variantData.$values[currentVariantIndex];
 
     mainImage.src = variant.photos.$values[0].photoUrl;
 
@@ -34,7 +42,7 @@ function changeVariant(thumbnail) {
 
     //jeśli nie jest butem
     if (variant.internationalSizeQuantity.$values.length != 0) {
-        let sizeHtml = `<select class="form-select form-select mb-3" style="width: 180px;">
+        let sizeHtml = `<select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
                             <option selected>Wybierz rozmiar</option>`;
 
         variant.internationalSizeQuantity.$values.forEach(sq => {
@@ -51,22 +59,69 @@ function changeVariant(thumbnail) {
     }
     //jest butem
     else {
-        let sizeHtml = `<select class="form-select form-select mb-3" style="width: 180px;">
+        let sizeHtml = `<select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
                             <option selected>Wybierz rozmiar</option>`;
 
-        variant.internationalSizeQuantity.$values.forEach(sq => {
-
+        variant.shoeSizeQuantity.$values.forEach((sq, index) => {
             if (sq.quantity > 0) {
-                sizeHtml += `<option value="${sq.size}">${sizes[sq.size - 1].name}</option>`;
+                sizeHtml += `<option value="${sq.size}">${shoeSizes[index].replace("Size","").replace("_",",")}</option>`;
             }
             else {
-                sizeHtml += `<option disabled class="text-muted" value="${sq.size}">${sizes[sq.size - 1].name} (niedostępne)</option>`;
+                sizeHtml += `<option disabled class="text-muted" value="${sq.size}">${shoeSizes[index].replace("Size", "").replace("_", ",")} (niedostępne)</option>`;
             }
         });
         sizeHtml += `</select >`;
         sizesContainer.innerHTML = sizeHtml;
     }
 
-    //// Dodaj nowe rozmiary na podstawie wybranego wariantu
+    //zaaktualizuj label
+    const label = document.getElementById("variantName");
+    label.innerHTML = `<b>Wariant: </b> ${variant.name}`;
     
+}
+
+function addToCart() {
+    console.log(variantData);
+    const variants = variantData.$values;
+    const selectedVariantId = variants[currentVariantIndex].id;
+    const selectedSize = document.getElementById("selectedSize").value;
+    const selectedProductPrice = variants[currentVariantIndex].product.price;
+
+    if (selectedVariantId && selectedSize) {
+        const cartItem = {
+            ProductVariantId: selectedVariantId,
+            Size: selectedSize,
+            Price: selectedProductPrice,
+            Quantity: 1 
+        };
+
+        console.log(JSON.stringify(cartItem));
+
+        fetch("/Cart/Create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(cartItem)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Błąd w odpowiedzi serwera");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert("Przedmiot dodany do koszyka!");
+                } else {
+                    alert("Nie udało się dodać przedmiotu do koszyka");
+                }
+            })
+            .catch(error => {
+                console.error("Błąd:", error);
+                alert("Wystąpił problem z dodaniem do koszyka");
+            });
+    } else {
+        alert("Proszę wybrać wariant i rozmiar");
+    }
 }
