@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - shop_web_app</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-reboot.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-utilities.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/shop_web_app.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -35,7 +40,10 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item px-2">
-                                <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="nav-link">Konto</a>
+                                <a asp-area="" asp-controller="Cart" asp-action="Index" class="nav-link" >Twój koszyk <i class="bi bi-cart"></i></a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="nav-link" >Konto <i class="bi bi-person"></i></a>
                             </li>
                             <li class="nav-item px-2">
                                 <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger">Wyloguj się</a>

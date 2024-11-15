@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using shop_web_app.Data;
 using shop_web_app.Enums;
 using shop_web_app.Interfaces;
@@ -20,6 +21,28 @@ namespace shop_web_app.Controllers
         {
             _cartRepository = cartRepository;
             _userManager = userManager;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var user = await _userManager.Users
+                .Include(u => u.CartItems)
+                    .ThenInclude(v => v.Variant)
+                        .ThenInclude(h => h.Photos)
+                .Include(u => u.CartItems)
+                    .ThenInclude(v => v.Variant)
+                    .ThenInclude(p => p.Product)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+            if (user != null)
+            {
+                List<CartItem> cartItems = user.CartItems.ToList();
+                return View(cartItems);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
         }
 
         [HttpPost("Create")]

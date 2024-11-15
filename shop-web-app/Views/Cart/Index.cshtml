@@ -1,0 +1,82 @@
+﻿@using shop_web_app.Enums
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<CartItem>
+
+<div class="my-3 p-3 bg-white rounded shadow">
+    <h3 class="border-bottom border-gray pb-2 mb-0">Przedmioty w twoim koszyku</h3>
+    @foreach(CartItem item in Model)
+    {
+        <div class="media pt-3">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <img alt="@item.Variant.Product.Name Thumbnail"
+                         src="@item.Variant.Photos.First().PhotoUrl"
+                         class="img-fluid"
+                     />
+                </div>
+                <div class="col-md-10">
+                    <a class="h4 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@item.Variant.ProductId">
+                        @item.Variant.Product.Name
+                    </a>
+
+                    <p class="lead">
+                        @item.TotalPrice PLN
+                    </p>
+                    
+                    <div class="row">
+
+                        @if (item.InternationalSize.HasValue) // nie jest butem
+                        {
+                            <div class="col">
+                                <p><span class="text-muted">Rozmiar:</span> @item.InternationalSize.Value</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <p><span class="text-muted">Rozmiar:</span> @item.ShoeSize.Value</p>
+                            </div>
+                        }
+                        <div class="col">
+                            <p><span class="text-muted">Wariant:</span> @item.Variant.Name</p>
+                        </div>
+                        <div class="col">
+                            <p><span class="text-muted">Płeć:</span> @item.Variant.Product.Gender.ToFriendlyString()</p>
+                        </div>
+                        <div class="col">
+                            <p><span class="text-muted">Suma:</span> <b>@item.TotalPrice PLN</b></p>
+                        </div>
+
+                    </div>
+                    <label>Ilość:</label>
+                    <select class="form-select" style="width: 70px;">
+                        <option selected value="@item.Quantity">@item.Quantity</option>
+                    </select>
+                </div>
+            </div>
+            <hr />
+        </div>
+    }
+    
+    <div class="media text-muted pt-3">
+        <img data-src="holder.js/32x32?theme=thumb&bg=e83e8c&fg=e83e8c&size=1" alt="" class="mr-2 rounded">
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">username</strong>
+            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+        </p>
+    </div>
+    <div class="media text-muted pt-3">
+        <img data-src="holder.js/32x32?theme=thumb&bg=6f42c1&fg=6f42c1&size=1" alt="" class="mr-2 rounded">
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">username</strong>
+            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+        </p>
+    </div>
+    <small class="d-block text-right mt-3">
+        <a href="#">All updates</a>
+    </small>
+</div>
