@@ -43,7 +43,7 @@ function changeVariant(thumbnail) {
     //jeśli nie jest butem
     if (variant.internationalSizeQuantity.$values.length != 0) {
         let sizeHtml = `<select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
-                            <option selected>Wybierz rozmiar</option>`;
+                            <option value="" selected>Wybierz rozmiar</option>`;
 
         variant.internationalSizeQuantity.$values.forEach(sq => {
      
@@ -60,7 +60,7 @@ function changeVariant(thumbnail) {
     //jest butem
     else {
         let sizeHtml = `<select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
-                            <option selected>Wybierz rozmiar</option>`;
+                            <option value="" selected>Wybierz rozmiar</option>`;
 
         variant.shoeSizeQuantity.$values.forEach((sq, index) => {
             if (sq.quantity > 0) {
@@ -87,13 +87,19 @@ function addToCart() {
     const selectedSize = document.getElementById("selectedSize").value;
     const selectedProductPrice = variants[currentVariantIndex].product.price;
 
-    if (selectedVariantId && selectedSize) {
+    if (selectedVariantId && selectedSize !== "Wybierz rozmiar") {
         const cartItem = {
             ProductVariantId: selectedVariantId,
             Size: selectedSize,
             Price: selectedProductPrice,
             Quantity: 1 
         };
+
+        let cartAlert = document.getElementById("cartAlert");
+        let content = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        A simple success alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>;`
 
         console.log(JSON.stringify(cartItem));
 
@@ -112,16 +118,34 @@ function addToCart() {
             })
             .then(data => {
                 if (data.success) {
-                    alert("Przedmiot dodany do koszyka!");
+
+                    cartAlert.innerHTML =
+                        `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Dodano produkt do koszyka! <a href="/Cart" class="alert-link">Zobacz swój koszyk.</a>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+
                 } else {
-                    alert("Nie udało się dodać przedmiotu do koszyka");
+                    cartAlert.innerHTML =
+                        `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Nie udało się dodać produktu do koszyka!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
                 }
             })
             .catch(error => {
                 console.error("Błąd:", error);
-                alert("Wystąpił problem z dodaniem do koszyka");
+                cartAlert.innerHTML =
+                    `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Nie udało się dodać produktu do koszyka!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
             });
     } else {
-        alert("Proszę wybrać wariant i rozmiar");
+        cartAlert.innerHTML =
+            `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Należy wybrać wariant oraz rozmiar produktu.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
     }
 }

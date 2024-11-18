@@ -1,4 +1,5 @@
-﻿using shop_web_app.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using shop_web_app.Data;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
 
@@ -25,9 +26,9 @@ namespace shop_web_app.Repository
             return Save();
         }
 
-        public Task<List<CartItem>> GetCartItemsByUser(string userId)
-        {
-            throw new NotImplementedException();
+        public async Task<CartItem> GetCartItemByIdAsync(int cartItemId) 
+        { 
+            return await _context.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
         }
 
         public bool Save()

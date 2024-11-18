@@ -7,76 +7,93 @@
 @model List<CartItem>
 
 <div class="my-3 p-3 bg-white rounded shadow">
-    <h3 class="border-bottom border-gray pb-2 mb-0">Przedmioty w twoim koszyku</h3>
-    @foreach(CartItem item in Model)
+    @if(Model == null || !Model.Any())
     {
-        <div class="media pt-3">
-            <div class="row g-3">
-                <div class="col-md-2">
-                    <img alt="@item.Variant.Product.Name Thumbnail"
-                         src="@item.Variant.Photos.First().PhotoUrl"
-                         class="img-fluid"
-                     />
-                </div>
-                <div class="col-md-10">
-                    <a class="h4 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@item.Variant.ProductId">
-                        @item.Variant.Product.Name
-                    </a>
-
-                    <p class="lead">
-                        @item.TotalPrice PLN
-                    </p>
-                    
-                    <div class="row">
-
-                        @if (item.InternationalSize.HasValue) // nie jest butem
-                        {
-                            <div class="col">
-                                <p><span class="text-muted">Rozmiar:</span> @item.InternationalSize.Value</p>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col">
-                                <p><span class="text-muted">Rozmiar:</span> @item.ShoeSize.Value</p>
-                            </div>
-                        }
-                        <div class="col">
-                            <p><span class="text-muted">Wariant:</span> @item.Variant.Name</p>
-                        </div>
-                        <div class="col">
-                            <p><span class="text-muted">Płeć:</span> @item.Variant.Product.Gender.ToFriendlyString()</p>
-                        </div>
-                        <div class="col">
-                            <p><span class="text-muted">Suma:</span> <b>@item.TotalPrice PLN</b></p>
-                        </div>
-
-                    </div>
-                    <label>Ilość:</label>
-                    <select class="form-select" style="width: 70px;">
-                        <option selected value="@item.Quantity">@item.Quantity</option>
-                    </select>
-                </div>
-            </div>
-            <hr />
-        </div>
+        <h3 class="border-bottom border-gray pb-2 mb-0">Twój koszyk jest pusty!</h3>
+        <small>
+            Może pora go zapełnić?
+        </small>
     }
-    
-    <div class="media text-muted pt-3">
-        <img data-src="holder.js/32x32?theme=thumb&bg=e83e8c&fg=e83e8c&size=1" alt="" class="mr-2 rounded">
-        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">username</strong>
-            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-        </p>
-    </div>
-    <div class="media text-muted pt-3">
-        <img data-src="holder.js/32x32?theme=thumb&bg=6f42c1&fg=6f42c1&size=1" alt="" class="mr-2 rounded">
-        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">username</strong>
-            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-        </p>
-    </div>
-    <small class="d-block text-right mt-3">
-        <a href="#">All updates</a>
-    </small>
+    else
+    {
+        <h3 class="border-bottom border-gray pb-2 mb-0">Przedmioty w twoim koszyku</h3>
+        @foreach (CartItem item in Model)
+        {
+            <div class="media pt-3">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <img alt="@item.Variant.Product.Name Thumbnail"
+                             src="@item.Variant.Photos.First().PhotoUrl"
+                             class="img-fluid" />
+                    </div>
+                    <div class="col-md-10">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a class="h4 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@item.Variant.ProductId">
+                                    @item.Variant.Product.Name
+                                </a>
+                            </div>
+                            <div>
+                                <a type="button" class="btn btn-danger" asp-area="" asp-controller="Cart" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash3-fill"></i></a>
+                            </div>
+                        </div>
+                        
+
+                        @{
+                            decimal totalPrice = item.Variant.Product.Price * @item.Quantity;
+                            int maxAmount;
+                        }
+                        <p class="lead">
+                            @item.Variant.Product.Price PLN
+                        </p>
+
+                        <div class="row">
+
+                            @if (item.InternationalSize.HasValue) // nie jest butem
+                            {
+                                maxAmount = item.Variant.InternationalSizeQuantity.FirstOrDefault(q => q.Size == item.InternationalSize.Value)?.Quantity ?? 0;
+
+                                <div class="col">
+                                    <p><span class="text-muted">Rozmiar:</span> @item.InternationalSize.Value</p>
+                                </div>
+                            }
+                            else
+                            {
+                                maxAmount = item.Variant.ShoeSizeQuantity.FirstOrDefault(q => q.Size == item.ShoeSize.Value)?.Quantity ?? 0;
+
+                                <div class="col">
+                                    <p><span class="text-muted">Rozmiar:</span> @item.ShoeSize.Value</p>
+                                </div>
+                            }
+                            <div class="col">
+                                <p><span class="text-muted">Wariant:</span> @item.Variant.Name</p>
+                            </div>
+                            <div class="col">
+                                <p><span class="text-muted">Płeć:</span> @item.Variant.Product.Gender.ToFriendlyString()</p>
+                            </div>
+                            <div class="col">
+                                <p><span class="text-muted">Suma:</span> <b>@totalPrice PLN</b></p>
+                            </div>
+
+                        </div>
+                        @{
+                            
+                        }
+                        <p><span class="text-muted" id="quantity">Ilość:</span> @item.Quantity</p>
+                        
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButtonSM" data-bs-toggle="dropdown" aria-expanded="false">
+                            Wybierz ilość
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonSM">
+                            @for (int i = 1; i <= (maxAmount >= 15 ? 15 : maxAmount); i++)
+                            {
+                                <li><a type="button" class="dropdown-item" asp-area="" asp-controller="Cart" asp-action="UpdateQuantity" asp-route-cartItemId="@item.Id" asp-route-newQuantity="@i">@i</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        }
+    }
 </div>

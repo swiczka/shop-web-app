@@ -91,7 +91,7 @@
                             else
                             {
                                 <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
-                                    <option selected>Wybierz rozmiar</option>
+                                    <option value="" selected>Wybierz rozmiar</option>
                                     @foreach (ShoeSizeQuantity sq in defaultVariant.ShoeSizeQuantity)
                                     {
                                         if (sq.Quantity > 0)
@@ -123,7 +123,12 @@
                                     <span class="sr-only">Dodaj do koszyka</span>
                                 </a>
                             }
+                            
                         </div>
+                        
+                    </div>
+                    <div id="cartAlert">
+
                     </div>
                 </div>
                 <!--end of col-->

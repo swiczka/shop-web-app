@@ -8,6 +8,6 @@ namespace shop_web_app.Interfaces
         bool Update(CartItem item);
         bool Delete(CartItem item);
         bool Save();
-        Task<List<CartItem>> GetCartItemsByUser(string userId);
+        Task<CartItem> GetCartItemByIdAsync(int cartItemId);
     }
 }

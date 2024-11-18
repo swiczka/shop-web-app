@@ -16,26 +16,22 @@ namespace shop_web_app.Controllers
     {
         private readonly ICartRepository _cartRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUserRepository _userRepository;
 
-        public CartController(ICartRepository cartRepository, UserManager<AppUser> userManager) 
+        public CartController(ICartRepository cartRepository, UserManager<AppUser> userManager, IUserRepository userRepository) 
         {
             _cartRepository = cartRepository;
             _userManager = userManager;
+            _userRepository = userRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.Users
-                .Include(u => u.CartItems)
-                    .ThenInclude(v => v.Variant)
-                        .ThenInclude(h => h.Photos)
-                .Include(u => u.CartItems)
-                    .ThenInclude(v => v.Variant)
-                    .ThenInclude(p => p.Product)
-                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
-            if (user != null)
+            string userId = _userManager.GetUserId(User);
+
+            if (userId != null)
             {
-                List<CartItem> cartItems = user.CartItems.ToList();
+                List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
                 return View(cartItems);
             }
             else
@@ -46,53 +42,99 @@ namespace shop_web_app.Controllers
         }
 
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] CartItemAddModel cartItem)
+        public async Task<IActionResult> Create([FromBody] CartItemAddModel cartItem)
         {
             var userId = _userManager.GetUserId(User);
 
             if(userId != null)
             {
                 InternationalSize internationalSize;
-                ShoeSize shoeSize;
+                ShoeSize shoeSize = ShoeSize.Size35;
+                bool isShoe = false;
+                List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
+                
+                if(Enum.TryParse<InternationalSize>(cartItem.Size, out internationalSize))
+                {
+                    isShoe = false;
+                    foreach (CartItem item in cartItems)
+                    {
+                        if (item.Variant.Id == cartItem.ProductVariantId &&
+                        item.InternationalSize.Value == internationalSize)
+                        {
+                            item.Quantity++;
+                            return Json(new { success = true, message = "Item added to cart." });
+                        }
+                    }
+                        
+                }
+                else if(Enum.TryParse<ShoeSize>(cartItem.Size, out shoeSize))
+                {
+                    isShoe = true;
+                    foreach (CartItem item in cartItems)
+                    {
+                        if (item.Variant.Id == cartItem.ProductVariantId &&
+                        item.ShoeSize.Value == shoeSize)
+                        {
+                            item.Quantity++;
+                            return Json(new { success = true, message = "Item added to cart." });
+                        }
+                    }
+                }
+
                 CartItem newCartItem;
 
-                if (cartItem.Size.Contains("size"))
-                {
-                    if (Enum.TryParse<ShoeSize>(cartItem.Size, out shoeSize))
+                if (isShoe)
+                { 
+                    newCartItem = new CartItem()
                     {
-                        newCartItem = new CartItem()
-                        {
-                            VariantId = cartItem.ProductVariantId,
-                            ShoeSize = shoeSize,
-                            AppUserId = userId,
-                            Quantity = 1,
-                            TotalPrice = cartItem.Price
-                        };
-                        _cartRepository.Add(newCartItem);
-                        return Json(new { success = true, message = "Item added to cart." });
-                    }
+                        VariantId = cartItem.ProductVariantId,
+                        ShoeSize = shoeSize,
+                        AppUserId = userId,
+                        Quantity = 1,
+                        TotalPrice = cartItem.Price
+                    };
+                    _cartRepository.Add(newCartItem);
+                    return Json(new { success = true, message = "Item added to cart." });          
                 }
                 else
                 {
-                    if (Enum.TryParse<InternationalSize>(cartItem.Size, out internationalSize))
+                    newCartItem = new CartItem()
                     {
-                        newCartItem = new CartItem()
-                        {
-                            VariantId = cartItem.ProductVariantId,
-                            InternationalSize = internationalSize,
-                            AppUserId = userId,
-                            Quantity = 1,
-                            TotalPrice = cartItem.Price
-                        };
-                        _cartRepository.Add(newCartItem);
-                        return Json(new { success = true, message = "Item added to cart." });
-                    }
+                        VariantId = cartItem.ProductVariantId,
+                        InternationalSize = internationalSize,
+                        AppUserId = userId,
+                        Quantity = 1,
+                        TotalPrice = cartItem.Price
+                    };
+                    _cartRepository.Add(newCartItem);
+                    return Json(new { success = true, message = "Item added to cart." });
                 }
                 
             }
             return Unauthorized();
             
             
+        }
+
+        [HttpGet("Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(id);
+            _cartRepository.Delete(cartItem);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("UpdateQuantity")]
+        public async Task<IActionResult> UpdateQuantity(int cartItemId, int newQuantity)
+        {
+            CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
+
+            if (cartItem != null)
+            {
+                cartItem.Quantity = newQuantity;
+                _cartRepository.Update(cartItem);
+            }
+            return RedirectToAction("Index", "Cart");
         }
     }
 }
