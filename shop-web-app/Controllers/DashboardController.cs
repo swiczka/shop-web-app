@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using shop_web_app.Data;
+using shop_web_app.Interfaces;
 
 namespace shop_web_app.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDashboardRepository _dashboardRepository;
 
-        public DashboardController(ApplicationDbContext context) 
+        public DashboardController(IDashboardRepository dashboardRepository) 
         {
-            _context = context;
+            _dashboardRepository = dashboardRepository;
         }
 
         public IActionResult Index() 

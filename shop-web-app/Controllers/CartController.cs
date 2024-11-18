@@ -11,7 +11,6 @@ using shop_web_app.ViewModels;
 
 namespace shop_web_app.Controllers
 {
-    [Route("Cart")]
     public class CartController : Controller
     {
         private readonly ICartRepository _cartRepository;
@@ -41,7 +40,7 @@ namespace shop_web_app.Controllers
             
         }
 
-        [HttpPost("Create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CartItemAddModel cartItem)
         {
             var userId = _userManager.GetUserId(User);
@@ -116,7 +115,7 @@ namespace shop_web_app.Controllers
             
         }
 
-        [HttpGet("Delete")]
+
         public async Task<IActionResult> Delete(int id)
         {
             CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(id);
@@ -124,7 +123,7 @@ namespace shop_web_app.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet("UpdateQuantity")]
+
         public async Task<IActionResult> UpdateQuantity(int cartItemId, int newQuantity)
         {
             CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
