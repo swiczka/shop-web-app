@@ -16,12 +16,14 @@
     }
     else
     {
+        decimal sum = 0;
+
         <h3 class="border-bottom border-gray pb-2 mb-0">Przedmioty w twoim koszyku</h3>
         @foreach (CartItem item in Model)
         {
             <div class="media pt-3">
                 <div class="row g-3">
-                    <div class="col-md-2">
+                    <div class="col-md-2 img-container-cart">
                         <img alt="@item.Variant.Product.Name Thumbnail"
                              src="@item.Variant.Photos.First().PhotoUrl"
                              class="img-fluid" />
@@ -72,7 +74,7 @@
                                 <p><span class="text-muted">Płeć:</span> @item.Variant.Product.Gender.ToFriendlyString()</p>
                             </div>
                             <div class="col">
-                                <p><span class="text-muted">Suma:</span> <b>@totalPrice PLN</b></p>
+                                <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
                             </div>
 
                         </div>
@@ -94,6 +96,16 @@
                 </div>
                 <hr />
             </div>
+
+            sum += totalPrice;
         }
+        <div class="d-flex justify-content-between">
+            <div>
+                <h5><span class="text-muted">Suma:</span> @sum PLN</h5>
+            </div>
+            <div>
+                <a type="button" class="btn btn-success" asp-area="" asp-controller="Order" asp-action="Create">Złóż zamówienie </a>
+            </div>
+        </div>
     }
 </div>
