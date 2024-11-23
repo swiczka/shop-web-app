@@ -86,31 +86,43 @@
                     Please enter a valid email address for shipping updates.
                   </div>
                 </div>
-
+                @{
+                    string street = "";
+                    string postalCode = "";
+                    string city = "";
+                    Voivodship voivodship;
+                }
+                @if (Model.AppUser.AddressId.HasValue)
+                {
+                    street = Model.AppUser.Address.Street;
+                    postalCode = Model.AppUser.Address.PostalCode;
+                    city = Model.AppUser.Address.City;
+                    voivodship = Model.AppUser.Address.Voivodship;
+                }
                 <div class="col-12">
                   <label for="address" class="form-label">Adres (ulica i numer domu)</label>
-                  <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+                  <input type="text" value="@street" class="form-control" id="address" placeholder="np.'ul. Parkowa 1/3'" required>
                   <div class="invalid-feedback">
                     Please enter your shipping address.
                   </div>
                 </div>
 
                 <div class="col-md-5">
-                  <label for="country" class="form-label">Country</label>
-                  <select class="form-select" id="country" required>
-                    <option value="">Choose...</option>
-                    <option>United States</option>
-                  </select>
+                  <label for="city" class="form-label">Miasto</label>
+                  <input class="form-control" value="@city" id="city" required>
                   <div class="invalid-feedback">
                     Please select a valid country.
                   </div>
                 </div>
 
                 <div class="col-md-4">
-                  <label for="state" class="form-label">State</label>
-                  <select class="form-select" id="state" required>
-                    <option value="">Choose...</option>
-                    <option>California</option>
+                  <label for="voivodship" class="form-label">Województwo</label>
+                  <select class="form-select" asp-items="@Html.GetEnumSelectList<Voivodship>()" id="voivodship" required>
+                    @if (Model.AppUser.AddressId.HasValue || true)
+                    {
+                        <option selected value="">hehehe</option>
+                    }
+                                
                   </select>
                   <div class="invalid-feedback">
                     Please provide a valid state.
@@ -118,8 +130,8 @@
                 </div>
 
                 <div class="col-md-3">
-                  <label for="zip" class="form-label">Zip</label>
-                  <input type="text" class="form-control" id="zip" placeholder="" required>
+                  <label for="postal" class="form-label">Kod pocztowy</label>
+                  <input type="text" class="form-control" id="postal" placeholder="np. '12-123'" required>
                   <div class="invalid-feedback">
                     Zip code required.
                   </div>

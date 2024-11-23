@@ -12,19 +12,53 @@ namespace shop_web_app.Enums
 
     public enum Voivodship
     {
+        [Display(Name = "dolnośląskie")]
         LowerSilesia,
+
+        [Display(Name = "kujawsko-pomorskie")]
         KuyaviaPomerania,
+
+        [Display(Name = "łódzkie")]
         Lodzkie,
+
+        [Display(Name = "lubelskie")]
         Lublin,
+
+        [Display(Name = "lubuskie")]
         Lubusz,
+
+        [Display(Name = "małopolskie")]
         LesserPoland,
+
+        [Display(Name = "mazowieckie")]
         Masovia,
+
+        [Display(Name = "podkarpackie")]
         Subcarpathia,
+
+        [Display(Name = "pomorskie")]
         Pomerania,
+
+        [Display(Name = "śląskie")]
         Silesia,
+
+        [Display(Name = "warmińsko-mazurskie")]
         WarmiaMasuria,
+
+        [Display(Name = "wielkopolskie")]
         GreaterPoland,
-        WestPomerania
+
+        [Display(Name = "zachodnio-pomorskie")]
+        WestPomerania,
+
+        [Display(Name = "podlaskie")]
+        Podlaskie,
+
+        [Display(Name = "warmińsko-mazurskie")]
+        WarmianMasurian,
+
+        [Display(Name = "świętokrzyskie")]
+        Swietokrzyskie
     }
 
     public enum ClothingGender
