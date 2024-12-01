@@ -36,6 +36,19 @@ namespace shop_web_app.Data
                 .HasForeignKey(c => c.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);  // Zamiast Cascade użyj Restrict
             // Możesz także skonfigurować inne relacje, jeżeli masz problem z innymi tabelami
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.DeliveryAddress)
+                .WithMany()
+                .HasForeignKey(o => o.DeliveryAddressId)
+                .OnDelete(DeleteBehavior.Restrict); // Wyłącza usuwanie kaskadowe
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.BillingAddress)
+                .WithMany()
+                .HasForeignKey(o => o.BillingAddressId)
+                .OnDelete(DeleteBehavior.Restrict); // Wyłącza usuwanie kaskadowe
+       
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace shop_web_app.Migrations
 {
     /// <inheritdoc />
-    public partial class ProductReduction : Migration
+    public partial class OffedCascadeDeletion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -246,6 +246,8 @@ namespace shop_web_app.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrdererId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DeliveryAddressId = table.Column<int>(type: "int", nullable: false),
+                    BillingAddressId = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
@@ -253,6 +255,18 @@ namespace shop_web_app.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Address_BillingAddressId",
+                        column: x => x.BillingAddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Address_DeliveryAddressId",
+                        column: x => x.DeliveryAddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_AspNetUsers_OrdererId",
                         column: x => x.OrdererId,
@@ -270,8 +284,7 @@ namespace shop_web_app.Migrations
                     VariantId = table.Column<int>(type: "int", nullable: false),
                     InternationalSize = table.Column<int>(type: "int", nullable: true),
                     ShoeSize = table.Column<int>(type: "int", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -469,6 +482,16 @@ namespace shop_web_app.Migrations
                 name: "IX_OrderItems_VariantId",
                 table: "OrderItems",
                 column: "VariantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_BillingAddressId",
+                table: "Orders",
+                column: "BillingAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_DeliveryAddressId",
+                table: "Orders",
+                column: "DeliveryAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_OrdererId",

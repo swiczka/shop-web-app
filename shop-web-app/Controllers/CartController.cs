@@ -89,8 +89,7 @@ namespace shop_web_app.Controllers
                         VariantId = cartItem.ProductVariantId,
                         ShoeSize = shoeSize,
                         AppUserId = userId,
-                        Quantity = 1,
-                        TotalPrice = cartItem.Price
+                        Quantity = 1
                     };
                     _cartRepository.Add(newCartItem);
                     return Json(new { success = true, message = "Item added to cart." });          
@@ -102,8 +101,7 @@ namespace shop_web_app.Controllers
                         VariantId = cartItem.ProductVariantId,
                         InternationalSize = internationalSize,
                         AppUserId = userId,
-                        Quantity = 1,
-                        TotalPrice = cartItem.Price
+                        Quantity = 1
                     };
                     _cartRepository.Add(newCartItem);
                     return Json(new { success = true, message = "Item added to cart." });

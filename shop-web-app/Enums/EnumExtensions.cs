@@ -41,6 +41,9 @@
                 Voivodship.WarmiaMasuria => "warmińsko-mazurskie",
                 Voivodship.GreaterPoland => "wielkopolskie",
                 Voivodship.WestPomerania => "zachodniopomorskie",
+                Voivodship.Podlaskie => "podlaskie",
+                Voivodship.Swietokrzyskie => "świętokrzyskie",
+                Voivodship.Opolskie => "opolskie",
                 _ => throw new NotImplementedException()
             };
         }

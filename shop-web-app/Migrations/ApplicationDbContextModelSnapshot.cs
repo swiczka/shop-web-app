@@ -284,9 +284,6 @@ namespace shop_web_app.Migrations
                     b.Property<int?>("ShoeSize")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("VariantId")
                         .HasColumnType("int");
 
@@ -307,6 +304,12 @@ namespace shop_web_app.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BillingAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeliveryAddressId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
@@ -320,6 +323,10 @@ namespace shop_web_app.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BillingAddressId");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("OrdererId");
 
@@ -609,9 +616,25 @@ namespace shop_web_app.Migrations
 
             modelBuilder.Entity("shop_web_app.Models.Order", b =>
                 {
+                    b.HasOne("shop_web_app.Models.Address", "BillingAddress")
+                        .WithMany()
+                        .HasForeignKey("BillingAddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("shop_web_app.Models.Address", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("shop_web_app.Models.AppUser", "Orderer")
                         .WithMany("Orders")
                         .HasForeignKey("OrdererId");
+
+                    b.Navigation("BillingAddress");
+
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("Orderer");
                 });

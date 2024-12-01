@@ -12,6 +12,10 @@ namespace shop_web_app.Models
 
         public string ?OrdererId { get; set; }
         public AppUser ?Orderer { get; set; }
+        public Address DeliveryAddress { get; set; }
+        public int DeliveryAddressId { get; set; }
+        public Address BillingAddress { get; set; }
+        public int BillingAddressId { get; set; }
         public decimal TotalPrice { get; set; }
 
         public DateTime OrderDate { get; set; }

@@ -21,7 +21,5 @@ namespace shop_web_app.Models
         public ShoeSize ?ShoeSize {  get; set; }
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
-
-       
     }
 }
