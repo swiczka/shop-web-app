@@ -15,6 +15,7 @@ namespace shop_web_app.Models
         public ICollection<ProductMaterial> ProductMaterials { get; set; } = new List<ProductMaterial>();
         public Category Category { get; set; }
         public SubCategory SubCategory { get; set; }
-         
+        public string ?AuthorId { get; set; }
+        public AppUser ?Author { get; set; }
     }
 }

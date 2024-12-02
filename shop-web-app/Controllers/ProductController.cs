@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using shop_web_app.Data;
@@ -16,11 +17,13 @@ namespace shop_web_app.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly BlobStorageService _blobService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ProductController(IProductRepository productRepository, BlobStorageService blobService) 
+        public ProductController(IProductRepository productRepository, BlobStorageService blobService, UserManager<AppUser> userManager) 
         {
             _productRepository = productRepository;
             _blobService = blobService;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -270,7 +273,8 @@ namespace shop_web_app.Controllers
                     Category = product.Category,
                     SubCategory = product.SubCategory,
                     ProductVariants = newVariants,
-                    ProductMaterials = newMaterials
+                    ProductMaterials = newMaterials,
+                    Author = await _userManager.GetUserAsync(User)
                 };
                 _productRepository.Add(newProduct);
             }

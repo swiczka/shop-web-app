@@ -1,6 +1,159 @@
-﻿@*
+﻿@using shop_web_app.Enums
+@using shop_web_app.ViewModels
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-}
-<h1>info</h1>
+@model DashboardViewModel
+
+<body class="bg-body-tertiary">
+    <div class="container w-100">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Błąd!</b> - @TempData["Error"]</span>
+            </div>
+        }
+
+        <div class="row g-5">
+            <div class="col-md-5 col-lg-4 order-md-last">
+                <h4 class="text-center mb-3">Twoje konto</h4>
+                <div class="shadow rounded">
+                    dadadada
+                </div>
+            </div>
+            <div class="col-md-7 col-lg-8">
+
+                <h1 class="display-6 fw-normal">Zamówienia</h1>
+                @foreach(var order in Model.Orders)
+                {
+                    <div class="my-3 p-3 bg-white rounded shadow">
+                        <div class="media pt-3">
+                            <div class="row g-3">
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach(var orderItem in order.OrderItems)
+                                {
+                                    if(i != 0)
+                                    {
+                                        <hr />
+                                    }
+                                    i++;
+                                    <div class="col-md-2 img-container-cart" style="width: 100px; height: 120px;">
+                                        <img alt="@orderItem.Variant.Product.Name Thumbnail"
+                                             src="@orderItem.Variant.Photos.First().PhotoUrl"
+                                             class="img-fluid"  />
+                                    </div>
+                                    <div class="col-md-12">
+                                        
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
+                                                    @orderItem.Variant.Product.Name
+                                                </a>
+                                            </div>
+                                        </div>
+
+
+                                        @{
+                                            decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
+                                            int maxAmount;
+                                        }
+                                        <p class="lead" style="font-size: 15px;">
+                                            @orderItem.Variant.Product.Price PLN
+                                        </p>
+
+                                        <div class="row">
+
+                                            @if (orderItem.InternationalSize.HasValue) // nie jest butem
+                                            {
+                                                <div class="col">
+                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col">
+                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value</p>
+                                                </div>
+                                            }
+                                            <div class="col">
+                                                <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="text-muted">Płeć:</span> @orderItem.Variant.Product.Gender.ToFriendlyString()</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
+                                            </div>
+
+                                        </div>
+                                        <p><span class="text-muted" id="quantity">Ilość:</span> @orderItem.Quantity</p>
+                                    </div>
+                                    
+                                }
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                }
+                <div class="album py-5 bg-light">
+                    <div class="container">
+                        <h2 class="display-4 fw-normal">Your races</h2>
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                            <div class="col-md-4">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top" src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1v6TB0.img?w=768&h=576&m=6" width="100%" height="225" alt="Card image cap">
+                                    <div class="card-body">
+                                        <p class="card-text">super</p>
+                                        <p class="card-text">opis</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <a type="btn btn-success" asp-controller="Product" asp-action="Details" asp-route-id="1"
+                                                    class="btn btn-sm btn-outline-secondary">View</a>
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    <a asp-controller="Product" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                    <a asp-controller="Product" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                                }
+                                            </div>
+                                            <small class="text-muted">ssdsds</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <h2 class="display-4 fw-normal">Your Clubs</h2>
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                            <div class="col-md-4">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top" src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1v6TB0.img?w=768&h=576&m=6" width="100%" height="225" alt="Card image cap">
+                                    <div class="card-body">
+                                        <p class="card-text">tytuł</p>
+                                        <p class="card-text">opis</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <a type="btn btn-success" asp-controller="Product" asp-action="Details" asp-route-id="1"
+                                                    class="btn btn-sm btn-outline-secondary">View</a>
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    <a asp-controller="Product" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                                    <a asp-controller="Product" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                                }
+                                            </div>
+                                            <small class="text-muted">ategoria</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

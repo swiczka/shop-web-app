@@ -1,4 +1,5 @@
-﻿using shop_web_app.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using shop_web_app.Data;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
 
@@ -15,15 +16,26 @@ namespace shop_web_app.Repository
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<Order>> GetAllUserOrders()
+        public async Task<List<Order>> GetAllUserOrders(string userId)
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-            throw new NotImplementedException();
+            var orders = _context.Orders
+                .Include(v => v.OrderItems)
+                    .ThenInclude(a => a.Variant)
+                    .ThenInclude(b => b.Photos)
+                .Include(c => c.OrderItems)
+                    .ThenInclude(d => d.Variant)
+                    .ThenInclude(e => e.Product)
+                .Where(u => u.OrdererId == userId).ToList();
+            return orders;
         }
 
-        public async Task<List<Product>> GetAllUserProducts()
+        public async Task<List<Product>> GetAllUserProducts(string userId)
         {
-            throw new NotImplementedException();
+            var products = _context.Products
+                .Include(v => v.ProductVariants)
+                    .ThenInclude(p => p.Photos)
+                .Where(u => u.AuthorId == userId).ToList();
+            return products;
         }
     }
 }

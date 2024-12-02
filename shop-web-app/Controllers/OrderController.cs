@@ -15,13 +15,19 @@ namespace shop_web_app.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly ICartRepository _cartRepository;
 
-        public OrderController(IUserRepository userRepository, UserManager<AppUser> userManager, IOrderRepository orderRepository, IProductRepository productRepository) 
+        public OrderController(IUserRepository userRepository,
+                                UserManager<AppUser> userManager,
+                                IOrderRepository orderRepository,
+                                IProductRepository productRepository,
+                                ICartRepository cartRepository) 
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _cartRepository = cartRepository;
         }
 
         public async Task<IActionResult> Create()
@@ -86,6 +92,7 @@ namespace shop_web_app.Controllers
                             TotalPrice = item.Variant.Product.Price * item.Quantity
                         };
                         orderItems.Add(newItem);
+                        
                     }
                     else
                     {
@@ -107,6 +114,8 @@ namespace shop_web_app.Controllers
                         };
                         orderItems.Add(newItem);
                     }
+                    _cartRepository.Delete(item);
+                    _cartRepository.Save();
                     _productRepository.Save();
                 }
 
