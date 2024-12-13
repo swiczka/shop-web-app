@@ -23,6 +23,7 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<BlobStorageService, BlobStorageService>();
 builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSection("BlobStorageSettings"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -59,7 +60,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

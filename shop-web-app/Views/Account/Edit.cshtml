@@ -1,0 +1,133 @@
+﻿@using shop_web_app.Enums
+@using shop_web_app.ViewModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model EditAccountViewModel
+
+<div class="row">
+    <div class="col-8 col-sm-8 col-md-8 col-lg-6 offset-sm-1 offset-md-3">
+        <p>
+            <h2>Wprowadź zmiany w koncie</h2>
+        </p>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Błąd!</b> - @TempData["Error"] </span>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form method="post" asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <h5>Podstawowe dane</h5>
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control"/>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Surname" class="control-label"></label>
+                        <input asp-for="Surname" class="form-control" />
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Email" class="control-label">E-mail</label>
+                        <input type="text" class="form-control" value="@Model.AppUser.Email" disabled />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Gender" class="control-label"></label>
+                        <select asp-for="Gender" class="form-control">
+                            @switch (Model.AppUser.Gender)
+                            {
+                                case Gender.M:
+                                    <option value="@Gender.M" selected>@Gender.M.ToFriendlyString()</option>
+                                    <option value="@Gender.F">@Gender.F.ToFriendlyString()</option>
+                                    break;
+                                case Gender.F:
+                                    <option value="@Gender.F" selected>@Gender.F.ToFriendlyString()</option>
+                                    <option value="@Gender.M">@Gender.M.ToFriendlyString()</option>
+                                    break;
+                            }
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                        <small class="form-text text-muted">Wybór płci pozwala nam na lepsze dobranie oferty dla Ciebie</small>
+                    </div>
+
+                    <div class="bg-secondary bg-opacity-10 p-2 rounded mb-3">
+                        <h5 class="mb-0">Adres używany przy dostawie</h5>
+                        <small class="mb-2">Możesz pozostawić te pola puste</small>
+                        <div class="form-group mb-3">
+                            <label asp-for="Street" class="form-label">Ulica i numer domu</label>
+                            <input asp-for="Street" value="@Model.AppUser.Address?.Street" class="form-control" placeholder="np.'Parkowa 1/3'">
+                            <span asp-validation-for="Street" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div class="col-md-7 form-group mb-3">
+                                <label asp-for="City" class="form-label">Miasto</label>
+                                <input asp-for="City" class="form-control" value="@Model.AppUser.Address?.City">
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 form-group mb-3">
+                                <label asp-for="PostalCode" class="form-label">Kod pocztowy</label>
+                                <input asp-for="PostalCode" value="@Model.AppUser.Address?.PostalCode" class="form-control" placeholder="np. '12-123'">
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Voivodship" class="form-label">Województwo</label>
+                            <select asp-for="Voivodship" class="form-select" asp-items="@Html.GetEnumSelectList<Voivodship>()">
+                                @if (Model.AppUser.AddressId.HasValue)
+                                {
+                                    int digitId = (int)Model.AppUser.Address.Voivodship;
+                                    <option selected value="@digitId">@Model.AppUser.Address.Voivodship.ToFriendlyString()</option>
+                                }
+                                else
+                                {
+                                    <option selected value="">--- Wybierz województwo ---</option>
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="bg-danger bg-opacity-25 p-3 rounded-3">
+                        <h5>Strefa zmiany hasła</h5>
+                        <div class="form-group mb-3">
+                            <label asp-for="OldPassword" class="control-label"></label>
+                            <input asp-for="OldPassword" class="form-control" autocomplete="off" name="lalalalalalalalalal" />
+                            <span asp-validation-for="OldPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="control-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmPassword" class="control-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Zapisz zmiany" />
+                        <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">Anuluj</a>
+                    </div>
+                    <input type="hidden" asp-for="AppUser.Id" value="@Model.AppUser.Id"/>
+                    <input type="hidden" asp-for="AppUser.Name" value="@Model.AppUser.Name"/>
+                    <input type="hidden" asp-for="AppUser.Surname" value="@Model.AppUser.Surname"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

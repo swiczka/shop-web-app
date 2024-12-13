@@ -23,6 +23,7 @@ namespace shop_web_app.Data
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
