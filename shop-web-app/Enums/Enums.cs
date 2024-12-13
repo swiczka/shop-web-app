@@ -325,14 +325,22 @@ namespace shop_web_app.Enums
 
     public enum OrderStatus
     {
+        [Display(Name = "Złożono zamówienie")]
         OrderPlaced,
+
+        [Display(Name = "Zamówienie potwierdzone")]
         OrderConfirmed,
+
+        [Display(Name = "Wysłano zamówienie")]
         Shipped,
+
+        [Display(Name = "Dostawa w trakcie")]
         InTransit,
-        Out,
+
+        [Display(Name = "Dostarczono")]
         Delivered,
-        Canceled,
-        Delayed,
-        Lost
+
+        [Display(Name = "Anulowano")]
+        Canceled
     }
 }

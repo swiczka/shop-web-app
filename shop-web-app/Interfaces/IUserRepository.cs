@@ -5,5 +5,6 @@ namespace shop_web_app.Interfaces
     public interface IUserRepository
     {
         Task<List<CartItem>> GetCartItems(string userId);
+        Task<AppUser> GetUserWithAddress(string userId);
     }
 }

@@ -18,23 +18,23 @@ namespace shop_web_app.Repository
 
         public async Task<List<Order>> GetAllUserOrders(string userId)
         {
-            var orders = _context.Orders
+            var orders = await _context.Orders
                 .Include(v => v.OrderItems)
                     .ThenInclude(a => a.Variant)
                     .ThenInclude(b => b.Photos)
                 .Include(c => c.OrderItems)
                     .ThenInclude(d => d.Variant)
                     .ThenInclude(e => e.Product)
-                .Where(u => u.OrdererId == userId).ToList();
+                .Where(u => u.OrdererId == userId).ToListAsync();
             return orders;
         }
 
         public async Task<List<Product>> GetAllUserProducts(string userId)
         {
-            var products = _context.Products
+            var products = await _context.Products
                 .Include(v => v.ProductVariants)
                     .ThenInclude(p => p.Photos)
-                .Where(u => u.AuthorId == userId).ToList();
+                .Where(u => u.AuthorId == userId).ToListAsync();
             return products;
         }
     }

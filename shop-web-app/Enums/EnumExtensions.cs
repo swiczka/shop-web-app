@@ -81,6 +81,20 @@
             };
         }
 
+        public static string ToFriendlyString(this OrderStatus o)
+        {
+            return o switch
+            {
+                OrderStatus.Canceled => "Anulowano",
+                OrderStatus.Delivered => "Dostarczono",
+                OrderStatus.InTransit => "Dostawa w trakcie",
+                OrderStatus.Shipped => "Wysłano zamówienie",
+                OrderStatus.OrderConfirmed => "Zamówienie potwierdzone",
+                OrderStatus.OrderPlaced => "Złożono zamówienie",
+                _ => throw new NotImplementedException()
+            };
+        }
+
         public static string ToFriendlyString(this InternationalSize s)
         {
             return s.ToString();

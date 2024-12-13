@@ -17,6 +17,14 @@ namespace shop_web_app.Repository
             _context = context;
         }
 
+        public async Task<AppUser> GetUserWithAddress(string userId)
+        {
+            var user = await _userManager.Users
+                .Include(a => a.Address)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            return user;
+        }
+
         public async Task<List<CartItem>> GetCartItems(string userId)
         {
             var user = await _userManager.Users

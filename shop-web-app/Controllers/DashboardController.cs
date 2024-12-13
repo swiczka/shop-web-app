@@ -9,11 +9,13 @@ namespace shop_web_app.Controllers
 {
     public class DashboardController : Controller
     {
+        private readonly IUserRepository _userRepository;
         private readonly IDashboardRepository _dashboardRepository;
         private readonly UserManager<AppUser> _userManager;
 
-        public DashboardController(IDashboardRepository dashboardRepository, UserManager<AppUser> userManager) 
+        public DashboardController(IUserRepository userRepository, IDashboardRepository dashboardRepository, UserManager<AppUser> userManager) 
         {
+            _userRepository = userRepository;
             _dashboardRepository = dashboardRepository;
             _userManager = userManager;
         }
@@ -29,9 +31,11 @@ namespace shop_web_app.Controllers
 
             DashboardViewModel viewModel = new DashboardViewModel()
             {
-                AppUser = await _userManager.GetUserAsync(User),
+                AppUser = await _userRepository.GetUserWithAddress(_userManager.GetUserId(User)),
                 Orders = await _dashboardRepository.GetAllUserOrders(userId)
             };
+
+            viewModel.Orders.Reverse();
 
             if(User.IsInRole("admin") || User.IsInRole("employee"))
             {

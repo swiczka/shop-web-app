@@ -16,10 +16,28 @@
         }
 
         <div class="row g-5">
-            <div class="col-md-5 col-lg-4 order-md-last">
-                <h4 class="text-center mb-3">Twoje konto</h4>
+            <div class="col-md-5 col-lg-4 order-md-last p-3">
+                <h4 class="text-center mb-3 mt-1">Twoje konto</h4>
                 <div class="shadow rounded">
-                    dadadada
+                    <img src="https://cdn.pixabay.com/photo/2016/09/28/02/14/user-1699635_1280.png" class="rounded mx-auto d-block mt-4" style="width: 200px; height: 200px;" alt="User profile icon">
+                    <div class="p-1">
+                        <div class="text-center">
+                            @Model.AppUser.Name @Model.AppUser.Surname
+                        </div>
+                        <ul class="list-unstyled p-2">
+                            <li>E-mail: <span class="text-secondary">@Model.AppUser.Email</span></li>
+                            <li><span class="text-secondary">Zapisany adres:</span></li>
+                            @if (Model.AppUser.AddressId.HasValue)
+                            {
+                                <li>@Model.AppUser.Address.PostalCode @Model.AppUser.Address.City, ul.@Model.AppUser.Address.Street</li>
+                                <li>woj. @Model.AppUser.Address.Voivodship.ToFriendlyString()</li>
+                            }
+                            else
+                            {
+                                <li>Brak przypisanego adresu. <a asp-area="" asp-controller="Address" asp-action="Create" asp-route-id="@Model.AppUser.Id">Przypisz adres</a></li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="col-md-7 col-lg-8">
@@ -33,6 +51,11 @@
                                 @{
                                     int i = 0;
                                 }
+                                <ul class="list-unstyled">
+                                    <li class="text-muted">Zamówiono: <span class="text-black">@order.OrderDate</span></li>
+                                    <li class="text-muted">Status: <span class="text-black">@order.Status.ToFriendlyString()</span></li>
+                                </ul>
+                                
                                 @foreach(var orderItem in order.OrderItems)
                                 {
                                     if(i != 0)
@@ -40,12 +63,12 @@
                                         <hr />
                                     }
                                     i++;
-                                    <div class="col-md-2 img-container-cart" style="width: 100px; height: 120px;">
+                                    <div class="col-md-2" style="width: 100px; height: 120px;">
                                         <img alt="@orderItem.Variant.Product.Name Thumbnail"
                                              src="@orderItem.Variant.Photos.First().PhotoUrl"
                                              class="img-fluid"  />
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-10">
                                         
                                         <div class="d-flex justify-content-between">
                                             <div>
@@ -82,15 +105,15 @@
                                                 <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
                                             </div>
                                             <div class="col">
-                                                <p><span class="text-muted">Płeć:</span> @orderItem.Variant.Product.Gender.ToFriendlyString()</p>
+                                                <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
                                             </div>
                                             <div class="col">
                                                 <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
                                             </div>
-
                                         </div>
-                                        <p><span class="text-muted" id="quantity">Ilość:</span> @orderItem.Quantity</p>
+                                        
                                     </div>
+                                        
                                     
                                 }
                                 
