@@ -29,16 +29,33 @@ function changeVariant(thumbnail) {
 
     currentVariantIndex = thumbnail.getAttribute("data-variant-index");
 
-    const mainImage = document.getElementById("mainImage");
+    //swap carouselContent
+    const carouselContent = document.getElementById("carouselContent");
+    carouselContent.innerHTML = "";
 
     const variant = variantData.$values[currentVariantIndex];
+    const newImages = variant.photos.$values;
+    let imagesHtml;
 
-    mainImage.src = variant.photos.$values[0].photoUrl;
+    newImages.forEach((img, index) => {
+        if (index === 0) {
+            imagesHtml += `<div class="carousel-item active">
+                                <img alt="Image" id="mainImage" src="${img.photoUrl}" class="rounded img-fluid" style="width: 100%;" />
+                            </div>`
+        }
+        else {
+            imagesHtml += `<div class="carousel-item">
+                                <img alt="Image" id="mainImage" src="${img.photoUrl}" class="rounded img-fluid" style="width: 100%;" />
+                            </div>`
+        }   
+    });
+    carouselContent.innerHTML = imagesHtml;
 
-    // Aktualizacja dostępnych rozmiarów.
+
+    //update sizes
     const sizesContainer = document.getElementById("sizesContainer");
     console.log(variant);
-    sizesContainer.innerHTML = ""; // Wyczyść poprzednie rozmiary
+    sizesContainer.innerHTML = ""; 
 
     //jeśli nie jest butem
     if (variant.internationalSizeQuantity.$values.length != 0) {
@@ -64,10 +81,10 @@ function changeVariant(thumbnail) {
 
         variant.shoeSizeQuantity.$values.forEach((sq, index) => {
             if (sq.quantity > 0) {
-                sizeHtml += `<option value="${sq.size}">${shoeSizes[index].replace("Size","").replace("_",",")}</option>`;
+                sizeHtml += `<option value="${shoeSizes[index]}">${shoeSizes[index].replace("Size","").replace("_",",")}</option>`;
             }
             else {
-                sizeHtml += `<option disabled class="text-muted" value="${sq.size}">${shoeSizes[index].replace("Size", "").replace("_", ",")} (niedostępne)</option>`;
+                sizeHtml += `<option disabled class="text-muted" value="${shoeSizes[index]}">${shoeSizes[index].replace("Size", "").replace("_", ",")} (niedostępne)</option>`;
             }
         });
         sizeHtml += `</select >`;

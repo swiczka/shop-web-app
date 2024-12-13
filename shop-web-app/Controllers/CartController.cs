@@ -48,13 +48,14 @@ namespace shop_web_app.Controllers
             if(userId != null)
             {
                 InternationalSize internationalSize;
-                ShoeSize shoeSize = ShoeSize.Size35;
+                ShoeSize shoeSize;
                 bool isShoe = false;
                 List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
-                
-                if(Enum.TryParse<InternationalSize>(cartItem.Size, out internationalSize))
+                CartItem newCartItem;
+
+
+                if (Enum.TryParse<InternationalSize>(cartItem.Size, out internationalSize))
                 {
-                    isShoe = false;
                     foreach (CartItem item in cartItems)
                     {
                         if (item.Variant.Id == cartItem.ProductVariantId &&
@@ -64,38 +65,7 @@ namespace shop_web_app.Controllers
                             return Json(new { success = true, message = "Item added to cart." });
                         }
                     }
-                        
-                }
-                else if(Enum.TryParse<ShoeSize>(cartItem.Size, out shoeSize))
-                {
-                    isShoe = true;
-                    foreach (CartItem item in cartItems)
-                    {
-                        if (item.Variant.Id == cartItem.ProductVariantId &&
-                        item.ShoeSize.Value == shoeSize)
-                        {
-                            item.Quantity++;
-                            return Json(new { success = true, message = "Item added to cart." });
-                        }
-                    }
-                }
 
-                CartItem newCartItem;
-
-                if (isShoe)
-                { 
-                    newCartItem = new CartItem()
-                    {
-                        VariantId = cartItem.ProductVariantId,
-                        ShoeSize = shoeSize,
-                        AppUserId = userId,
-                        Quantity = 1
-                    };
-                    _cartRepository.Add(newCartItem);
-                    return Json(new { success = true, message = "Item added to cart." });          
-                }
-                else
-                {
                     newCartItem = new CartItem()
                     {
                         VariantId = cartItem.ProductVariantId,
@@ -105,8 +75,31 @@ namespace shop_web_app.Controllers
                     };
                     _cartRepository.Add(newCartItem);
                     return Json(new { success = true, message = "Item added to cart." });
+
                 }
-                
+
+                else if(Enum.TryParse<ShoeSize>(cartItem.Size, out shoeSize))
+                {
+                    foreach (CartItem item in cartItems)
+                    {
+                        if (item.Variant.Id == cartItem.ProductVariantId &&
+                        item.ShoeSize.Value == shoeSize)
+                        {
+                            item.Quantity++;
+                            return Json(new { success = true, message = "Item added to cart." });
+                        }
+                    }
+
+                    newCartItem = new CartItem()
+                    {
+                        VariantId = cartItem.ProductVariantId,
+                        ShoeSize = shoeSize,
+                        AppUserId = userId,
+                        Quantity = 1
+                    };
+                    _cartRepository.Add(newCartItem);
+                    return Json(new { success = true, message = "Item added to cart." });
+                }
             }
             return Unauthorized();
             

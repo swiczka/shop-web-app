@@ -92,7 +92,7 @@
             s1 = s1.Substring(4);
             if(s1.Contains('_'))
             {
-                s1 = s1.Replace('_', '.');
+                s1 = s1.Replace('_', ',');
             }
             return s1;
         }

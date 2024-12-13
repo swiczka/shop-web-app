@@ -43,7 +43,7 @@
 
                         @{
                             decimal totalPrice = item.Variant.Product.Price * @item.Quantity;
-                            int maxAmount;
+                            int maxAmount = 0;
                         }
                         <p class="lead">
                             @item.Variant.Product.Price PLN
@@ -59,12 +59,12 @@
                                     <p><span class="text-muted">Rozmiar:</span> @item.InternationalSize.Value</p>
                                 </div>
                             }
-                            else
+                            else if(item.ShoeSize.HasValue)
                             {
                                 maxAmount = item.Variant.ShoeSizeQuantity.FirstOrDefault(q => q.Size == item.ShoeSize.Value)?.Quantity ?? 0;
 
                                 <div class="col">
-                                    <p><span class="text-muted">Rozmiar:</span> @item.ShoeSize.Value</p>
+                                    <p><span class="text-muted">Rozmiar:</span> @item.ShoeSize.Value.ToFriendlyString()</p>
                                 </div>
                             }
                             <div class="col">
