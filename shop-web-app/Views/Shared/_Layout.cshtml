@@ -17,44 +17,43 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Clothing Shop</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a asp-area="" asp-controller="Product" asp-action="Index" class="nav-link">Produkty</a>
                     </li>
                 </ul>
-                <div class="navbar-collapse collapse w-200 order-3 dual-collapse2">
-                    <ul class="navbar-nav ms-auto">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item px-2">
-                                <a asp-area="" asp-controller="Cart" asp-action="Index" class="nav-link" >Twój koszyk <i class="bi bi-cart"></i></a>
-                            </li>
-                            <li class="nav-item px-2">
-                                <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="nav-link" >Konto <i class="bi bi-person"></i></a>
-                            </li>
-                            <li class="nav-item px-2">
-                                <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger">Wyloguj się</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item px-2">
-                                <a type="button" asp-area="" asp-controller="Account" asp-action="Login" class="btn btn-primary">Zaloguj się</a>
-                            </li>
-                            <li class="nav-item px-2">
-                                <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary">Załóż konto</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                <ul class="navbar-nav ms-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item px-2">
+                            <a asp-area="" asp-controller="Cart" asp-action="Index" class="nav-link">Twój koszyk <i class="bi bi-cart"></i></a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="nav-link">Konto <i class="bi bi-person"></i></a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger">Wyloguj się</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item px-2">
+                            <a asp-area="" asp-controller="Account" asp-action="Login" class="btn btn-primary">Zaloguj się</a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary">Załóż konto</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </div>
     </nav>
+
 
     <div class="container mt-5">
         <main role="main" class="pb-3">

@@ -92,6 +92,56 @@ namespace shop_web_app.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if(gender != null)
+            {
+                query = query.Where(p => p.Gender == gender);
+            }
+            if(priceFrom != null || priceTo != null)
+            {
+                if (priceTo == null)
+                    priceTo = 9999999;
+                if (priceFrom == null)
+                    priceFrom = 0;
+
+                query = query.Where(p => p.Price >= priceFrom &&  p.Price <= priceTo);
+            }
+            if(category != null)
+            {
+                query = query.Where(p => p.SubCategory == category);
+            }
+
+            if(sortBy != null)
+            {
+                switch (sortBy)
+                {
+                    case "priceAsc":
+                        query = query.OrderBy(p => p.Price);
+                        break;
+                    case "priceDesc":
+                        query = query.OrderByDescending(p => p.Price);
+                        break;
+                    case "alphaAsc":
+                        query = query.OrderBy(p => p.Name);
+                        break;
+                    case "alphaDesc":
+                        query = query.OrderByDescending(p => p.Name);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return await query
+                .Include(p => p.ProductVariants)
+                    .ThenInclude(v => v.Photos)
+                .Include(p => p.ProductMaterials)
+                .ToListAsync();
+        }
+
         public async Task<Product> GetByIdAsync(int id)
         {
             return await _context.Products

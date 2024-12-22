@@ -28,16 +28,21 @@ namespace shop_web_app.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy)
         {
-            var products = await _productRepository.GetAll();
-
-            if (products == null)
+            if(gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null)
             {
-                return NotFound();
+                var productsAll = await _productRepository.GetAll();
+                if (productsAll == null)
+                {
+                    return NotFound();
+                }
+
+                return View(productsAll);
             }
 
-            return View(products);
+            var productsF = await _productRepository.GetFiltered(gender, priceFrom, priceTo, category, sortBy);
+            return View(productsF);
         }
 
         public async Task<IActionResult> Details(int id) 

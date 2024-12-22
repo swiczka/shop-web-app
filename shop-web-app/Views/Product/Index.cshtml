@@ -5,48 +5,189 @@
 *@
 @{
 }
-<div class="collapse text-bg-dark" id="navbarHeader">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-8 col-md-7 py-4">
-                <h4>Arabskie gogle</h4>
-                <p class="text-body-secondary">Może i nic nie widać za to ciepło w oczy</p>
-            </div>
-            <div class="col-sm-4 offset-md-1 py-4">
-                <h4>Super sprawa</h4>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="navbar navbar-dark bg-dark shadow-sm">
-    <div class="container">
-        <a href="#" class="navbar-brand d-flex align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
-            <strong>الألبوم</strong>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="تبديل التنقل">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-    <section class="py-5 text-center container">
-        <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Wybieraj tylko z tego co najlepsze</h1>
-                <p class="lead text-body-secondary">Lorem ipsum</p>
-     
-                @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
-                {
-                    <p>
-                        <a type="button" asp-controller="Product" asp-action="Create" class="btn btn-primary my-2" style="font-size: 20px;">
-                            Dodaj nowy produkt
-                        </a>
-                    </p>
-                }
 
-            </div>
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Wybieraj tylko z tego co najlepsze</h1>
+            <p class="lead text-body-secondary">Lorem ipsum</p>
+     
+            @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+            {
+                <p>
+                    <a type="button" asp-controller="Product" asp-action="Create" class="btn btn-primary my-2" style="font-size: 20px;">
+                        Dodaj nowy produkt
+                    </a>
+                </p>
+            }
+
         </div>
-    </section>
+    </div>
+</section>
+
+<div class="collapse text-bg-dark" id="navbarHeader">
+    <div class="container p-3">
+        <form method="get" asp-action="Index">
+            @{
+                string ?gender = Context.Request.Query["gender"];
+                string ?priceFrom = Context.Request.Query["priceFrom"];
+                string ?priceTo = Context.Request.Query["priceTo"];
+                string ?category = Context.Request.Query["category"];
+                string ?sortBy = Context.Request.Query["sortBy"];
+            }
+            <div class="row">
+                <div class="col">
+                    <label class="form-label">Płeć</label>
+                    <select name="gender" class="form-select" aria-label="Default select example">
+                        @if (gender == null)
+                        {
+                            <option selected ></option>
+                            <option value="@ClothingGender.M">@ClothingGender.M.ToFriendlyString()</option>
+                            <option value="@ClothingGender.F">@ClothingGender.F.ToFriendlyString()</option>
+                        }
+                        else
+                        {
+                            <option value=""></option>
+                            if(gender == "M")
+                            {
+                                <option value="@ClothingGender.M" selected>@ClothingGender.M.ToFriendlyString()</option>
+                                <option value="@ClothingGender.F">@ClothingGender.F.ToFriendlyString()</option>
+                            }
+                            else if(gender == "F")
+                            {
+                                <option value="@ClothingGender.M">@ClothingGender.M.ToFriendlyString()</option>
+                                <option value="@ClothingGender.F" selected>@ClothingGender.F.ToFriendlyString()</option>
+                            }
+                            else
+                            {
+                                <option value="@ClothingGender.M">@ClothingGender.M.ToFriendlyString()</option>
+                                <option value="@ClothingGender.F">@ClothingGender.F.ToFriendlyString()</option>
+                            }
+                        }
+                        
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Cena od [PLN]</label>
+                    <input type="number" name="priceFrom" class="form-control" value="@(priceFrom == null ? "" : priceFrom)"/>
+                </div>
+                <div class="col">
+                    <label class="form-label">Cena do [PLN]</label>
+                    <input type="number" name="priceTo" class="form-control" value="@(priceTo == null ? "" : priceTo)" />
+                </div>
+                <div class="col">
+                    <label class="form-label">Kategoria</label>
+                    <select name="category"class="form-select mx-auto">
+                        @if(category != null)
+                        {
+                            SubCategory categoryE;
+                            if(Enum.TryParse<SubCategory>(category, out categoryE))
+                            {
+                                <option value=""></option>
+                                <option selected value="@category">@categoryE.ToFriendlyString()</option>
+                            }
+                        }
+                        else
+                        {
+                            <option selected value=""></option>
+                        }
+                        <optgroup label="Góra">
+                            <option value="@SubCategory.TTShirt">T-Shirt</option>
+                            <option value="@SubCategory.TShirt">Koszula</option>
+                            <option value="@SubCategory.TLongsleeve">Koszulka z długim rękawem</option>
+                            <option value="@SubCategory.TCrewneck">Crewneck</option>
+                            <option value="@SubCategory.THoodie">Bluza z kapturem</option>
+                            <option value="@SubCategory.TSweater">Sweter</option>
+                            <option value="@SubCategory.TJacket">Kurtka</option>
+                            <option value="@SubCategory.TCoat">Płaszcz</option>
+                            <option value="@SubCategory.TSuit">Garnitur</option>
+                            <option value="@SubCategory.TDress">Sukienka</option>
+                        </optgroup>
+                        <optgroup label="Dół">
+                            <option value="@SubCategory.BJeans">Dżinsy</option>
+                            <option value="@SubCategory.BTrousers">Spodnie</option>
+                            <option value="@SubCategory.BShorts">Szorty</option>
+                            <option value="@SubCategory.BSkirt">Spódnica</option>
+                            <option value="@SubCategory.BLeggings">Legginsy</option>
+                            <option value="@SubCategory.BSweatpants">Spodnie dresowe</option>
+                        </optgroup>
+                        <optgroup label="Akcesoria">
+                            <option value="@SubCategory.ABelt">Pasek</option>
+                            <option value="@SubCategory.AHat">Czapka</option>
+                            <option value="@SubCategory.AScarf">Szalik</option>
+                            <option value="@SubCategory.AGloves">Rękawice</option>
+                            <option value="@SubCategory.ASunglasses">Okulary przeciwsłoneczne</option>
+                            <option value="@SubCategory.AWatch">Zegarek</option>
+                            <option value="@SubCategory.ABag">Torebka</option>
+                            <option value="@SubCategory.AJewelry">Biżuteria</option>
+                        </optgroup>
+                        <optgroup label="Buty">
+                            <option value="@SubCategory.SSneakers">Sneakersy</option>
+                            <option value="@SubCategory.SBoots">Botki</option>
+                            <option value="@SubCategory.SSandals">Sandały</option>
+                            <option value="@SubCategory.SLoafers">Mokasyny</option>
+                            <option value="@SubCategory.SHeels">Obcasy</option>
+                            <option value="@SubCategory.SFlats">Płaskie buty</option>
+                            <option value="@SubCategory.SSlippers">Kapcie</option>
+                            <option value="@SubCategory.SRunningShoes">Buty do biegania</option>
+                            <option value="@SubCategory.SWorkShoes">Buty robocze</option>
+                        </optgroup>
+                    </select>
+
+                </div>
+                @{
+                    Dictionary<string, string> sortPairs = new Dictionary<string, string>()
+                    {
+                        {"priceAsc", "Cena (od najniższej)"},
+                        {"priceDesc", "Cena (od najwyższej)"},
+                        {"alphaAsc", "Alfabetycznie (rosnąco)"},
+                        {"alphaDesc", "Alfabetycznie (malejąco)"},
+                    };
+                }
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label"><i class="bi bi-sort-down"></i> Sortuj wg</label>
+                        <select name="sortBy" class="form-select mx-auto">
+                            @if(sortBy != null)
+                            {
+                                try
+                                {
+                                    <option selected value="@sortBy">
+                                        @sortPairs[sortBy]
+                                    </option>
+                                }
+                                catch 
+                                {
+                                    <option selected value=""></option>
+                                }
+                            }
+                            else
+                            {
+                                <option selected value=""></option>
+                            }
+                            <option value="priceAsc"><i class="bi bi-sort-numeric-down"></i> Cena (od najniższej)</option>
+                            <option value="priceDesc"><i class="bi bi-sort-numeric-up-alt"></i> Cena (od najwyższej)</option>
+                            <option value="alphaAsc"><i class="bi bi-sort-alpha-down"></i> Alfabetycznie (rosnąco)</option>
+                            <option value="alphaDesc"><i class="bi bi-sort-alpha-up-alt"></i> Alfabetycznie (malejąco)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="text-end mt-3">
+                <button class="btn btn-outline-primary"type="submit">
+                    Zastosuj
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="mx-auto">
+    <div class="container">
+        <a class="link-secondary h5" style="text-decoration: none; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Filtry">
+            <strong>Filtruj <i class="bi bi-funnel"></i> / Sortuj <i class="bi bi-sort-down"></i></strong>
+        </a>
+    </div>
+</div>
 
 <div class="album py-5 bg-body-tertiary">
     <div class="container">

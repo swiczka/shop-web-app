@@ -63,8 +63,11 @@ namespace shop_web_app.Enums
 
     public enum ClothingGender
     {
+        [Display(Name = "Mężczyzna")]
         M,
+        [Display(Name = "Kobieta")]
         F,
+        [Display(Name = "Uniseks")]
         U
     }
 
