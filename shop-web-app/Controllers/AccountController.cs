@@ -56,7 +56,7 @@ namespace shop_web_app.Controllers
             string userId = _userManager.GetUserId(User);
             if (userId == null || userId != vm.AppUser.Id)
             {
-                return RedirectToAction("Error", "Error", new { code = 401 });
+                return Unauthorized();
             }
 
             AppUser user = await _userRepository.GetUserWithAddress(userId);
@@ -141,13 +141,8 @@ namespace shop_web_app.Controllers
 
             user.Name = vm.Name;
             user.Surname = vm.Surname;
-
-            if(user.Gender != vm.Gender)
-            {
-                _context.Entry(user).Property(u => u.Gender).IsModified = true;
-                user.Gender = vm.Gender;
-            }
-
+            user.Gender = vm.Gender;
+            
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Dashboard");

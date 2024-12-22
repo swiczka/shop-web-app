@@ -143,13 +143,13 @@
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <button type="button" class="btn btn-success" id="addToCart" onclick="addToCart()">
-                                    <span class="sr-only">Dodaj do koszyka</span>
+                                    <span class="sr-only"><i class="bi bi-bag"></i> Do koszyka</span>
                                 </button>
                             }
                             else
                             {
                                 <a type="button" class="btn btn-success" id="addToCart" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <span class="sr-only">Dodaj do koszyka</span>
+                                    <span class="sr-only"><i class="bi bi-bag"></i> Do koszyka</span>
                                 </a>
                             }
                             

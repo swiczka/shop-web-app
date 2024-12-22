@@ -109,7 +109,19 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            string userId = _userManager.GetUserId(User);
             CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(id);
+
+            if (cartItem == null)
+            {
+                return NotFound();
+            }
+            if (userId == null || userId != cartItem.AppUserId)
+            {
+                return Unauthorized();
+            }
+
+
             _cartRepository.Delete(cartItem);
             return RedirectToAction("Index");
         }
@@ -117,13 +129,21 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> UpdateQuantity(int cartItemId, int newQuantity)
         {
+            string userId = _userManager.GetUserId(User);
             CartItem cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
 
-            if (cartItem != null)
+            if (cartItem == null)
             {
-                cartItem.Quantity = newQuantity;
-                _cartRepository.Update(cartItem);
+                return NotFound();
             }
+            if (userId == null || userId != cartItem.AppUserId)
+            {
+                return Unauthorized();
+            }
+
+            cartItem.Quantity = newQuantity;
+            _cartRepository.Update(cartItem);
+            
             return RedirectToAction("Index", "Cart");
         }
     }

@@ -1,9 +1,9 @@
 ﻿const sizes = [
-    { id: "1", name: "S" },
-    { id: "2", name: "M" },
-    { id: "3", name: "L" },
-    { id: "4", name: "XL" },
-    { id: "5", name: "XXL" }
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
 ];
 
 const shoeSizes = [
@@ -62,13 +62,13 @@ function changeVariant(thumbnail) {
         let sizeHtml = `<select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
                             <option value="" selected>Wybierz rozmiar</option>`;
 
-        variant.internationalSizeQuantity.$values.forEach(sq => {
+        variant.internationalSizeQuantity.$values.forEach((sq, index) => {
      
             if (sq.quantity > 0) {
-                sizeHtml += `<option value="${sq.size}">${sizes[sq.size - 1].name}</option>`;
+                sizeHtml += `<option value="${sizes[index]}">${sizes[index]}</option>`;
             }
             else {
-                sizeHtml += `<option disabled class="text-muted" value="${sq.size}">${sizes[sq.size - 1].name} (niedostępne)</option>`;  
+                sizeHtml += `<option disabled class="text-muted" value="${sizes[index]}">${sizes[index]} (niedostępne)</option>`;  
             }
         });
         sizeHtml += `</select >`;

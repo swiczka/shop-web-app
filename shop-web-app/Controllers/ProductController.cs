@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.FileProviders;
 using shop_web_app.Data;
 using shop_web_app.Enums;
 using shop_web_app.Interfaces;
@@ -9,6 +10,7 @@ using shop_web_app.Models;
 using shop_web_app.Models.SizeQuantity;
 using shop_web_app.Services;
 using shop_web_app.ViewModels;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 
 namespace shop_web_app.Controllers
@@ -284,10 +286,16 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            AppUser user = await _userManager.GetUserAsync(User);
             var product = await _productRepository.GetByIdAsync(id);
-            
+
+            if (user == null || !User.IsInRole("admin"))
+            {
+                return Unauthorized();
+            }
+
             if(product == null)
-                return View("Error");
+                return NotFound();
 
             var newVariants = VariantsViewModelfromDB(product.ProductVariants);
 
@@ -319,6 +327,13 @@ namespace shop_web_app.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditProductViewModel productVM)
         {
+            AppUser user = await _userManager.GetUserAsync(User);
+
+            if (user == null || !User.IsInRole("admin"))
+            {
+                return Unauthorized();
+            }
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Failed to edit product");
@@ -426,7 +441,7 @@ namespace shop_web_app.Controllers
 
             else 
             {
-                return View(productVM);
+                return NotFound();
             }
         }
     }
