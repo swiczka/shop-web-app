@@ -6,11 +6,10 @@
 @{
 }
 
-<section class="py-5 text-center container">
-    <div class="row py-lg-5">
+<section class="py-5 container text-center">
+    <div class="row">
         <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Wybieraj tylko z tego co najlepsze</h1>
-            <p class="lead text-body-secondary">Lorem ipsum</p>
      
             @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
             {
@@ -25,8 +24,8 @@
     </div>
 </section>
 
-<div class="collapse text-bg-dark" id="navbarHeader">
-    <div class="container p-3">
+<div class="text-bg-dark collapse" id="navbarHeader">
+    <div class="p-3 container">
         <form method="get" asp-action="Index">
             @{
                 string ?gender = Context.Request.Query["gender"];
@@ -34,6 +33,7 @@
                 string ?priceTo = Context.Request.Query["priceTo"];
                 string ?category = Context.Request.Query["category"];
                 string ?sortBy = Context.Request.Query["sortBy"];
+                string ?isActive = Context.Request.Query["isActive"];
             }
             <div class="row">
                 <div class="col">
@@ -41,13 +41,13 @@
                     <select name="gender" class="form-select" aria-label="Default select example">
                         @if (gender == null)
                         {
-                            <option selected ></option>
+                            <option selected >Dowolna</option>
                             <option value="@ClothingGender.M">@ClothingGender.M.ToFriendlyString()</option>
                             <option value="@ClothingGender.F">@ClothingGender.F.ToFriendlyString()</option>
                         }
                         else
                         {
-                            <option value=""></option>
+                            <option value="">Dowolna</option>
                             if(gender == "M")
                             {
                                 <option value="@ClothingGender.M" selected>@ClothingGender.M.ToFriendlyString()</option>
@@ -78,18 +78,18 @@
                 <div class="col">
                     <label class="form-label">Kategoria</label>
                     <select name="category"class="form-select mx-auto">
-                        @if(category != null)
+                        @if(!string.IsNullOrEmpty(category))
                         {
                             SubCategory categoryE;
                             if(Enum.TryParse<SubCategory>(category, out categoryE))
                             {
-                                <option value=""></option>
+                                <option value="">Wszystkie</option>
                                 <option selected value="@category">@categoryE.ToFriendlyString()</option>
                             }
                         }
                         else
                         {
-                            <option selected value=""></option>
+                            <option selected value="">Wszystkie</option>
                         }
                         <optgroup label="Góra">
                             <option value="@SubCategory.TTShirt">T-Shirt</option>
@@ -144,12 +144,12 @@
                         {"alphaDesc", "Alfabetycznie (malejąco)"},
                     };
                 }
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col">
                         <label class="form-label"><i class="bi bi-sort-down"></i> Sortuj wg</label>
                         <select name="sortBy" class="form-select mx-auto">
-                            @if(sortBy != null)
-                            {
+                            @if (!string.IsNullOrEmpty(sortBy))
+                                            {
                                 try
                                 {
                                     <option selected value="@sortBy">
@@ -158,12 +158,12 @@
                                 }
                                 catch 
                                 {
-                                    <option selected value=""></option>
+                                    <option selected value="">Bez sortowania</option>
                                 }
                             }
                             else
                             {
-                                <option selected value=""></option>
+                                <option selected value="">Bez sortowania</option>
                             }
                             <option value="priceAsc"><i class="bi bi-sort-numeric-down"></i> Cena (od najniższej)</option>
                             <option value="priceDesc"><i class="bi bi-sort-numeric-up-alt"></i> Cena (od najwyższej)</option>
@@ -171,9 +171,42 @@
                             <option value="alphaDesc"><i class="bi bi-sort-alpha-up-alt"></i> Alfabetycznie (malejąco)</option>
                         </select>
                     </div>
+                    @if (User.IsInRole("admin") || User.IsInRole("employee"))
+                    {
+                        Dictionary<string, string> isActivePairs = new Dictionary<string, string>()
+                        {
+                            {"activeOnly", "Tylko aktywne"},
+                            {"inactiveOnly", "Tylko nieaktywne"},
+                            {"all", "Wszystkie"}
+                        };
+                        <div class="col">
+                            <label class="form-label">Aktywność</label>
+                            <select name="isActive" class="form-select mx-auto">
+                            @if(isActive != null)
+                            {
+                                try
+                                {
+                                    <option selected value="@isActive">@isActivePairs[isActive]</option>
+                                }
+                                catch
+                                {
+                                    <option selected value="all">Wszystkie</option>
+                                }
+                            }
+                            else
+                            {
+                                <option selected value="all">Wszystkie</option>
+                            }  
+                            @foreach(var pair in isActivePairs)
+                            {
+                                <option value="@pair.Key">@pair.Value</option>
+                            }
+                            </select>
+                        </div>
+                    }
                 </div>
             </div>
-            <div class="text-end mt-3">
+            <div class="mt-3 text-end">
                 <button class="btn btn-outline-primary"type="submit">
                     Zastosuj
                 </button>

@@ -17,5 +17,6 @@ namespace shop_web_app.Models
         public SubCategory SubCategory { get; set; }
         public string ?AuthorId { get; set; }
         public AppUser ?Author { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

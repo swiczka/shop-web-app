@@ -28,9 +28,9 @@ namespace shop_web_app.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy)
+        public async Task<IActionResult> Index(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
-            if(gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null)
+            if(gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null && isActive == null)
             {
                 var productsAll = await _productRepository.GetAll();
                 if (productsAll == null)
@@ -41,7 +41,15 @@ namespace shop_web_app.Controllers
                 return View(productsAll);
             }
 
-            var productsF = await _productRepository.GetFiltered(gender, priceFrom, priceTo, category, sortBy);
+            var user = await _userManager.GetUserAsync(User);
+
+            //isActive is allowed only for admins and employees
+            if (isActive != null && !(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                isActive = null;
+            }
+
+            var productsF = await _productRepository.GetFiltered(gender, priceFrom, priceTo, category, sortBy, isActive);
             return View(productsF);
         }
 
@@ -55,6 +63,29 @@ namespace shop_web_app.Controllers
             }
 
             return View(product);
+        }
+
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            //isActive is allowed only for admins and employees
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Unauthorized();
+            }
+
+            var product = await _productRepository.GetByIdAsync(id);
+
+            if (product != null)
+            {
+                product.IsActive = !product.IsActive;
+                _productRepository.Update(product);
+            }
+
+
+
+            return RedirectToAction("Details", "Product", new { id = id });
         }
 
         public IActionResult Create()
@@ -281,7 +312,8 @@ namespace shop_web_app.Controllers
                     SubCategory = product.SubCategory,
                     ProductVariants = newVariants,
                     ProductMaterials = newMaterials,
-                    Author = await _userManager.GetUserAsync(User)
+                    Author = await _userManager.GetUserAsync(User),
+                    IsActive = true
                 };
                 _productRepository.Add(newProduct);
             }

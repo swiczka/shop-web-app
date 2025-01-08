@@ -24,6 +24,6 @@ namespace shop_web_app.Interfaces
         Task<IEnumerable<VariantColor>> GetVariantColorsByVariantIdAsync(int variantId);
         Task<IEnumerable<InternationalSizeQuantity>> GetInternationalSQByVariantIdAsync(int variantId);
         Task<IEnumerable<ShoeSizeQuantity>> GetShoeSQByVariantIdAsync(int variantId);
-        Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy);
+        Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive);
     }
 }

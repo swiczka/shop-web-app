@@ -92,13 +92,13 @@ namespace shop_web_app.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy)
+        public async Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
             var query = _context.Products.AsQueryable();
 
             if(gender != null)
             {
-                query = query.Where(p => p.Gender == gender);
+                query = query.Where(p => p.Gender == gender || p.Gender == ClothingGender.U);
             }
             if(priceFrom != null || priceTo != null)
             {
@@ -129,6 +129,23 @@ namespace shop_web_app.Repository
                         break;
                     case "alphaDesc":
                         query = query.OrderByDescending(p => p.Name);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if(isActive != null)
+            {
+                switch (isActive)
+                {
+                    case "activeOnly":
+                        query = query.Where(p => p.IsActive == true);
+                        break;
+                    case "all":
+                        break;
+                    case "inactiveOnly":
+                        query = query.Where(p => p.IsActive == false);
                         break;
                     default:
                         break;
