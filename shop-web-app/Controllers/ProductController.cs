@@ -30,9 +30,20 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> Index(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
-            if(gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null && isActive == null)
+            var user = await _userManager.GetUserAsync(User);
+
+            if (gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null && isActive == null)
             {
-                var productsAll = await _productRepository.GetAll();
+                IEnumerable<Product> productsAll;
+                if (User.IsInRole("admin") || User.IsInRole("employee")) 
+                {
+                    productsAll = await _productRepository.GetAll();
+                }
+                else
+                {
+                    productsAll = await _productRepository.GetAllActive();
+                }
+                
                 if (productsAll == null)
                 {
                     return NotFound();
@@ -41,12 +52,10 @@ namespace shop_web_app.Controllers
                 return View(productsAll);
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
             //isActive is allowed only for admins and employees
-            if (isActive != null && !(User.IsInRole("admin") || User.IsInRole("employee")))
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                isActive = null;
+                isActive = "activeOnly";
             }
 
             var productsF = await _productRepository.GetFiltered(gender, priceFrom, priceTo, category, sortBy, isActive);

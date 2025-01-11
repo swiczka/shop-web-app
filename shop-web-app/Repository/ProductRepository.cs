@@ -92,6 +92,16 @@ namespace shop_web_app.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetAllActive()
+        {
+            return await _context.Products
+                .Include(p => p.ProductVariants)
+                    .ThenInclude(v => v.Photos)
+                .Include(p => p.ProductMaterials)
+                .Where(p => p.IsActive == true)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
             var query = _context.Products.AsQueryable();
