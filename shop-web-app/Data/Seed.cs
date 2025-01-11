@@ -56,6 +56,11 @@ namespace shop_web_app.Data
                                     {
                                         new InternationalSizeQuantity()
                                         {
+                                            Size = InternationalSize.XS,
+                                            Quantity = 5
+                                        },
+                                        new InternationalSizeQuantity()
+                                        {
                                             Size = InternationalSize.S,
                                             Quantity = 10
                                         },
@@ -100,6 +105,11 @@ namespace shop_web_app.Data
                                     },
                                     InternationalSizeQuantity = new List<InternationalSizeQuantity>()
                                     {
+                                        new InternationalSizeQuantity()
+                                        {
+                                            Size = InternationalSize.XS,
+                                            Quantity = 0
+                                        },
                                         new InternationalSizeQuantity()
                                         {
                                             Size = InternationalSize.S,
@@ -169,6 +179,11 @@ namespace shop_web_app.Data
                                     },
                                     InternationalSizeQuantity = new List<InternationalSizeQuantity>()
                                     {
+                                        new InternationalSizeQuantity()
+                                        {
+                                            Size = InternationalSize.XS,
+                                            Quantity = 0
+                                        },
                                         new InternationalSizeQuantity()
                                         {
                                             Size = InternationalSize.S,

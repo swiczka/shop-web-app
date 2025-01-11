@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using shop_web_app.Data;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
@@ -26,10 +27,16 @@ namespace shop_web_app.Repository
             return Save();
         }
 
-        public async Task<CartItem> GetCartItemByIdAsync(int cartItemId) 
-        { 
-            return await _context.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
+        public async Task<CartItem> GetCartItemByIdAsync(int cartItemId)
+        {
+            var param = new SqlParameter("@CartItemId", cartItemId);
+            var cartItems = await _context.CartItems
+                .FromSqlRaw("EXEC GetCartItemById @CartItemId", param)
+                .ToListAsync();
+
+            return cartItems.FirstOrDefault();
         }
+
 
         public bool Save()
         {

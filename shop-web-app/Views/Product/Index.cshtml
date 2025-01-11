@@ -38,7 +38,7 @@
             <div class="row">
                 <div class="col">
                     <label class="form-label">Płeć</label>
-                    <select name="gender" class="form-select" aria-label="Default select example">
+                    <select name="gender" class="form-select" aria-label="Wybór preferowanej płci produktu">
                         @if (gender == null)
                         {
                             <option selected >Dowolna</option>
@@ -225,7 +225,7 @@
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
             @foreach(Product item in Model)
             {
                 string url;
@@ -239,25 +239,29 @@
                 }
                 <div class="col">
                     <div class="card shadow-sm" style="border-radius: 4px 20px 20px 20px;">
-                        <img src=@url alt="Obraz przedstawiający @item.Name" width=100% height=500 style="border-radius: 4px 20px 4px 4px" />
+                        <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">
+                            <img src="@url" alt="Obraz przedstawiający @item.Name" class="card-img-top" style="height: 500px; object-fit: cover; border-radius: 4px 20px 0 0;">
+                        </a>
                         <div class="overlay-category" style="position: absolute; top: 0; left: 0; width: 30%; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 5px; text-align: center; border-radius: 4px;">
                             @item.Gender.ToFriendlyString() / @item.SubCategory.ToFriendlyString()
                         </div>
                         <div class="card-body">
-                            <p class="card-text">@item.Name</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a type="button" asp-controller="Product" asp-action="Details" asp-route-id=@item.Id class="btn btn-sm btn-outline-secondary">Szczegóły</a>
+                                <div>
+                                    <a asp-controller="Product" asp-action="Details" asp-route-id=@item.Id class="card-text lead text-black" style="text-decoration: none;">@item.Name</a>
                                     @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
                                     {
-                                        <a type="button" asp-controller="Product" asp-action="Edit" asp-route-id=@item.Id class="btn btn-sm btn-outline-secondary">Edytuj</a>
+                                        <a asp-controller="Product" asp-action="Edit" asp-route-id=@item.Id class="text-secondary text-lg-center"><i class="bi bi-pencil-square"></i></a>
                                     }
                                 </div>
-                                <p class="text-body-secondary" style="font-size: 20px">@item.Price PLN</p>
+                                <div class="text-nowrap">
+                                    <h5 class="text-secondary">@item.Price PLN</h5>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             }
         </div>
     </div>

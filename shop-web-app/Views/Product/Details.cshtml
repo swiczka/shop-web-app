@@ -72,16 +72,7 @@
                         
                         <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
             
-                        <div class="mt-5 mb-5">
-                            <p class="lead"><b>Materiały:</b></p>
-                            <ul>
-                                @foreach(ProductMaterial material in Model.ProductMaterials)
-                                {
-                                    <li>@material.Material.ToFriendlyString()</li>
-                                }
-                            </ul>
-                        </div>
-                        
+                        <p class="h2 py-4 text-start">@Model.Price PLN</p>
 
                         <div class="row mb-4">
                             <p class="lead" id="variantName"><b>Wariant:</b> @defaultVariant.Name</p>
@@ -118,80 +109,85 @@
                             } 
                         </div>
 
-                        <p class="lead">Wybierz rozmiar:</p>
-                        <div class="mb-3" id="sizesContainer">
-                            @if(Model.Category != Category.Shoes){
-                                <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
-                                    <option selected>Wybierz rozmiar</option>
-                                    @foreach(InternationalSizeQuantity sq in defaultVariant.InternationalSizeQuantity)
-                                    {
-                                        if(sq.Quantity > 0)
+                        <div class="py-3">
+                            <p class="lead">Wybierz rozmiar:</p>
+                            <div id="sizesContainer">
+                                @if(Model.Category != Category.Shoes){
+                                    <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
+                                        <option selected>Wybierz rozmiar</option>
+                                        @foreach(InternationalSizeQuantity sq in defaultVariant.InternationalSizeQuantity)
                                         {
-                                            <option value="@sq.Size">@sq.Size</option>
+                                            if(sq.Quantity > 0)
+                                            {
+                                                <option value="@sq.Size">@sq.Size</option>
+                                            }
+                                            else
+                                            {
+                                                <option disabled class="text-muted" value="@sq.Size">@sq.Size (niedostępne)</option>
+                                            }
                                         }
-                                        else
+                                    </select>
+                                }
+                                else
+                                {
+                                    <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
+                                        <option value="" selected>Wybierz rozmiar</option>
+                                        @foreach (ShoeSizeQuantity sq in defaultVariant.ShoeSizeQuantity)
                                         {
-                                            <option disabled class="text-muted" value="@sq.Size">@sq.Size (niedostępne)</option>
+                                            if (sq.Quantity > 0)
+                                            {
+                                                <option value="@sq.Size">@sq.Size.ToFriendlyString()</option>
+                                            }
+                                            else
+                                            {
+                                                <option disabled class="text-muted" value="@sq.Size">@sq.Size.ToFriendlyString() (niedostępne)</option>
+                                            }
                                         }
-                                    }
-                                </select>
-                            }
-                            else
-                            {
-                                <select id="selectedSize" class="form-select form-select mb-3" style="width: 180px;">
-                                    <option value="" selected>Wybierz rozmiar</option>
-                                    @foreach (ShoeSizeQuantity sq in defaultVariant.ShoeSizeQuantity)
-                                    {
-                                        if (sq.Quantity > 0)
-                                        {
-                                            <option value="@sq.Size">@sq.Size.ToFriendlyString()</option>
-                                        }
-                                        else
-                                        {
-                                            <option disabled class="text-muted" value="@sq.Size">@sq.Size.ToFriendlyString() (niedostępne)</option>
-                                        }
-                                    }
-                                </select>
-                            }
+                                    </select>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="btn-group mb-2">
-                            <input type="hidden" id="selectedVariantIndex" name="SelectedVariantIndex" value="0" />
-                            <a class="btn btn-success btn-lg">@Model.Price PLN</a>
+
+                        <div class="py-5 d-grid gap-2 w-75 mx-auto">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <button type="button" class="btn btn-success" id="addToCart" onclick="addToCart()">
-                                    <span class="sr-only"><i class="bi bi-bag"></i> Do koszyka</span>
+                                <button type="button" class="btn btn-lg btn-success" id="addToCart" onclick="addToCart()">
+                                    <i class="bi bi-bag me-2"></i> Do koszyka
                                 </button>
                             }
                             else
                             {
-                                <a type="button" class="btn btn-success" id="addToCart" asp-area="" asp-controller="Account" asp-action="Login">
-                                    <span class="sr-only"><i class="bi bi-bag"></i> Do koszyka</span>
+                                <a type="button" class="btn btn-lg btn-success" id="addToCart" asp-area="" asp-controller="Account" asp-action="Login">
+                                    <i class="bi bi-bag me-2"></i> Do koszyka
                                 </a>
                             }
-                            
                         </div>
-                        
-                    </div>
-                    <div id="cartAlert">
 
+                        <div class="py-3" id="cartAlert">
+                        </div>
                     </div>
                 </div>
-                <!--end of col-->
             </div>
-            <!--end of row-->
         </div>
-        <!--end of container-->
     </section>
-    <!--end of section-->
+
+
     <section class="bg-white space-sm">
         <hr />
         <div class="container">
             <h4>O produkcie</h4>
             <p>@Model.Description</p>
+            <div>
+                <p class="lead"><b>Materiały:</b></p>
+                <ul>
+                    @foreach (ProductMaterial material in Model.ProductMaterials)
+                    {
+                        <li>@material.Material.ToFriendlyString()</li>
+                    }
+                </ul>
+            </div>
         </div>
+        
     </section>
 </div>
 <script>
