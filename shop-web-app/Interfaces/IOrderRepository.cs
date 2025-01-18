@@ -11,5 +11,7 @@ namespace shop_web_app.Interfaces
         Task<List<Order>> GetOrdersByUser(string userId);
         Task<Order> GetOrderById(int id);
         Task<Order> GetOnlyOrderById(int id);
+        Task<List<Order>> GetAllOrdersAsync();
+        Task<List<Order>> GetOrdersFilteredAsync(string email, int id);
     }
 }

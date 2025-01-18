@@ -53,6 +53,46 @@ namespace shop_web_app.Repository
             return order;
         }
 
+        public async Task<List<Order>> GetAllOrdersAsync()
+        {
+            var orders = await _context.Orders
+                .Include(a => a.Orderer)
+                .Include(v => v.OrderItems)
+                    .ThenInclude(a => a.Variant)
+                    .ThenInclude(b => b.Photos)
+                .Include(c => c.OrderItems)
+                    .ThenInclude(d => d.Variant)
+                    .ThenInclude(e => e.Product)
+                .OrderByDescending(a => a.OrderDate)
+                .ToListAsync();
+            return orders;
+        }
+
+        public async Task<List<Order>> GetOrdersFilteredAsync(string email, int id)
+        {
+            var query = _context.Orders.AsQueryable();
+
+            if(email != null)
+            {
+                query = query.Where(p => p.Orderer.Email.Contains(email));
+            }
+            if(id != -1)
+            {
+                query = query.Where(p => p.Id == id);
+            }
+
+            return await query
+                .Include(a => a.Orderer)
+                .Include(v => v.OrderItems)
+                    .ThenInclude(a => a.Variant)
+                    .ThenInclude(b => b.Photos)
+                .Include(c => c.OrderItems)
+                    .ThenInclude(d => d.Variant)
+                    .ThenInclude(e => e.Product)
+                .OrderByDescending(a => a.OrderDate)
+                .ToListAsync();
+        }
+
         public bool Save()
         {
             return _context.SaveChanges() > 0;

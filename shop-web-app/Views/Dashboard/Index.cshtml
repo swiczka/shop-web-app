@@ -63,7 +63,7 @@
                 @foreach(var order in Model.Orders)
                 {
                     <div class="my-3 p-3 bg-white rounded shadow">
-                        <div class="media pt-3">
+                        <div class="media">
                             <div class="row g-3">
                                 @{
                                     int i = 0;
@@ -130,11 +130,11 @@
                                         </div>
                                         
                                     </div>
-                                    <div class="text-end">
-                                        <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
-                                    </div>
+                                    
                                 }
-                                
+                                <div class="text-end">
+                                    <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
+                                </div>
                             </div>
                             
                         </div>

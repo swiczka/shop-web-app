@@ -159,9 +159,10 @@ namespace shop_web_app.Controllers
                 return NotFound();
             }
 
-            if(user.Id != order.OrdererId || !(User.IsInRole("admin") || User.IsInRole("employee")))
+            if(user.Id != order.OrdererId)
             {
-                return Forbid();
+                if(!(User.IsInRole("admin") || User.IsInRole("employee")))
+                    return Forbid();
             }
 
             OrderDetailsViewModel vm = new OrderDetailsViewModel() 
@@ -201,9 +202,30 @@ namespace shop_web_app.Controllers
             }
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? email, string? id)
         {
-            return View();
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Forbid();
+            }
+            if(email == null && id == null)
+            {
+                var orders = await _orderRepository.GetAllOrdersAsync();
+                return View(orders);
+            }
+            try
+            {
+                int idInt = Int32.Parse(id);
+                var ordersF = await _orderRepository.GetOrdersFilteredAsync(email, idInt);
+                return View(ordersF);
+            }
+            catch
+            {
+                var ordersF = await _orderRepository.GetOrdersFilteredAsync(email, -1);
+                return View(ordersF);
+            }
+
+            
         }
     }
 }

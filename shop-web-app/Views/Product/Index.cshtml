@@ -24,17 +24,21 @@
     </div>
 </section>
 
-<div class="text-bg-dark collapse" id="navbarHeader">
+@{
+    string? gender = Context.Request.Query["gender"];
+    string? priceFrom = Context.Request.Query["priceFrom"];
+    string? priceTo = Context.Request.Query["priceTo"];
+    string? category = Context.Request.Query["category"];
+    string? sortBy = Context.Request.Query["sortBy"];
+    string? isActive = Context.Request.Query["isActive"];
+    bool isExpanded = !string.IsNullOrEmpty(gender) || !string.IsNullOrEmpty(priceFrom) ||
+    !string.IsNullOrEmpty(priceTo) || !string.IsNullOrEmpty(category) ||
+    !string.IsNullOrEmpty(sortBy) || !string.IsNullOrEmpty(isActive);
+}
+
+<div class="text-bg-dark collapse @(isExpanded ? "show" : "")" id="navbarHeader">
     <div class="p-3 container">
         <form method="get" asp-action="Index">
-            @{
-                string ?gender = Context.Request.Query["gender"];
-                string ?priceFrom = Context.Request.Query["priceFrom"];
-                string ?priceTo = Context.Request.Query["priceTo"];
-                string ?category = Context.Request.Query["category"];
-                string ?sortBy = Context.Request.Query["sortBy"];
-                string ?isActive = Context.Request.Query["isActive"];
-            }
             <div class="row">
                 <div class="col">
                     <label class="form-label">Płeć</label>

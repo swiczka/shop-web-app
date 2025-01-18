@@ -1,6 +1,131 @@
-﻿@*
+﻿@using shop_web_app.Enums
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<Order>
+<h1 class="pb-3">Zamówienia</h1>
+
 @{
+    string? email = Context.Request.Query["email"];
+    string? id = Context.Request.Query["id"];
+    bool isExpanded = !string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(id);
 }
-<h1>Zamówienia</h1>
+
+<div class="text-bg-dark collapse @(isExpanded ? "show" : "")" id="navbarHeader">
+    <div class="p-3 container">
+        <form method="get" asp-action="Index">
+            <div class="row">
+                <div class="col">
+                    <label class="form-label">E-mail zamawiającego</label>
+                    <input type="text" name="email" class="form-control" value="@(email == null ? "" : email)" />
+                </div>
+                <div class="col">
+                    <label class="form-label">Id zamówienia</label>
+                    <input type="text" name="id" class="form-control" value="@(id == null ? "" : id)" />
+                </div>
+            </div>
+            <div class="mt-3 text-end">
+                <button class="btn btn-outline-primary" type="submit">
+                    Zastosuj
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mx-auto">
+    <div class="container">
+        <a class="link-secondary h5" style="text-decoration: none; cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="@(isExpanded.ToString().ToLower())" aria-label="Filtry">
+            <strong>Filtruj <i class="bi bi-funnel"></i></strong>
+        </a>
+    </div>
+</div>
+
+
+@if(Model.Count == 0)
+{
+    <h3 class="text-secondary lead text-center"><i class="bi bi-info-circle p-2"></i> Nie znaleziono takiego zamówienia!</h3>
+}
+@foreach (var order in Model)
+{
+    <div class="my-3 p-3 bg-white rounded shadow">
+        <div class="media pt-3">
+            <div class="row g-3">
+                @{
+                    int i = 0;
+                }
+                <ul class="list-unstyled">
+                    <li class="text-muted">Id: <span class="text-black">@order.Id</span></li>
+                    <li class="text-muted">Zamówiono: <span class="text-black">@order.OrderDate</span></li>
+                    <li class="text-muted">Złożone przez: <span class="text-black">@order.Orderer.Email</span></li>
+                    <li class="text-muted">Status: <span class="text-black">@order.Status.ToFriendlyString()</span></li>
+                </ul>
+
+                @foreach (var orderItem in order.OrderItems)
+                {
+                    if (i != 0)
+                    {
+                        <hr />
+                    }
+                    i++;
+                    <div class="col-md-2" style="width: 100px; height: 120px;">
+                        <img alt="@orderItem.Variant.Product.Name Thumbnail"
+                             src="@orderItem.Variant.Photos.First().PhotoUrl"
+                             class="img-fluid" />
+                    </div>
+                    <div class="col-md-10">
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
+                                    @orderItem.Variant.Product.Name
+                                </a>
+                            </div>
+                        </div>
+
+
+                        @{
+                            decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
+                            int maxAmount;
+                        }
+                        <p class="lead" style="font-size: 15px;">
+                            @orderItem.Variant.Product.Price PLN
+                        </p>
+
+                        <div class="row">
+
+                            @if (orderItem.InternationalSize.HasValue) // nie jest butem
+                            {
+                                <div class="col">
+                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value.ToFriendlyString()</p>
+                                </div>
+                            }
+                            <div class="col">
+                                <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
+                            </div>
+                            <div class="col">
+                                <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
+                            </div>
+                            <div class="col">
+                                <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                }
+                <div class="text-end">
+                    <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
