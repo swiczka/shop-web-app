@@ -1,0 +1,120 @@
+﻿@using shop_web_app.Enums;
+@using shop_web_app.ViewModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model OrderDetailsViewModel
+
+<h3>Detale zamówienia o numerze: <span class="text-secondary">@Model.Order.Id</span></h3>
+
+<div class="my-3 p-3 bg-white rounded shadow">
+    <div class="media">
+        <div class="row g-3">
+
+            @{
+                int i = 0;
+                decimal sum = 0;
+            }
+
+            <ul class="list-unstyled">
+                <li class="text-muted">Zamówiono: <span class="text-black">@Model.Order.OrderDate</span></li>
+                <li class="text-muted">Status: <span class="text-black">@Model.Order.Status.ToFriendlyString()</span></li>
+            </ul>
+
+            @if(User.IsInRole("admin") || User.IsInRole("employee"))
+            {
+                <form method="post" asp-action="ChangeOrderStatus">
+                    <div class="form-group mb-3 w-25">
+                        <label>Zmień status zamówienia:</label>
+                        <select asp-for="OrderStatus" asp-items="@Html.GetEnumSelectList<OrderStatus>()" class="form-control">
+                        </select>
+                        <input type="hidden" name="OrderId" value="@Model.Order.Id"/>
+                        <div class="text-end mt-2">
+                            <button type="submit" class="btn btn-primary">Zmień status</button>
+                        </div>
+                        
+                    </div>
+                </form>
+            }
+
+            <div class="row py-3">
+                <div class="col">
+                    <h5><i class="bi bi-geo-alt"></i> Adres dostawy</h5>
+                    <p class="mb-0">@Model.Order.DeliveryAddress.PostalCode @Model.Order.DeliveryAddress.City, ul. @Model.Order.DeliveryAddress.Street</p>
+                    <p class="mb-0">woj. @Model.Order.DeliveryAddress.Voivodship.ToFriendlyString()</p>
+                </div>
+                <div class="col">
+                    <h5><i class="bi bi-cash-stack"></i> Adres rozliczeniowy</h5>
+                    <p class="mb-0">@Model.Order.BillingAddress.PostalCode @Model.Order.BillingAddress.City, ul. @Model.Order.BillingAddress.Street</p>
+                    <p class="mb-0">woj. @Model.Order.BillingAddress.Voivodship.ToFriendlyString()</p>
+                </div>
+            </div>    
+            
+            @foreach(var orderItem in Model.Order.OrderItems)
+            {
+                if(i != 0)
+                {
+                    <hr />
+                }
+                i++;
+                <div class="col-md-2" style="width: 100px; height: 120px;">
+                    <img alt="@orderItem.Variant.Product.Name Thumbnail"
+                            src="@orderItem.Variant.Photos.First().PhotoUrl"
+                            class="img-fluid"  />
+                </div>
+                <div class="col-md-10">
+                                        
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
+                                @orderItem.Variant.Product.Name
+                            </a>
+                        </div>
+                    </div>
+
+
+                    @{
+                        decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
+                        int maxAmount;
+                    }
+                    <p class="lead" style="font-size: 15px;">
+                        @orderItem.Variant.Product.Price PLN
+                    </p>
+
+                    <div class="row">
+
+                        @if (orderItem.InternationalSize.HasValue) // nie jest butem
+                        {
+                            <div class="col">
+                                <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value.ToFriendlyString()</p>
+                            </div>
+                        }
+                        <div class="col">
+                            <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
+                        </div>
+                        <div class="col">
+                            <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
+                        </div>
+                        <div class="col">
+                            <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
+                            @{sum += @totalPrice;}
+                        </div>
+                    </div>
+                                        
+                </div>
+            }
+            <hr />
+            <h5 class="text-end">Wartość zamówienia: @sum PLN</h5>
+                                
+        </div>
+                            
+    </div>
+</div>

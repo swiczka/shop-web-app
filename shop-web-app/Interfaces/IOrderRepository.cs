@@ -9,5 +9,7 @@ namespace shop_web_app.Interfaces
         bool Delete(Order order);
         bool Save();
         Task<List<Order>> GetOrdersByUser(string userId);
+        Task<Order> GetOrderById(int id);
+        Task<Order> GetOnlyOrderById(int id);
     }
 }

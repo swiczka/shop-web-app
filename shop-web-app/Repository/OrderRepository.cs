@@ -1,4 +1,5 @@
-﻿using shop_web_app.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using shop_web_app.Data;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
 
@@ -28,6 +29,28 @@ namespace shop_web_app.Repository
         public Task<List<Order>> GetOrdersByUser(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Order> GetOrderById(int id)
+        {
+            var order = _context.Orders
+                .Include(v => v.OrderItems)
+                    .ThenInclude(a => a.Variant)
+                    .ThenInclude(b => b.Photos)
+                .Include(c => c.OrderItems)
+                    .ThenInclude(d => d.Variant)
+                    .ThenInclude(e => e.Product)
+                .Include(a => a.BillingAddress)
+                .Include(a => a.DeliveryAddress)
+                .FirstOrDefault(o => o.Id == id);
+            return order;
+        }
+
+        public async Task<Order> GetOnlyOrderById(int id)
+        {
+            var order = _context.Orders
+                .FirstOrDefault(o => o.Id == id);
+            return order;
         }
 
         public bool Save()

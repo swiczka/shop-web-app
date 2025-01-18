@@ -6,6 +6,7 @@ using shop_web_app.Interfaces;
 using shop_web_app.Models;
 using shop_web_app.ViewModels;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace shop_web_app.Controllers
 {
@@ -142,6 +143,67 @@ namespace shop_web_app.Controllers
                 _orderRepository.Save();
             }
             return RedirectToAction("Index", "Dashboard");
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            AppUser user = await _userManager.GetUserAsync(User);
+            Order order = await _orderRepository.GetOrderById(id);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if(user.Id != order.OrdererId || !(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Forbid();
+            }
+
+            OrderDetailsViewModel vm = new OrderDetailsViewModel() 
+            {
+                Order = order,
+                OrderStatus = order.Status
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeOrderStatus(OrderDetailsViewModel vm)
+        {
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Forbid();
+            }
+
+            if (vm.OrderId != null)
+            {
+                //additional GetOnlyOrderById method to save query size
+                Order order = await _orderRepository.GetOnlyOrderById((int)vm.OrderId);
+                if (vm.OrderStatus != null)
+                {
+                    order.Status = (OrderStatus)vm.OrderStatus;
+                    _orderRepository.Update(order);
+                }
+            }
+            try
+            {
+                return RedirectToAction("Details", "Order", new { id = (int)vm.OrderId });
+            }
+            catch 
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View();
         }
     }
 }
