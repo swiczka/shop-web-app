@@ -85,11 +85,22 @@ namespace shop_web_app.Repository
 
         public async Task<IEnumerable<Product>> GetAll()
         {
-            return await _context.Products
-                .Include(p => p.ProductVariants)
-                    .ThenInclude(v => v.Photos)
-                .Include(p => p.ProductMaterials)
-                .ToListAsync();
+            var products = await _context.Products.FromSqlRaw("EXEC GetAllProducts").ToListAsync();
+            
+            foreach(var product in products)
+            {
+                await _context.Entry(product)
+                    .Collection(p => p.ProductVariants)
+                    .Query()
+                    .Include(v => v.Photos)
+                    .LoadAsync();
+
+                await _context.Entry(product)
+                    .Collection(p => p.ProductMaterials)
+                    .LoadAsync();
+            }
+            return products;
+ 
         }
 
         public async Task<IEnumerable<Product>> GetAllActive()
