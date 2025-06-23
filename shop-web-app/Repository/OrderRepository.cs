@@ -48,8 +48,8 @@ namespace shop_web_app.Repository
 
         public async Task<Order> GetOnlyOrderById(int id)
         {
-            var order = _context.Orders
-                .FirstOrDefault(o => o.Id == id);
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == id);
             return order;
         }
 

@@ -29,12 +29,8 @@ namespace shop_web_app.Repository
 
         public async Task<CartItem> GetCartItemByIdAsync(int cartItemId)
         {
-            var param = new SqlParameter("@CartItemId", cartItemId);
-            var cartItems = await _context.CartItems
-                .FromSqlRaw("EXEC GetCartItemById @CartItemId", param)
-                .ToListAsync();
-
-            return cartItems.FirstOrDefault();
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(ci => cartItemId == ci.Id);
+            return cartItem;
         }
 
 

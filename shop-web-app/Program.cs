@@ -12,6 +12,7 @@ using shop_web_app.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using Npgsql;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,15 +25,19 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
 builder.Services.AddScoped<BlobStorageService, BlobStorageService>();
 builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSection("BlobStorageSettings"));
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

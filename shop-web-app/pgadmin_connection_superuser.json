@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "connection1",
+            "Group": "group1",
+            "Host": "shop-web-app-flatsnhomes.g.aivencloud.com",
+            "Port": 21394,
+            "MaintenanceDB": "defaultdb",
+            "Username": "postgres",
+            "SSLMode": "require"
+        }
+    }
+}

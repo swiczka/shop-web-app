@@ -89,7 +89,7 @@ namespace shop_web_app.Data
                                     {
                                         new Photo()
                                         {
-                                            PhotoUrl = "https://www.hipanda.pl/wp-content/uploads/2021/07/019_42_101_f-2018_01.jpg_l.jpg"
+                                            PhotoUrl = "https://image.hm.com/assets/hm/44/42/4442fbac4e3080ec20b2f14e353fea267249b0dd.jpg?imwidth=2160"
                                         }
                                     }
                                 },
@@ -140,7 +140,7 @@ namespace shop_web_app.Data
                                     {
                                         new Photo()
                                         {
-                                            PhotoUrl = "https://www.hipanda.pl/wp-content/uploads/2024/10/koszulka-damska-Grzaniec-Dzwoni-biala.png"
+                                            PhotoUrl = "https://image.hm.com/assets/hm/bd/e4/bde4ef42f917ccb678c4ff1d218520ce2f10ff6d.jpg?imwidth=2160"
                                         }
                                     }
                                 },
@@ -242,25 +242,25 @@ namespace shop_web_app.Data
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-                string adminUserEmail = "teddysmithdeveloper@gmail.com";
+                string adminUserEmail = "aw@aw.pl";
 
                 var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
                 if (adminUser == null)
                 {
                     var newAdminUser = new AppUser()
                     {
-                        Name = "Teddy",
-                        Surname = "Smith",
+                        Name = "Anita",
+                        Surname = "Włodarczyk",
                         UserName = adminUserEmail.Split('@')[0],
                         Email = adminUserEmail,
                         EmailConfirmed = true,
                         Gender = Gender.M,
                         Address = new Address()
                         {
-                            Street = "123 Main St",
-                            City = "Charlotte",
+                            Street = "Polna 1",
+                            City = "Kraków",
                             PostalCode = "33-333",
-                            Voivodship = Voivodship.Masovia
+                            Voivodship = Voivodship.LesserPoland
                         }
                     };
                     await userManager.CreateAsync(newAdminUser, "Abc-1234");
