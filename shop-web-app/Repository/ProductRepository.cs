@@ -10,6 +10,7 @@ namespace shop_web_app.Repository
     public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly int productsPerPage = 21;
 
         public ProductRepository(ApplicationDbContext context) 
         {
@@ -83,26 +84,30 @@ namespace shop_web_app.Repository
             return Save();
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAll(int page)
         {
             return await _context.Products
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductMaterials)
+                .Skip((page-1 < 0 ? 0 : page-1)*productsPerPage)
+                .Take(productsPerPage)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllActive()
+        public async Task<IEnumerable<Product>> GetAllActive(int page)
         {
             return await _context.Products
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductMaterials)
                 .Where(p => p.IsActive == true)
+                .Skip((page - 1 < 0 ? 0 : page - 1) * productsPerPage)
+                .Take(productsPerPage)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetFiltered(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
+        public async Task<IEnumerable<Product>> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
             var query = _context.Products.AsQueryable();
 
@@ -166,6 +171,8 @@ namespace shop_web_app.Repository
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductMaterials)
+                .Skip((page - 1 < 0 ? 0 : page - 1) * productsPerPage)
+                .Take(productsPerPage)
                 .ToListAsync();
         }
 

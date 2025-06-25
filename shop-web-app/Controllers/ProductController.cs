@@ -28,7 +28,7 @@ namespace shop_web_app.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
+        public async Task<IActionResult> Index(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -37,11 +37,11 @@ namespace shop_web_app.Controllers
                 IEnumerable<Product> productsAll;
                 if (User.IsInRole("admin") || User.IsInRole("employee")) 
                 {
-                    productsAll = await _productRepository.GetAll();
+                    productsAll = await _productRepository.GetAll(page);
                 }
                 else
                 {
-                    productsAll = await _productRepository.GetAllActive();
+                    productsAll = await _productRepository.GetAllActive(page);
                 }
                 
                 if (productsAll == null)
@@ -58,7 +58,7 @@ namespace shop_web_app.Controllers
                 isActive = "activeOnly";
             }
 
-            var productsF = await _productRepository.GetFiltered(gender, priceFrom, priceTo, category, sortBy, isActive);
+            var productsF = await _productRepository.GetFiltered(page, gender, priceFrom, priceTo, category, sortBy, isActive);
             return View(productsF);
         }
 

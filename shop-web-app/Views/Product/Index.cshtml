@@ -25,6 +25,9 @@
 </section>
 
 @{
+    string? page = Context.Request.Query["page"];
+    int pageNum;
+    Int32.TryParse(page, out pageNum);
     string? gender = Context.Request.Query["gender"];
     string? priceFrom = Context.Request.Query["priceFrom"];
     string? priceTo = Context.Request.Query["priceTo"];
@@ -34,11 +37,22 @@
     bool isExpanded = !string.IsNullOrEmpty(gender) || !string.IsNullOrEmpty(priceFrom) ||
     !string.IsNullOrEmpty(priceTo) || !string.IsNullOrEmpty(category) ||
     !string.IsNullOrEmpty(sortBy) || !string.IsNullOrEmpty(isActive);
+
+    var routeValues = new Dictionary<string, string>
+    {
+        ["gender"] = gender,
+        ["priceFrom"] = priceFrom,
+        ["priceTo"] = priceTo,
+        ["category"] = category,
+        ["sortBy"] = sortBy,
+        ["isActive"] = isActive
+    };
 }
 
 <div class="text-bg-dark collapse @(isExpanded ? "show" : "")" id="navbarHeader">
     <div class="p-3 container">
         <form method="get" asp-action="Index">
+            <input type="hidden" name="page" value="1" />
             <div class="row">
                 <div class="col">
                     <label class="form-label">Płeć</label>
@@ -277,3 +291,42 @@
         </div>
     </div>
 </div>
+
+<nav aria-label="Zmiana strony">
+    <ul class="pagination">
+        
+        @if(pageNum <= 1)
+        {
+            { routeValues["page"] = "1"; }
+            <li class="page-item active"><a class="page-link" asp-controller="Product" asp-all-route-data="@routeValues">1</a></li>
+            { routeValues["page"] = "2"; }
+            <li class="page-item"><a class="page-link" asp-controller="Product" asp-all-route-data="@routeValues">2</a></li>
+            { routeValues["page"] = "3"; }
+            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">3</a></li>
+        }
+        else
+        {
+            if(pageNum >= 3)
+            {
+                <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">1</a></li>
+                <li>&nbsp;</li>
+            }
+            { routeValues["page"] = (pageNum - 1).ToString(); }
+            <a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues" aria-label="Poprzednia">Poprzednia</a>
+
+            { routeValues["page"] = (pageNum - 1).ToString(); }
+            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(pageNum - 1)</a></li>
+
+            { routeValues["page"] = (pageNum).ToString(); }
+            <li class="page-item active"><a class="page-link" href="#">@pageNum</a></li>
+
+            { routeValues["page"] = (pageNum+1).ToString(); }
+            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(pageNum + 1)</a></li>
+        }
+
+        @{ routeValues["page"] = (pageNum+1).ToString(); }
+        <a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues" aria-label="Następna">Następna</a>
+
+        
+    </ul>
+</nav>
