@@ -1,0 +1,195 @@
+﻿@using shop_web_app.Data
+@using shop_web_app.Enums
+@using shop_web_app.ViewModels
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<AppUser> _userManager
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model AccountInfoViewModel
+
+<body class="bg-body-tertiary">
+    <div class="w-100 container">
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Błąd!</b> - @TempData["Error"]</span>
+            </div>
+        }
+
+        <div class="row g-5">
+            <div class="col-md-5 col-lg-4 order-md-last p-3">
+                <h4 class="mb-3 mt-1 text-center">Informacje o koncie</h4>
+                <div class="rounded shadow">
+                    <img src="https://cdn.pixabay.com/photo/2016/09/28/02/14/user-1699635_1280.png" class="d-block mt-4 mx-auto rounded" style="width: 200px; height: 200px;" alt="User profile icon">
+                    <div class="p-3">
+                        <div class="text-center">
+                            <h5>@Model.AppUser.Name @Model.AppUser.Surname</h5>
+                        </div>
+                        <div class="p-3 bg-light rounded border">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-envelope-fill text-secondary me-2"></i>
+                                <span class="text-secondary me-1">E-mail:</span>
+                                <span>@Model.AppUser.Email</span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-geo-alt-fill text-secondary me-2"></i>
+                                    <span class="text-secondary">Adres:</span>
+                                </div>
+                                @if (Model.AppUser.AddressId.HasValue)
+                                {
+                                    <p class="mb-0">@Model.AppUser.Address.PostalCode @Model.AppUser.Address.City, ul. @Model.AppUser.Address.Street</p>
+                                    <p class="mb-0">woj. @Model.AppUser.Address.Voivodship.ToFriendlyString()</p>
+                                }
+                                else
+                                {
+                                    <p class="mb-0">Brak przypisanego adresu.</p>
+                                }
+                            </div>
+                        </div>
+                        @{
+                            var user = await _userManager.GetUserAsync(User);
+                            var userId = user?.Id;
+                        }
+                        @if (User.IsInRole("admin") && Model.AppUser.Id != userId)
+                        {
+                            <div class="bg-danger p-3 mt-3 rounded bg-opacity-10">
+                                <form method="post" asp-action="ChangeRole">
+                                    <div class="form-group">
+                                        <label>Zmień rolę użytkownika:</label>
+                                        <select asp-for="NewRole" class="form-control">
+                                            @if(Model.CurrentRole == "admin")
+                                            {
+                                                <option value="admin" selected>Admin</option>
+                                                <option value="customer">Klient</option>
+                                                <option value="employee">Pracownik</option>
+                                            }
+                                            else if(Model.CurrentRole == "customer")
+                                            {
+                                                <option value="admin" >Admin</option>
+                                                <option value="customer" selected>Klient</option>
+                                                <option value="employee">Pracownik</option>
+                                            }
+                                            else if (Model.CurrentRole == "employee")
+                                            {
+                                                <option value="admin" >Admin</option>
+                                                <option value="customer">Klient</option>
+                                                <option value="employee" selected>Pracownik</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="admin">Admin</option>
+                                                <option value="customer">Klient</option>
+                                                <option value="employee">Pracownik</option>
+                                            }
+
+
+                                        </select>
+                                        <input type="hidden" name="UserId" value="@Model.AppUser.Id" />
+                                        <input type="hidden" name="CurrentRole" value="@Model.CurrentRole" />
+                                        <div class="text-end mt-2">
+                                            <button type="submit" class="btn btn-danger">Zmień rolę</button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-7 col-lg-8">
+
+                <h1 class="display-6 fw-normal">Zamówienia</h1>
+                @if (Model.Orders.Count == null || Model.Orders.Count == 0)
+                {
+                    <h3 class="text-secondary lead p-3 text-center"><i class="bi bi-info-circle p-2"></i> Nie złożono żadnych zamówień.</h3>
+                }
+                @foreach (var order in Model.Orders)
+                {
+                    <div class="my-3 p-3 bg-white rounded shadow">
+                        <div class="media">
+                            <div class="row g-3">
+                                @{
+                                    int i = 0;
+                                }
+                                <ul class="list-unstyled">
+                                    <li class="text-muted">Zamówiono: <span class="text-black">@order.OrderDate</span></li>
+                                    <li class="text-muted">Status: <span class="text-black">@order.Status.ToFriendlyString()</span></li>
+                                </ul>
+
+                                @foreach (var orderItem in order.OrderItems)
+                                {
+                                    if (i != 0)
+                                    {
+                                        <hr />
+                                    }
+                                    i++;
+                                    <div class="col-md-2" style="width: 100px; height: 120px;">
+                                        <img alt="@orderItem.Variant.Product.Name Thumbnail"
+                                             src="@orderItem.Variant.Photos.First().PhotoUrl"
+                                             class="img-fluid" />
+                                    </div>
+                                    <div class="col-md-10">
+
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
+                                                    @orderItem.Variant.Product.Name
+                                                </a>
+                                            </div>
+                                        </div>
+
+
+                                        @{
+                                            decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
+                                            int maxAmount;
+                                        }
+                                        <p class="lead" style="font-size: 15px;">
+                                            @orderItem.Variant.Product.Price PLN
+                                        </p>
+
+                                        <div class="row">
+
+                                            @if (orderItem.InternationalSize.HasValue) // nie jest butem
+                                            {
+                                                <div class="col">
+                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col">
+                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value.ToFriendlyString()</p>
+                                                </div>
+                                            }
+                                            <div class="col">
+                                                <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                }
+                                <div class="text-end">
+                                    <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</body>

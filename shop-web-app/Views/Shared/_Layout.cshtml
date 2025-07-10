@@ -32,6 +32,12 @@
                             <a asp-area="" asp-controller="Order" asp-action="Index" class="nav-link">Zamówienia</a>
                         </li>
                     }
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Account" asp-action="Manager" class="nav-link">Zarządzanie kontami</a>
+                        </li>
+                    }
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @if (User.Identity.IsAuthenticated)

@@ -25,6 +25,37 @@ namespace shop_web_app.Repository
             return user;
         }
 
+        public async Task<List<AppUser>> GetUsersByEmailAndId(string? email, string? id, string? role)
+        {
+            var query = _userManager.Users.AsQueryable();
+
+            if (email != null)
+            {
+                query = query.Where(a => a.Email.Contains(email));
+            }
+            if(id != null)
+            {
+                query = query.Where(a => a.Id == id);
+            }
+            if (role != null)
+            {
+                var usersInRole = await _userManager.GetUsersInRoleAsync(role);
+                var userIds = usersInRole.Select(a => a.Id).ToList();
+                query = query.Where(u => userIds.Contains(u.Id));
+            }
+
+            var users = await query.ToListAsync();
+
+            return users;
+        }
+
+        public async Task<List<AppUser>> GetUsers()
+        {
+            var users = await _userManager.Users
+                .ToListAsync();
+            return users;
+        }
+
         public async Task<List<CartItem>> GetCartItems(string userId)
         {
             var user = await _userManager.Users

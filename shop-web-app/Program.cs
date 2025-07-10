@@ -32,7 +32,7 @@ builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSe
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
@@ -52,7 +52,7 @@ var app = builder.Build();
 
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
-    //await Seed.SeedUsersAndRolesAsync(app);
+    await Seed.SeedUsersAndRolesAsync(app);
     //Seed.SeedData(app);
     await Seed.SeedProductsAsync(app);
 } 

@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using shop_web_app.Data;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
+using shop_web_app.OtherModels;
+using shop_web_app.Repository;
 using shop_web_app.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using System.IO.Pipes;
 using System.Text.RegularExpressions;
 
 namespace shop_web_app.Controllers
@@ -17,12 +20,14 @@ namespace shop_web_app.Controllers
         private readonly IAddressRepository _addressRepository;
         private readonly ApplicationDbContext _context;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
+        private readonly IDashboardRepository _dashboardRepository;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
                                     IUserRepository userRepository,
                                     IAddressRepository addressRepository,
                                     ApplicationDbContext dbContext,
-                                    IPasswordValidator<AppUser> passwordValidator) 
+                                    IPasswordValidator<AppUser> passwordValidator,
+                                    IDashboardRepository dashboardRepository) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,6 +35,99 @@ namespace shop_web_app.Controllers
             _addressRepository = addressRepository;
             _context = dbContext;
             _passwordValidator = passwordValidator;
+            _dashboardRepository = dashboardRepository;
+        }
+
+        public async Task<IActionResult> Manager(string? email, string? id, string? role)
+        {
+            if (!User.IsInRole("admin"))
+                return Forbid();
+
+            ManagerViewModel vm = new ManagerViewModel();
+            List<UserWithRole> usersWithRoles = new List<UserWithRole>();
+
+            List<AppUser> users = new List<AppUser>();
+
+            if (email == null && id == null && role == null)
+            {
+                users = await _userRepository.GetUsers();
+            }
+            else
+            {
+                users = await _userRepository.GetUsersByEmailAndId(email, id, role);
+            }
+            var roles = new[] { "admin", "employee", "customer" };
+
+            foreach (var user in users)
+            {
+                foreach (var _role in roles)
+                {
+                    if (await _userManager.IsInRoleAsync(user, _role))
+                    {
+                        usersWithRoles.Add(new UserWithRole() { User = user, Role = _role });
+                        break;
+                    }
+                    else if(_role == "customer") //no role was detected
+                    {
+                        usersWithRoles.Add(new UserWithRole() { User = user, Role = null });
+                    }
+                }
+            }
+
+            vm.appUsers = usersWithRoles;
+
+            return View(vm);
+        }
+
+        //view available only for admins and employees. customers can use dashboard only
+        public async Task<IActionResult> Details(string id)
+        {
+            if(!(User.IsInRole("admin")))
+            {
+                return Forbid();
+            }
+
+            var user = await _userRepository.GetUserWithAddress(id);
+            String role = "";
+
+            if (await _userManager.IsInRoleAsync(user, "admin"))
+                role = "admin";
+            else if (await _userManager.IsInRoleAsync(user, "employee"))
+                role = "employee";
+            else if (await _userManager.IsInRoleAsync(user, "customer"))
+                role = "customer";
+
+            AccountInfoViewModel viewModel = new AccountInfoViewModel()
+            {
+                AppUser = user,
+                Orders = await _dashboardRepository.GetAllUserOrders(id),
+                CurrentRole = role
+            };
+
+            viewModel.Orders.Reverse();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRole(AccountInfoViewModel vm)
+        {
+            var user = await _userManager.FindByIdAsync(vm.UserId);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+
+            if (currentUser == null || user == null || !(User.IsInRole("admin")) || currentUser.Id == user.Id )
+            {
+                return Forbid();
+            }
+
+            if (vm.NewRole == null || user == null || !(new[] { "admin", "customer", "employee" }).Contains(vm.NewRole))
+                return BadRequest();
+
+            if(vm.CurrentRole != null) await _userManager.RemoveFromRoleAsync(user, vm.CurrentRole);
+            await _userManager.AddToRoleAsync(user, vm.NewRole);
+
+            return RedirectToAction("Manager");
         }
 
         public async Task<IActionResult> Edit()
