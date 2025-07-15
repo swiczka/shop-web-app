@@ -19,22 +19,32 @@
                         @{
                             int j = 0;
                         }
-                        @foreach (Photo photo in defaultVariant.Photos)
+                        @if(defaultVariant.Photos != null && defaultVariant.Photos.Any())
                         {
-                            if (j == 0)
+                            @foreach (Photo photo in defaultVariant.Photos)
                             {
-                                <div class="carousel-item active">
-                                    <img alt="Image" id="mainImage" src="@photo.PhotoUrl" class="img-fluid rounded" style="width: 100%;" />
-                                </div>
+                                if (j == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <img alt="Image" id="mainImage" src="@photo.PhotoUrl" class="img-fluid rounded" style="width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <img alt="Image" id="mainImage" src="@photo.PhotoUrl" class="img-fluid rounded" style="width: 100%;" />
+                                    </div>
+                                }
+                                j++;
                             }
-                            else
-                            {
-                                <div class="carousel-item">
-                                    <img alt="Image" id="mainImage" src="@photo.PhotoUrl" class="img-fluid rounded" style="width: 100%;"  />
-                                </div>
-                            }
-                            j++;
                         }
+                        else
+                        {
+                            <div class="carousel-item active">
+                                <img alt="Image" id="mainImage" src="https://placehold.co/768x1024?text=Brak+obrazu" class="img-fluid rounded" style="width: 100%;" />
+                            </div>
+                        }
+
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -79,6 +89,7 @@
                             @{
                                 int i = 0;
                                 string classToInsert;
+                                string imgUrl = "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
                             }
                             @foreach(ProductVariant variant in Model.ProductVariants)
                             {
@@ -89,12 +100,17 @@
                                 else
                                     classToInsert = "img-thumbnail";
 
+                                if(variant.Photos != null && variant.Photos.Any())
+                                {
+                                    imgUrl = variant.Photos.First().PhotoUrl;
+                                }
+
                                 <div class="col">
                                     <div class="img-container">
                                         <img 
                                             id="variant-@i-thumbnail"
                                             alt="@variant.Name Thumbnail" 
-                                            src="@variant.Photos.First().PhotoUrl" 
+                                            src="@imgUrl"
                                             class="img-fluid @classToInsert"
                                             onclick="changeVariant(this)"
                                             data-variant-index="@i"

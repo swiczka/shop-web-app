@@ -21,11 +21,17 @@
         <h3 class="border-bottom border-gray pb-2 mb-0">Przedmioty w twoim koszyku</h3>
         @foreach (CartItem item in Model)
         {
+            string imgUrl = "https://placehold.co/300x300?text=Brak+obrazu";
+
+            if (item.Variant.Photos != null && item.Variant.Photos.Any())
+            {
+                imgUrl = item.Variant.Photos.First().PhotoUrl;
+            }
             <div class="media pt-3">
                 <div class="row g-3">
                     <div class="col-md-2 img-container-cart">
                         <img alt="@item.Variant.Product.Name Thumbnail"
-                             src="@item.Variant.Photos.First().PhotoUrl"
+                             src="@imgUrl"
                              class="img-fluid" />
                     </div>
                     <div class="col-md-10">
@@ -81,10 +87,10 @@
                         @{
                             
                         }
-                        <p><span class="text-muted" id="quantity">Ilość:</span> @item.Quantity</p>
+                        <p><span class="text-muted" id="quantity">Ilość sztuk:</span> @item.Quantity</p>
                         
                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButtonSM" data-bs-toggle="dropdown" aria-expanded="false">
-                            Wybierz ilość
+                            Ilość sztuk
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonSM">
                             @for (int i = 1; i <= (maxAmount >= 15 ? 15 : maxAmount); i++)

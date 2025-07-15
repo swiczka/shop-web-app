@@ -38,18 +38,26 @@ function changeVariant(thumbnail) {
     const newImages = variant.photos.$values;
     let imagesHtml;
 
-    newImages.forEach((img, index) => {
-        if (index === 0) {
-            imagesHtml += `<div class="carousel-item active">
+    if (newImages == null || newImages.at(0) == null) {
+        imagesHtml += `<div class="carousel-item active">
+                                <img alt="Image" id="mainImage" src="https://placehold.co/768x1024?text=Brak+obrazu" class="rounded img-fluid" style="width: 100%;" />
+                            </div>`
+    }
+    else {
+        newImages.forEach((img, index) => {
+            if (index === 0) {
+                imagesHtml += `<div class="carousel-item active">
                                 <img alt="Image" id="mainImage" src="${img.photoUrl}" class="rounded img-fluid" style="width: 100%;" />
                             </div>`
-        }
-        else {
-            imagesHtml += `<div class="carousel-item">
+            }
+            else {
+                imagesHtml += `<div class="carousel-item">
                                 <img alt="Image" id="mainImage" src="${img.photoUrl}" class="rounded img-fluid" style="width: 100%;" />
                             </div>`
-        }   
-    });
+            }
+        });
+    }
+    
     carouselContent.innerHTML = imagesHtml;
 
 
