@@ -102,6 +102,11 @@ namespace shop_web_app.Controllers
             return View();
         }
 
+        public IActionResult Viewer()
+        {
+            return View();
+        }
+
         private List<ProductVariantViewModel> VariantsViewModelfromDB(ICollection<ProductVariant> productVariants)
         {
             List<ProductVariantViewModel> newVariants = new List<ProductVariantViewModel>();
