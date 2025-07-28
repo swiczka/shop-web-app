@@ -4,10 +4,24 @@
 @{
 }
 <script type="module" src="~/js/Viewer3D.js"></script>
+<style>
+    .lil-gui {
+        position: fixed !important;
+        top: 60px !important;
+        right: 10px !important;
+        z-index: 9999 !important;
+        opacity: 1 !important;
+        display: block !important;
+    }
+
+    canvas {
+        z-index: 0;
+    }
+</style>
 
 <div id="info" class="position-absolute top-0 text-light" style="margin-top: 80px;">
     <h1>Zapoznaj się z naszym produktem</h1>
-    <h5 class="text-muted">Obejrzyj go z każdej strony!</h5>
+    <blockquote class="blockquote">Obejrzyj go z każdej strony!</blockquote>
 </div>
 
 
