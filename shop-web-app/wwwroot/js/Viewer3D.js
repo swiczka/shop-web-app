@@ -5,6 +5,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 const cameraOffset = 3.75;
 
+
 async function startAnimation() {
     const container = document.getElementById("threeContainer");
     const canvas = document.createElement("canvas");
@@ -15,7 +16,8 @@ async function startAnimation() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     
-    const renderer = new THREE.WebGLRenderer({antialias: true, canvas});
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    renderer.shadowMap.enabled = true;
 
     //const controls = new OrbitControls(camera, renderer);
 
@@ -41,6 +43,11 @@ async function startAnimation() {
         
     }
 
+    {
+        const ambient = new THREE.AmbientLight(0xFFFFFF, 0.5);
+        scene.add(ambient);
+    }
+
     { 
         const lightSettings = {
             angle: 120
@@ -48,13 +55,15 @@ async function startAnimation() {
         const color = 0xFFFFFF;
         const intensity = 2;
         const light = new THREE.DirectionalLight(color, intensity);
+        light.castShadow = true;
+        light.shadow.radius = 4;
         const r = 40;
-        light.position.set(r * Math.cos(lightSettings.angle * (Math.PI / 180)), 10, r * Math.sin(lightSettings.angle * (Math.PI / 180)));
+        light.position.set(r * Math.cos(lightSettings.angle * (Math.PI / 180)), 40, r * Math.sin(lightSettings.angle * (Math.PI / 180)));
         scene.add(light);
 
         const gui = new GUI();
         gui.add(lightSettings, 'angle', 0, 360, 1).onChange((value) => {
-            light.position.set(r * Math.cos(value * (Math.PI / 180)), 10, r * Math.sin(value * (Math.PI / 180)));
+            light.position.set(r * Math.cos(value * (Math.PI / 180)), 40, r * Math.sin(value * (Math.PI / 180)));
         });
     }
 
@@ -65,8 +74,9 @@ async function startAnimation() {
         const loader = new THREE.TextureLoader();
         const texture = loader.load('/resources/images/laminate_floor_02_diff_2k.jpg',
             () => {
-                const circleMaterial = new THREE.MeshBasicMaterial({ map: texture });
-                const circle = new THREE.Mesh(circleGeometry, circleMaterial)
+                const circleMaterial = new THREE.MeshPhongMaterial({ map: texture });
+                const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+                circle.receiveShadow = true;
                 circle.rotateX(-90 * (Math.PI / 180));
                 scene.add(circle);
             });
@@ -78,22 +88,42 @@ async function startAnimation() {
 
     const gltfLoader = new GLTFLoader();
 
+    var clock, mixer;
+    clock = new THREE.Clock();
+
+    const modelUrl = modelData.modelUrl;
+    console.log(modelUrl);
+   
     await loadMan();
 
     async function loadMan() {
+
         return new Promise((resolve, reject) => {
-            gltfLoader.load("/resources/models/brown_shirt.glb",
+            gltfLoader.load(modelUrl,
                 function (gltf)  {
                     const man = gltf.scene;
 
                     man.traverse((child) => { //man is a group that needs to be iterated
                         if (child.isMesh) {
-                            child.material.roughness = 0.98;
-                            child.material.reflectivity = 0.04;
+                            child.material.roughness = 0.8;
+                            child.material.reflectivity = 0.15;
+                            child.material.normalScale = new THREE.Vector2(1, 1);
+                            child.castShadow = true;
                         }
                     });
 
                     scene.add(man);
+
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        mixer = new THREE.AnimationMixer(man);
+                        mixer.timeScale = 3;
+                        gltf.animations.forEach((clip) => {
+                            const action = mixer.clipAction(clip);
+                            action.loop = THREE.LoopRepeat;
+                            action.play();
+                        });
+                    }
+
                     resolve(man);
                 },
                 undefined,
@@ -108,7 +138,7 @@ async function startAnimation() {
     function animate() {
 
         renderer.render(scene, camera);
-
+        if (mixer) mixer.update(clock.getDelta());
     }
 
     renderer.setAnimationLoop(animate);

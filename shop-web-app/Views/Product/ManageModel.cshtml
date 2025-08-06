@@ -1,0 +1,27 @@
+﻿@using shop_web_app.ViewModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ManageModelViewModel
+<h2 class="py-3">Zarządzaj modułem 3D dla: @Model.Product.Name</h2>
+<a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Product.Id" class="btn btn-dark mt-3"><i class="bi bi-arrow-left"></i> Wróć</a>
+
+@{
+    string ?currentModelName = Model.Product.ModelUrl?.Split("/").LastOrDefault();
+}
+
+<form action="ManageModel" method="post" enctype="multipart/form-data" class="py-4">
+    <p>Aktualny model: <span>@(currentModelName ?? "Brak")</span></p>
+    <div class="pb-3">
+        <label asp-for="ModelFile" class="form-label">Dodaj nowy model <b>(.glb)</b>:</label>
+        <input asp-for="ModelFile" type="file" class="form-control">
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" asp-for="HasModel"/>
+        <label asp-for="HasModel" class="form-check-label">Wyświetlaj model</label>
+    </div>
+    <input type="hidden" asp-for="ProductId" value="@Model.Product.Id"/>
+    <button type="submit" class="btn btn-primary float-end">Zapisz zmiany</button>
+</form>

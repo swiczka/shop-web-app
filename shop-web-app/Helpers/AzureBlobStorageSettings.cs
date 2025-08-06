@@ -3,6 +3,7 @@
     public class AzureBlobStorageSettings
     {
         public string ConnectionString { get; set; }
-        public string ContainerName { get; set; }
+        public string PhotosContainerName { get; set; }
+        public string ModelsContainerName { get; set; }
     }
 }

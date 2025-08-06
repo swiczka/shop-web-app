@@ -8,28 +8,43 @@ namespace shop_web_app.Services
 {
     public class BlobStorageService
     {
-        private readonly BlobContainerClient _blobContainerClient;
+        private readonly BlobServiceClient _blobServiceClient;
+        public readonly AzureBlobStorageSettings _settings;
 
         public BlobStorageService(IOptions<AzureBlobStorageSettings> blobStorageSettings)
         {
-            var settings = blobStorageSettings.Value;
-            var blobServiceClient = new BlobServiceClient(settings.ConnectionString);
-            _blobContainerClient = blobServiceClient.GetBlobContainerClient(settings.ContainerName);
+            _settings = blobStorageSettings.Value;
+            _blobServiceClient = new BlobServiceClient(_settings.ConnectionString);
         }
 
-        public async Task<string> UploadFileAsync(IFormFile file, string filename)
+        private BlobContainerClient GetBlobContainerClient(string containerName)
         {
-            using var stream = file.OpenReadStream();
-            var blobClient = _blobContainerClient.GetBlobClient(filename);    
-            await blobClient.UploadAsync(stream, overwrite: true);
-            var url = blobClient.Uri.ToString();     
-            return url;
+            return _blobServiceClient.GetBlobContainerClient(containerName);
         }
 
-        public async Task<bool> DeleteFileAsync(string blobName)
+        public async Task<string> UploadFileAsync(IFormFile file, string filename, string container)
         {
-            var blobClient = _blobContainerClient.GetBlobClient(blobName);
-            return await blobClient.DeleteIfExistsAsync();
+            if (container != null &&
+                (container.Equals(_settings.PhotosContainerName) || container.Equals(_settings.ModelsContainerName)))
+            {
+                using var stream = file.OpenReadStream();
+                var blobClient = GetBlobContainerClient(container).GetBlobClient(filename);
+                await blobClient.UploadAsync(stream, overwrite: true);
+                var url = blobClient.Uri.ToString();
+                return url;
+            }
+            else return null;
+        }
+
+        public async Task<bool> DeleteFileAsync(string blobName, string container)
+        {
+            if (container != null &&
+                (container.Equals(_settings.PhotosContainerName) || container.Equals(_settings.ModelsContainerName)))
+            {
+                var blobClient = GetBlobContainerClient(container).GetBlobClient(blobName);
+                return await blobClient.DeleteIfExistsAsync();
+            }
+            else return false;
         }
     }
 }

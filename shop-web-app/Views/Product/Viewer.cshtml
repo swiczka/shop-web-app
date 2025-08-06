@@ -1,8 +1,13 @@
-﻿@*
+﻿@using shop_web_app.ViewModels
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
+@model Viewer3DViewModel
+
+
+
 <script type="module" src="~/js/Viewer3D.js"></script>
 <style>
     .lil-gui {
@@ -20,9 +25,12 @@
 </style>
 
 <div id="info" class="position-absolute top-0 text-light" style="margin-top: 80px;">
-    <h1>Zapoznaj się z naszym produktem</h1>
+    <h1>Zapoznaj się z naszym produktem: @Model.Product.Name</h1>
     <blockquote class="blockquote">Obejrzyj go z każdej strony!</blockquote>
 </div>
+<script>
+    const modelData = @Html.Raw(Json.Serialize(Model.Product));
+</script>
 
 
 

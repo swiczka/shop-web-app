@@ -97,14 +97,76 @@ namespace shop_web_app.Controllers
             return RedirectToAction("Details", "Product", new { id = id });
         }
 
+        public async Task<IActionResult> ManageModel(int id)
+        {
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Unauthorized();
+            }
+
+            ManageModelViewModel vm = new ManageModelViewModel();
+            vm.Product = await _productRepository.GetByIdAsync(id);
+            vm.HasModel = vm.Product.HasModel;
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageModel(ManageModelViewModel vm)
+        {
+            if (!(User.IsInRole("admin") || User.IsInRole("employee")))
+            {
+                return Unauthorized();
+            }
+
+            var product = await _productRepository.GetByIdAsync(vm.ProductId);
+
+            if(product != null)
+            {
+                if(vm.ModelFile != null)
+                {
+                    var cleanFileName = Path.GetFileNameWithoutExtension(vm.ModelFile.FileName).Replace(" ", "_") + Path.GetExtension(vm.ModelFile.FileName);
+                    var photoUrl = await _blobService.UploadFileAsync(vm.ModelFile, cleanFileName, _blobService._settings.ModelsContainerName);
+
+                    if (!string.IsNullOrEmpty(product.ModelUrl) && !string.IsNullOrEmpty(photoUrl))
+                    {
+                        await _blobService.DeleteFileAsync(photoUrl, _blobService._settings.ModelsContainerName);
+                    }
+                    
+                    if (!string.IsNullOrEmpty(photoUrl))
+                    {
+                        product.ModelUrl = photoUrl;
+                    }
+                }
+            }
+
+            product.HasModel = vm.HasModel;
+
+            _productRepository.Update(product);
+
+            return RedirectToAction("Details", "Product", new { id = vm.ProductId });
+        }
+
         public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult Viewer()
+        public async Task<IActionResult> Viewer(int id)
         {
-            return View();
+            var product = await _productRepository.GetByIdAsync(id);
+
+            if(product == null)
+            {
+                return NotFound();
+            }
+
+            Viewer3DViewModel vm = new Viewer3DViewModel()
+            {
+                Product = product
+            };
+
+            return View(vm);
         }
 
         private List<ProductVariantViewModel> VariantsViewModelfromDB(ICollection<ProductVariant> productVariants)
@@ -218,7 +280,7 @@ namespace shop_web_app.Controllers
                 foreach (IFormFile photo in variant.Photos)
                 {
                     var cleanFileName = Path.GetFileNameWithoutExtension(photo.FileName).Replace(" ", "_") + Path.GetExtension(photo.FileName);
-                    var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName);
+                    var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName, _blobService._settings.PhotosContainerName);
                     newPhotos.Add(new Photo()
                     {
                         PhotoUrl = photoUrl
@@ -288,7 +350,7 @@ namespace shop_web_app.Controllers
                     foreach (var photo in variant.Photos) 
                     {
                         var cleanFileName = Path.GetFileNameWithoutExtension(photo.FileName).Replace(" ", "_") + Path.GetExtension(photo.FileName);
-                        var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName);
+                        var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName, _blobService._settings.PhotosContainerName);
                         newPhotos.Add(new Photo()
                         {
                             PhotoUrl = photoUrl
@@ -404,7 +466,7 @@ namespace shop_web_app.Controllers
                     {
                         foreach(var photo in variant.Photos)
                         {
-                            await _blobService.DeleteFileAsync(photo.PhotoUrl);
+                            await _blobService.DeleteFileAsync(photo.PhotoUrl, _blobService._settings.PhotosContainerName);
                         }
                     }     
                 }

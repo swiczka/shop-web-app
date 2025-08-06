@@ -18,5 +18,7 @@ namespace shop_web_app.Models
         public string ?AuthorId { get; set; }
         public AppUser ?Author { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool HasModel { get; set; } = false;
+        public string ?ModelUrl { get; set; }
     }
 }

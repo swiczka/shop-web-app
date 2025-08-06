@@ -362,3 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 shop-web-app/appsettings.json
+shop-web-app/wwwroot/resources/models/crop_top.glb
+shop-web-app/wwwroot/resources/models/dark_jeans.glb
+shop-web-app/wwwroot/resources/models/professional_dress.glb
+shop-web-app/wwwroot/resources/models/professional_dress_animated.glb
+shop-web-app/wwwroot/resources/models/trench_coat.glb
+shop-web-app/wwwroot/resources/models/white_polo.glb

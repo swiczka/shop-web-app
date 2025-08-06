@@ -57,31 +57,45 @@
                 </div>
 
                 <!--end of col-->
-                <div class="col-lg-5 d-flex flex-column justify-content-between ml-auto mr-auto">
+                <div class="col-lg-5 d-flex flex-column justify-content-between ml-auto mr-auto pt-3">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h1 class="mb-2">@Model.Name</h1>
+                                <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
                             </div>
                             @if (User.IsInRole("admin") || User.IsInRole("employee"))
                             {
-                                <div class="bg-danger p-3 rounded bg-opacity-10">
-                                    @if (!Model.IsActive)
-                                    {
-                                        <p>Status produktu: <span class="text-danger">Niewidoczny</span></p>
+                                <div class="row w-50 row-cols-1">
+                                    <div class="col bg-danger p-3 rounded bg-opacity-10">
+                                        <h4>Widoczność</h4>
+                                        @if (!Model.IsActive)
+                                        {
+                                            <p>Status produktu: <span class="text-danger">Niewidoczny</span></p>
+                                        }
+                                        else
+                                        {
+                                            <p>Status produktu: <span class="text-success">Widoczny</span></p>
+                                        }
+                                        <a asp-controller="Product" asp-action="ToggleActive" asp-route-id="@Model.Id" type="button" class="btn btn-outline-danger">Zmień status</a>
+                                    </div>
+
+                                    @{
+                                        string modelPresentText = Model.HasModel ? "Tak" : "Nie";
+                                        string modelPresentTextColor = Model.HasModel ? "text-success" : "text-danger";
                                     }
-                                    else
-                                    {
-                                        <p>Status produktu: <span class="text-success">Widoczny</span></p>
-                                    }
-                                    <a asp-controller="Product" asp-action="ToggleActive" asp-route-id="@Model.Id" type="button" class="btn btn-outline-danger">Zmień status</a>
+
+                                    <div class="mt-3 col bg-info p-3 rounded bg-opacity-10">
+                                        <h4>Moduł 3D</h4>
+                                        <p>Ma model 3D?: <span class="@modelPresentTextColor">@modelPresentText</span></p>
+                                                                     
+                                        <a asp-controller="Product" asp-action="ManageModel" asp-route-id="@Model.Id" type="button" class="btn btn-outline-dark">Zarządzaj modułem 3D</a>
+                                    </div>
                                 </div>
                             }
                             
                         </div>
-                        
-                        <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
-            
+                
                         <p class="h2 py-4 text-start">@Model.Price PLN</p>
 
                         <div class="row mb-4">
@@ -165,6 +179,13 @@
                         </div>
 
                         <div class="py-5 d-grid gap-2 w-75 mx-auto">
+                            @if(Model.HasModel && !string.IsNullOrEmpty(Model.ModelUrl))
+                            {
+                                <a type="button" class="btn btn-lg btn-info" id="addToCart" asp-controller="Product" asp-action="Viewer" asp-route-id="@Model.Id">
+                                <i class="bi bi-box"></i> Obejrzyj w 3D
+                            </a>
+                            }
+                            
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <button type="button" class="btn btn-lg btn-success" id="addToCart" onclick="addToCart()">
@@ -173,10 +194,12 @@
                             }
                             else
                             {
-                                <a type="button" class="btn btn-lg btn-success" id="addToCart" asp-area="" asp-controller="Account" asp-action="Login">
+                                <a type="button" class="btn btn-lg btn-success" id="addToCart" asp-controller="Account" asp-action="Login">
                                     <i class="bi bi-bag me-2"></i> Do koszyka
                                 </a>
                             }
+                            
+
                         </div>
 
                         <div class="py-3" id="cartAlert">
@@ -209,3 +232,5 @@
 <script>
     const variantData = @Html.Raw(Json.Serialize(Model.ProductVariants));
 </script>
+
+
