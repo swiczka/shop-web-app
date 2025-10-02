@@ -49,7 +49,6 @@ namespace shop_web_app.Controllers
             {
                 InternationalSize internationalSize;
                 ShoeSize shoeSize;
-                bool isShoe = false;
                 List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
                 CartItem newCartItem;
 

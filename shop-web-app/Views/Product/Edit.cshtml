@@ -112,9 +112,27 @@
                 <input type="hidden" name="ProductVariants[@variantIndex].Id" value=@variantId>
                 <input type="text" name="ProductVariants[@variantIndex].Name" placeholder="Nazwa Wariantu" class="form-control" value="@variant.Name">
 
-                <div class="photos">
-                    <label>Zdjęcia:</label>
-                    <input type="file" name="ProductVariants[@variantIndex].Photos" multiple>
+
+                <div class="photos my-2">
+                    <h4>Zdjęcia:</h4>
+                    <p>Jeśli chcesz zmienić zdjęcia, wrzuć je wszystkie od nowa. Jeśli nie, nic nie wrzucaj.</p>
+                    <label>Tutaj wrzuć zdjęcia:</label>
+                    <input class="form-control" type="file" name="ProductVariants[@variantIndex].Photos" multiple>
+
+                    <p class="mt-2">Aktualne zdjęcia:</p>
+                    <div class="row my-3">
+                        @foreach(var url in variant.PhotoUrls ?? Enumerable.Empty<String>())
+                        { 
+                            <div class="img-container">
+                                <img 
+                                        alt="@variant.Name Thumbnail"
+                                        src="@url"
+                                        class="img-fluid"
+                                />
+                            </div>   
+                        }
+                    </div>
+                    
                 </div>
 
                 <div class="form-group">
@@ -166,8 +184,8 @@
                         foreach(ShoeSizeQuantityViewModel sizeQuantity in variant.ShoeSizeQuantity)
                         {
                             sqId = sizeQuantity.Id.Value;
-                            <label>@sizeQuantity.Size</label>
-                            <div style="display: flex; align-items: center;">
+                            <label>@sizeQuantity.Size.ToFriendlyString()</label>
+                            <div class="mb-2" style="display: flex; align-items: center;">
                                 <input type="hidden" name="ProductVariants[@variantIndex]ShoeSizeQuantity[@sizeIndex].Id" value=@sqId>
                                 <input type="hidden" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
                                 <input type="number" name="ProductVariants[@variantIndex].ShoeSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity

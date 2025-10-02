@@ -54,6 +54,11 @@ namespace shop_web_app.Repository
             return await _context.ShoeSizeQuantity.Where(c => c.VariantId == variantId).ToListAsync();
         }
 
+        public async Task<IEnumerable<Photo>> GetVariantPhotos(int variantId)
+        {
+            return await _context.Photos.Where(p => p.VariantId == variantId).ToListAsync();
+        }
+
         public bool DeleteShoeSizeQuantity(ShoeSizeQuantity sq)
         {
             _context.ShoeSizeQuantity.Remove(sq);

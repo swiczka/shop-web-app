@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using shop_web_app.Data;
 using shop_web_app.Enums;
 using shop_web_app.Interfaces;
@@ -189,7 +190,7 @@ namespace shop_web_app.Controllers
                 List<InternationalSizeQuantityViewModel> newInternationalSizeQuantities = new List<InternationalSizeQuantityViewModel>();
                 List<ShoeSizeQuantityViewModel> newShoeSizeQuantities = new List<ShoeSizeQuantityViewModel>();
 
-                if (variant.InternationalSizeQuantity != null)
+                if (!variant.InternationalSizeQuantity.IsNullOrEmpty())
                 {
 
                     foreach (var sizeQuantity in variant.InternationalSizeQuantity)
@@ -204,7 +205,6 @@ namespace shop_web_app.Controllers
                 }
                 else
                 {
-
                     foreach (var sizeQuantity in variant.ShoeSizeQuantity)
                     {
                         newShoeSizeQuantities.Add(new ShoeSizeQuantityViewModel()
@@ -216,13 +216,17 @@ namespace shop_web_app.Controllers
                     }
                 }
 
+                List<String> photoUrls = new List<String>();
+                photoUrls = variant.Photos?.Select(p => p.PhotoUrl).ToList();
+
                 ProductVariantViewModel newVariant = new ProductVariantViewModel()
                 {
                     Id = variant.Id,
                     Name = variant.Name,
                     Colors = newColors,
                     InternationalSizeQuantity = newInternationalSizeQuantities,
-                    ShoeSizeQuantity = newShoeSizeQuantities
+                    ShoeSizeQuantity = newShoeSizeQuantities,
+                    PhotoUrls = photoUrls
                 };
 
                 newVariants.Add(newVariant);
@@ -250,7 +254,7 @@ namespace shop_web_app.Controllers
                 List<InternationalSizeQuantity> newInternationalSizeQuantities = new List<InternationalSizeQuantity>();
                 List<ShoeSizeQuantity> newShoeSizeQuantities = new List<ShoeSizeQuantity>();
 
-                if (variant.InternationalSizeQuantity != null)
+                if (!variant.InternationalSizeQuantity.IsNullOrEmpty())
                 {
                     foreach (InternationalSizeQuantityViewModel sizeQuantity in variant.InternationalSizeQuantity)
                     {
@@ -277,15 +281,30 @@ namespace shop_web_app.Controllers
 
                 List<Photo> newPhotos = new List<Photo>();
 
-                foreach (IFormFile photo in variant.Photos)
+                //jak nie ma nowych zdjęć to wróć stare
+                if (variant.Photos.IsNullOrEmpty() && variant.Id != null)
                 {
-                    var cleanFileName = Path.GetFileNameWithoutExtension(photo.FileName).Replace(" ", "_") + Path.GetExtension(photo.FileName);
-                    var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName, _blobService._settings.PhotosContainerName);
-                    newPhotos.Add(new Photo()
+                    List<String> photoUrls = (await _productRepository.GetVariantPhotos(variant.Id ?? default(int)))
+                                    .Select(p => p.PhotoUrl)
+                                    .ToList();
+                    photoUrls.ForEach(p => newPhotos.Add(new Photo()
                     {
-                        PhotoUrl = photoUrl
-                    });
+                        PhotoUrl = p
+                    }));
                 }
+                else
+                {
+                    foreach (IFormFile photo in variant.Photos)
+                    {
+                        var cleanFileName = Path.GetFileNameWithoutExtension(photo.FileName).Replace(" ", "_") + Path.GetExtension(photo.FileName);
+                        var photoUrl = await _blobService.UploadFileAsync(photo, cleanFileName, _blobService._settings.PhotosContainerName);
+                        newPhotos.Add(new Photo()
+                        {
+                            PhotoUrl = photoUrl
+                        });
+                    }
+                }
+                
 
                 ProductVariant newVariant;
 
@@ -460,21 +479,21 @@ namespace shop_web_app.Controllers
                 List<int> materialIds = userProduct.ProductMaterials.Select(x => x.Id).ToList(); ;
                 List<int> variantIds = userProduct.ProductVariants.Select(x => x.Id).ToList(); ;
 
-                try
-                {
-                    foreach (var variant in userProduct.ProductVariants)
-                    {
-                        foreach(var photo in variant.Photos)
-                        {
-                            await _blobService.DeleteFileAsync(photo.PhotoUrl, _blobService._settings.PhotosContainerName);
-                        }
-                    }     
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Could not delete photo");
-                    return View(productVM);
-                }
+                //try
+                //{
+                //    foreach (var variant in userProduct.ProductVariants)
+                //    {
+                //        foreach(var photo in variant.Photos)
+                //        {
+                //            await _blobService.DeleteFileAsync(photo.PhotoUrl, _blobService._settings.PhotosContainerName);
+                //        }
+                //    }     
+                //}
+                //catch (Exception ex)
+                //{
+                //    ModelState.AddModelError(ex.Message, "Could not delete photo");
+                //    return View(productVM);
+                //}
                 
                 var newVariants = await VariantsFromViewModelToDB(productVM.ProductVariants);
 

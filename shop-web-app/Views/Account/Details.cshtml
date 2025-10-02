@@ -104,90 +104,93 @@
             <div class="col-md-7 col-lg-8">
 
                 <h1 class="display-6 fw-normal">Zamówienia</h1>
-                @if (Model.Orders.Count == null || Model.Orders.Count == 0)
+                @if (Model.Orders == null || Model.Orders.Count == 0)
                 {
                     <h3 class="text-secondary lead p-3 text-center"><i class="bi bi-info-circle p-2"></i> Nie złożono żadnych zamówień.</h3>
                 }
-                @foreach (var order in Model.Orders)
+                else
                 {
-                    <div class="my-3 p-3 bg-white rounded shadow">
-                        <div class="media">
-                            <div class="row g-3">
-                                @{
-                                    int i = 0;
-                                }
-                                <ul class="list-unstyled">
-                                    <li class="text-muted">Zamówiono: <span class="text-black">@order.OrderDate</span></li>
-                                    <li class="text-muted">Status: <span class="text-black">@order.Status.ToFriendlyString()</span></li>
-                                </ul>
-
-                                @foreach (var orderItem in order.OrderItems)
-                                {
-                                    if (i != 0)
-                                    {
-                                        <hr />
+                    @foreach (var order in Model.Orders)
+                    {
+                        <div class="my-3 p-3 bg-white rounded shadow">
+                            <div class="media">
+                                <div class="row g-3">
+                                    @{
+                                        int i = 0;
                                     }
-                                    i++;
-                                    <div class="col-md-2" style="width: 100px; height: 120px;">
-                                        <img alt="@orderItem.Variant.Product.Name Thumbnail"
-                                             src="@orderItem.Variant.Photos.First().PhotoUrl"
-                                             class="img-fluid" />
-                                    </div>
-                                    <div class="col-md-10">
+                                    <ul class="list-unstyled">
+                                        <li class="text-muted">Zamówiono: <span class="text-black">@order.OrderDate</span></li>
+                                        <li class="text-muted">Status: <span class="text-black">@order.Status.ToFriendlyString()</span></li>
+                                    </ul>
 
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
-                                                    @orderItem.Variant.Product.Name
-                                                </a>
-                                            </div>
-                                        </div>
-
-
-                                        @{
-                                            decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
-                                            int maxAmount;
+                                    @foreach (var orderItem in order.OrderItems)
+                                    {
+                                        if (i != 0)
+                                        {
+                                            <hr />
                                         }
-                                        <p class="lead" style="font-size: 15px;">
-                                            @orderItem.Variant.Product.Price PLN
-                                        </p>
+                                        i++;
+                                        <div class="col-md-2" style="width: 100px; height: 120px;">
+                                            <img alt="@orderItem.Variant.Product.Name Thumbnail"
+                                                 src="@orderItem.Variant.Photos.First().PhotoUrl"
+                                                 class="img-fluid" />
+                                        </div>
+                                        <div class="col-md-10">
 
-                                        <div class="row">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <a class="h6 text-decoration-none" asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@orderItem.Variant.ProductId">
+                                                        @orderItem.Variant.Product.Name
+                                                    </a>
+                                                </div>
+                                            </div>
 
-                                            @if (orderItem.InternationalSize.HasValue) // nie jest butem
-                                            {
-                                                <div class="col">
-                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
-                                                </div>
+
+                                            @{
+                                                decimal totalPrice = orderItem.Variant.Product.Price * orderItem.Quantity;
                                             }
-                                            else
-                                            {
+                                            <p class="lead" style="font-size: 15px;">
+                                                @orderItem.Variant.Product.Price PLN
+                                            </p>
+
+                                            <div class="row">
+
+                                                @if (orderItem.InternationalSize.HasValue) // nie jest butem
+                                                {
+                                                    <div class="col">
+                                                        <p><span class="text-muted">Rozmiar:</span> @orderItem.InternationalSize.Value</p>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="col">
+                                                        <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value.ToFriendlyString()</p>
+                                                    </div>
+                                                }
                                                 <div class="col">
-                                                    <p><span class="text-muted">Rozmiar:</span> @orderItem.ShoeSize.Value.ToFriendlyString()</p>
+                                                    <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
                                                 </div>
-                                            }
-                                            <div class="col">
-                                                <p><span class="text-muted">Wariant:</span> @orderItem.Variant.Name</p>
+                                                <div class="col">
+                                                    <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
+                                                </div>
                                             </div>
-                                            <div class="col">
-                                                <p><span class="text-muted">Ilość:</span> @orderItem.Quantity</p>
-                                            </div>
-                                            <div class="col">
-                                                <p><span class="text-muted">Łącznie:</span> <b>@totalPrice PLN</b></p>
-                                            </div>
+
                                         </div>
 
+                                    }
+                                    <div class="text-end">
+                                        <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
                                     </div>
-
-                                }
-                                <div class="text-end">
-                                    <a class="text-secondary" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"><b>Szczegóły zamówienia <i class="bi bi-chevron-right"></i></b></a>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
+                
 
             </div>
         </div>

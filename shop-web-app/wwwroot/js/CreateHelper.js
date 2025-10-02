@@ -90,9 +90,10 @@ function addVariant() {
                 <h3>Wariant ${variantIndex + 1}</h3>
                         <input type="text" name="ProductVariants[${variantIndex}].Name" placeholder="Nazwa Wariantu" class="form-control">
 
-                <div class="photos">
-                    <label>Zdjęcia:</label>
-                    <input type="file" name="ProductVariants[${variantIndex}].Photos" multiple>
+                <div class="photos my-2">
+                    <h4>Zdjęcia:</h4>
+                    <label>Tutaj wrzuć zdjęcia:</label>
+                    <input class="form-control" type="file" name="ProductVariants[${variantIndex}].Photos" multiple>
                 </div>
 
                         <div id="variant-${variantIndex}-colors" class="form-group">
@@ -229,7 +230,7 @@ function getSizeChooseHtml(category, variantIndex) {
         shoeSizes.forEach((size, index) => {
             sizeChooseHtml += `
                         <label>${size.replace("Size", "")}</label>
-                        <div style="display: flex; align-items: center;">
+                        <div class="mb-2" style="display: flex; align-items: center;">
                                             <input type="hidden" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Size" value="${size}">
                                             <input type="number" name="ProductVariants[${variantIndex}].ShoeSizeQuantity[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
@@ -241,7 +242,7 @@ function getSizeChooseHtml(category, variantIndex) {
         internationalSizes.forEach((size, index) => {
             sizeChooseHtml += `
                         <label>${size}</label>
-                        <div style="display: flex; align-items: center;">
+                        <div class="mb-2" style="display: flex; align-items: center;">
                                             <input type="hidden" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Size" value="${size}">
                                             <input type="number" name="ProductVariants[${variantIndex}].InternationalSizeQuantity[${index}].Quantity"
                                    placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">

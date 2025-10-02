@@ -26,6 +26,6 @@ namespace shop_web_app.Interfaces
         Task<IEnumerable<ShoeSizeQuantity>> GetShoeSQByVariantIdAsync(int variantId);
         Task<IEnumerable<Product>> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive);
         Task<IEnumerable<Product>> GetAllActive(int page);
-        
+        Task<IEnumerable<Photo>> GetVariantPhotos(int variantId);
     }
 }

@@ -15,5 +15,6 @@ namespace shop_web_app.ViewModels
         public List<InternationalSizeQuantityViewModel> InternationalSizeQuantity { get; set; } = new List<InternationalSizeQuantityViewModel>();
 
         public List<ShoeSizeQuantityViewModel> ShoeSizeQuantity { get; set; } = new List<ShoeSizeQuantityViewModel>();
+        public List<String>? PhotoUrls { get; set; }
     }
 }

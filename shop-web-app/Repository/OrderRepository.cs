@@ -33,7 +33,7 @@ namespace shop_web_app.Repository
 
         public async Task<Order> GetOrderById(int id)
         {
-            var order = _context.Orders
+            var order = await _context.Orders
                 .Include(v => v.OrderItems)
                     .ThenInclude(a => a.Variant)
                     .ThenInclude(b => b.Photos)
@@ -42,7 +42,7 @@ namespace shop_web_app.Repository
                     .ThenInclude(e => e.Product)
                 .Include(a => a.BillingAddress)
                 .Include(a => a.DeliveryAddress)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
             return order;
         }
 
