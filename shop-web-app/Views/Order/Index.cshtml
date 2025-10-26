@@ -68,9 +68,16 @@
                         <hr />
                     }
                     i++;
+                    string imgUrl = "https://placehold.co/300x300?text=Brak+obrazu";
+
+                    if (orderItem.Variant.Photos != null && orderItem.Variant.Photos.Any())
+                    {
+                        imgUrl = orderItem.Variant.Photos.First().PhotoUrl;
+                    }
+
                     <div class="col-md-2" style="width: 100px; height: 120px;">
                         <img alt="@orderItem.Variant.Product.Name Thumbnail"
-                             src="@orderItem.Variant.Photos.First().PhotoUrl"
+                             src="@imgUrl"
                              class="img-fluid" />
                     </div>
                     <div class="col-md-10">

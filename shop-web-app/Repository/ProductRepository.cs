@@ -4,13 +4,14 @@ using shop_web_app.Enums;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
 using shop_web_app.Models.SizeQuantity;
+using shop_web_app.ViewModels;
 
 namespace shop_web_app.Repository
 {
     public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly int productsPerPage = 21;
+        public static readonly int productsPerPage = 21;
 
         public ProductRepository(ApplicationDbContext context) 
         {
@@ -89,30 +90,26 @@ namespace shop_web_app.Repository
             return Save();
         }
 
-        public async Task<IEnumerable<Product>> GetAll(int page)
+        public async Task<ProductViewModel> GetAll(int page, bool activeOnly)
         {
-            return await _context.Products
+            var products = _context.Products
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductMaterials)
-                .Skip((page-1 < 0 ? 0 : page-1)*productsPerPage)
-                .Take(productsPerPage)
-                .ToListAsync();
-        }
+                .Where(p => activeOnly ? p.IsActive : true);
+            var productsCount = await products.CountAsync();
 
-        public async Task<IEnumerable<Product>> GetAllActive(int page)
-        {
-            return await _context.Products
-                .Include(p => p.ProductVariants)
-                    .ThenInclude(v => v.Photos)
-                .Include(p => p.ProductMaterials)
-                .Where(p => p.IsActive == true)
+            return new ProductViewModel()
+            {
+                Products = await products
                 .Skip((page - 1 < 0 ? 0 : page - 1) * productsPerPage)
                 .Take(productsPerPage)
-                .ToListAsync();
+                .ToListAsync(),
+                LastPage = (int)Math.Ceiling((double)productsCount / productsPerPage)
+            };
         }
 
-        public async Task<IEnumerable<Product>> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
+        public async Task<ProductViewModel> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive)
         {
             var query = _context.Products.AsQueryable();
 
@@ -172,13 +169,22 @@ namespace shop_web_app.Repository
                 }
             }
 
-            return await query
+            var products = query
                 .Include(p => p.ProductVariants)
                     .ThenInclude(v => v.Photos)
                 .Include(p => p.ProductMaterials)
-                .Skip((page - 1 < 0 ? 0 : page - 1) * productsPerPage)
-                .Take(productsPerPage)
-                .ToListAsync();
+                .AsQueryable();
+
+            var productsCount = await products.CountAsync();
+
+            return new ProductViewModel()
+            {
+                Products = await products
+                    .Skip((page - 1 < 0 ? 0 : page - 1) * productsPerPage)
+                    .Take(productsPerPage)
+                    .ToListAsync(),
+                LastPage = (int)Math.Ceiling((double)productsCount / productsPerPage)
+            };
         }
 
         public async Task<Product> GetByIdAsync(int id)

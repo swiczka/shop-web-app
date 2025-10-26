@@ -1,12 +1,13 @@
 ﻿using shop_web_app.Enums;
 using shop_web_app.Models;
 using shop_web_app.Models.SizeQuantity;
+using shop_web_app.ViewModels;
 
 namespace shop_web_app.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAll(int page);
+        Task<ProductViewModel> GetAll(int page, bool activeOnly);
         Task<ProductMaterial> GetProductMaterialByIdAsync(int id);
         Task<Product> GetByIdAsync(int id);
         Task<Product> GetByIdAsyncNoTracking(int id);
@@ -24,8 +25,7 @@ namespace shop_web_app.Interfaces
         Task<IEnumerable<VariantColor>> GetVariantColorsByVariantIdAsync(int variantId);
         Task<IEnumerable<InternationalSizeQuantity>> GetInternationalSQByVariantIdAsync(int variantId);
         Task<IEnumerable<ShoeSizeQuantity>> GetShoeSQByVariantIdAsync(int variantId);
-        Task<IEnumerable<Product>> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive);
-        Task<IEnumerable<Product>> GetAllActive(int page);
+        Task<ProductViewModel> GetFiltered(int page, ClothingGender? gender, decimal? priceFrom, decimal? priceTo, SubCategory? category, string? sortBy, string? isActive);
         Task<IEnumerable<Photo>> GetVariantPhotos(int variantId);
     }
 }

@@ -9,6 +9,7 @@ using shop_web_app.Enums;
 using shop_web_app.Interfaces;
 using shop_web_app.Models;
 using shop_web_app.Models.SizeQuantity;
+using shop_web_app.Repository;
 using shop_web_app.Services;
 using shop_web_app.ViewModels;
 using System.Reflection.Metadata;
@@ -33,24 +34,26 @@ namespace shop_web_app.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            var productsVM = new ProductViewModel();
+
             if (gender == null && priceFrom == null && priceTo == null && category == null && sortBy == null && isActive == null)
             {
                 IEnumerable<Product> productsAll;
                 if (User.IsInRole("admin") || User.IsInRole("employee")) 
                 {
-                    productsAll = await _productRepository.GetAll(page);
+                    productsVM = await _productRepository.GetAll(page, activeOnly: false);
                 }
                 else
                 {
-                    productsAll = await _productRepository.GetAllActive(page);
+                    productsVM = await _productRepository.GetAll(page, activeOnly: true);
                 }
                 
-                if (productsAll == null)
+                if (productsVM.Products.IsNullOrEmpty())
                 {
                     return NotFound();
                 }
 
-                return View(productsAll);
+                return View(productsVM);
             }
 
             //isActive is allowed only for admins and employees
@@ -59,8 +62,8 @@ namespace shop_web_app.Controllers
                 isActive = "activeOnly";
             }
 
-            var productsF = await _productRepository.GetFiltered(page, gender, priceFrom, priceTo, category, sortBy, isActive);
-            return View(productsF);
+            productsVM = await _productRepository.GetFiltered(page, gender, priceFrom, priceTo, category, sortBy, isActive);
+            return View(productsVM);
         }
 
         public async Task<IActionResult> Details(int id) 

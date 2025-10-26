@@ -1,5 +1,8 @@
-﻿@model IEnumerable<Product>
-@using shop_web_app.Enums;
+﻿@using shop_web_app.Enums;
+@using shop_web_app.ViewModels
+
+@model ProductViewModel
+
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -244,7 +247,7 @@
     <div class="container">
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-            @foreach(Product item in Model)
+            @foreach(Product item in Model.Products)
             {
                 string url;
                 try
@@ -297,12 +300,13 @@
         
         @if(pageNum <= 1)
         {
-            { routeValues["page"] = "1"; }
-            <li class="page-item active"><a class="page-link" asp-controller="Product" asp-all-route-data="@routeValues">1</a></li>
-            { routeValues["page"] = "2"; }
-            <li class="page-item"><a class="page-link" asp-controller="Product" asp-all-route-data="@routeValues">2</a></li>
-            { routeValues["page"] = "3"; }
-            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">3</a></li>
+            for (int i = pageNum; i < Model.LastPage && i <= pageNum + 2; i++)
+            {
+                routeValues["page"] = i.ToString();
+                string listClass = i == pageNum ? "page-item active" : "page-item";
+                <li class="@listClass"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(i)</a></li>
+            }
+            <li>&nbsp;</li>
         }
         else
         {
@@ -311,22 +315,21 @@
                 <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">1</a></li>
                 <li>&nbsp;</li>
             }
-            { routeValues["page"] = (pageNum - 1).ToString(); }
-            <a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues" aria-label="Poprzednia">Poprzednia</a>
 
-            { routeValues["page"] = (pageNum - 1).ToString(); }
-            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(pageNum - 1)</a></li>
-
-            { routeValues["page"] = (pageNum).ToString(); }
-            <li class="page-item active"><a class="page-link" href="#">@pageNum</a></li>
-
-            { routeValues["page"] = (pageNum+1).ToString(); }
-            <li class="page-item"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(pageNum + 1)</a></li>
+            for(int i = pageNum - 1; i < Model.LastPage && i <= pageNum + 1; i++)
+            {
+                routeValues["page"] = i.ToString();
+                string listClass = i == pageNum ? "page-item active" : "page-item";
+                <li class="@listClass"><a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues">@(i)</a></li>
+            }
+            <li>&nbsp;</li>
         }
 
-        @{ routeValues["page"] = (pageNum+1).ToString(); }
-        <a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues" aria-label="Następna">Następna</a>
-
-        
+        @{
+            routeValues["page"] = (Model.LastPage).ToString();
+        }
+        <li class="@(pageNum == Model.LastPage ? "page-item active" : "page-item")">
+            <a class="page-link" asp-controller="Product" asp-action="Index" asp-all-route-data="@routeValues" aria-label=@Model.LastPage>@Model.LastPage</a>
+        </li>
     </ul>
 </nav>
