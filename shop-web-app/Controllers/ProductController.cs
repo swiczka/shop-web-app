@@ -50,7 +50,7 @@ namespace shop_web_app.Controllers
                 
                 if (productsVM.Products.IsNullOrEmpty())
                 {
-                    return NotFound();
+                    return RedirectToAction("Error", "Error", new { code = 404 });
                 }
 
                 return View(productsVM);
@@ -72,7 +72,7 @@ namespace shop_web_app.Controllers
 
             if(product == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
 
             return View(product);
@@ -85,7 +85,7 @@ namespace shop_web_app.Controllers
             //isActive is allowed only for admins and employees
             if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             var product = await _productRepository.GetByIdAsync(id);
@@ -105,7 +105,7 @@ namespace shop_web_app.Controllers
         {
             if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             ManageModelViewModel vm = new ManageModelViewModel();
@@ -120,7 +120,7 @@ namespace shop_web_app.Controllers
         {
             if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             var product = await _productRepository.GetByIdAsync(vm.ProductId);
@@ -162,7 +162,7 @@ namespace shop_web_app.Controllers
 
             if(product == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
 
             Viewer3DViewModel vm = new Viewer3DViewModel()
@@ -426,11 +426,11 @@ namespace shop_web_app.Controllers
 
             if (user == null || !User.IsInRole("admin"))
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             if(product == null)
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
 
             var newVariants = VariantsViewModelfromDB(product.ProductVariants);
 
@@ -466,7 +466,7 @@ namespace shop_web_app.Controllers
 
             if (user == null || !User.IsInRole("admin"))
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             if (!ModelState.IsValid)
@@ -479,24 +479,8 @@ namespace shop_web_app.Controllers
 
             if(userProduct != null)
             {
-                List<int> materialIds = userProduct.ProductMaterials.Select(x => x.Id).ToList(); ;
-                List<int> variantIds = userProduct.ProductVariants.Select(x => x.Id).ToList(); ;
-
-                //try
-                //{
-                //    foreach (var variant in userProduct.ProductVariants)
-                //    {
-                //        foreach(var photo in variant.Photos)
-                //        {
-                //            await _blobService.DeleteFileAsync(photo.PhotoUrl, _blobService._settings.PhotosContainerName);
-                //        }
-                //    }     
-                //}
-                //catch (Exception ex)
-                //{
-                //    ModelState.AddModelError(ex.Message, "Could not delete photo");
-                //    return View(productVM);
-                //}
+                List<int> materialIds = userProduct.ProductMaterials.Select(x => x.Id).ToList(); 
+                List<int> variantIds = userProduct.ProductVariants.Select(x => x.Id).ToList(); 
                 
                 var newVariants = await VariantsFromViewModelToDB(productVM.ProductVariants);
 
@@ -576,7 +560,7 @@ namespace shop_web_app.Controllers
 
             else 
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
         }
     }

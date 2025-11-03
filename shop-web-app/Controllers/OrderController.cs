@@ -156,13 +156,13 @@ namespace shop_web_app.Controllers
             }
             if (order == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
 
             if(user.Id != order.OrdererId)
             {
                 if(!(User.IsInRole("admin") || User.IsInRole("employee")))
-                    return Forbid();
+                    return RedirectToAction("Error", "Error", new { code = 403 });
             }
 
             OrderDetailsViewModel vm = new OrderDetailsViewModel() 
@@ -179,7 +179,7 @@ namespace shop_web_app.Controllers
         {
             if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                return Forbid();
+                return RedirectToAction("Error", "Error", new { code = 403 });
             }
 
             if (vm.OrderId != null)
@@ -206,7 +206,7 @@ namespace shop_web_app.Controllers
         {
             if (!(User.IsInRole("admin") || User.IsInRole("employee")))
             {
-                return Forbid();
+                return RedirectToAction("Error", "Error", new { code = 403 });
             }
             if(email == null && id == null)
             {

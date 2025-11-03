@@ -100,9 +100,10 @@ namespace shop_web_app.Controllers
                     return Json(new { success = true, message = "Item added to cart." });
                 }
             }
-            return Unauthorized();
-            
-            
+            return RedirectToAction("Error", "Error", new { code = 401 });
+
+
+
         }
 
 
@@ -113,11 +114,11 @@ namespace shop_web_app.Controllers
 
             if (cartItem == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
             if (userId == null || userId != cartItem.AppUserId)
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
 
@@ -133,11 +134,11 @@ namespace shop_web_app.Controllers
 
             if (cartItem == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { code = 404 });
             }
             if (userId == null || userId != cartItem.AppUserId)
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             cartItem.Quantity = newQuantity;

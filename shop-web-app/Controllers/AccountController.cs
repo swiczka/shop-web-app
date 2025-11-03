@@ -41,7 +41,7 @@ namespace shop_web_app.Controllers
         public async Task<IActionResult> Manager(string? email, string? id, string? role)
         {
             if (!User.IsInRole("admin"))
-                return Forbid();
+                return RedirectToAction("Error", "Error", new { code = 403});
 
             ManagerViewModel vm = new ManagerViewModel();
             List<UserWithRole> usersWithRoles = new List<UserWithRole>();
@@ -84,7 +84,7 @@ namespace shop_web_app.Controllers
         {
             if(!(User.IsInRole("admin")))
             {
-                return Forbid();
+                return RedirectToAction("Error", "Error", new { code = 403 });
             }
 
             var user = await _userRepository.GetUserWithAddress(id);
@@ -118,11 +118,11 @@ namespace shop_web_app.Controllers
 
             if (currentUser == null || user == null || !(User.IsInRole("admin")) || currentUser.Id == user.Id )
             {
-                return Forbid();
+                return RedirectToAction("Error", "Error", new { code = 403 });
             }
 
             if (vm.NewRole == null || user == null || !(new[] { "admin", "customer", "employee" }).Contains(vm.NewRole))
-                return BadRequest();
+                return RedirectToAction("Error", "Error", new { code = 400 });
 
             if(vm.CurrentRole != null) await _userManager.RemoveFromRoleAsync(user, vm.CurrentRole);
             await _userManager.AddToRoleAsync(user, vm.NewRole);
@@ -157,7 +157,7 @@ namespace shop_web_app.Controllers
             string userId = _userManager.GetUserId(User);
             if (userId == null || userId != vm.AppUser.Id)
             {
-                return Unauthorized();
+                return RedirectToAction("Error", "Error", new { code = 401 });
             }
 
             AppUser user = await _userRepository.GetUserWithAddress(userId);

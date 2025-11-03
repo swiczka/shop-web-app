@@ -14,6 +14,14 @@ namespace shop_web_app.Controllers
             {
                 return View("Error403");
             }
+            else if (code == 400)
+            {
+                return View("Error400");
+            }
+            else if (code == 404)
+            {
+                return View("Error404");
+            }
             return View("GeneralError");
         }
     }

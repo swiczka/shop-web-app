@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Error\GeneralError.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="wwwroot\resources\models\man.glb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
