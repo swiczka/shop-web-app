@@ -1,5 +1,4 @@
-﻿using shop_web_app.Models.Clothing;
-using shop_web_app.Enums;
+﻿using shop_web_app.Enums;
 
 namespace shop_web_app.Models
 {

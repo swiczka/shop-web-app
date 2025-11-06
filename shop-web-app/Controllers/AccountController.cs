@@ -18,14 +18,12 @@ namespace shop_web_app.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IUserRepository _userRepository;
         private readonly IAddressRepository _addressRepository;
-        private readonly ApplicationDbContext _context;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
         private readonly IDashboardRepository _dashboardRepository;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
                                     IUserRepository userRepository,
                                     IAddressRepository addressRepository,
-                                    ApplicationDbContext dbContext,
                                     IPasswordValidator<AppUser> passwordValidator,
                                     IDashboardRepository dashboardRepository) 
         {
@@ -33,7 +31,6 @@ namespace shop_web_app.Controllers
             _signInManager = signInManager;
             _userRepository = userRepository;
             _addressRepository = addressRepository;
-            _context = dbContext;
             _passwordValidator = passwordValidator;
             _dashboardRepository = dashboardRepository;
         }
@@ -241,8 +238,8 @@ namespace shop_web_app.Controllers
             user.Name = vm.Name;
             user.Surname = vm.Surname;
             user.Gender = vm.Gender;
-            
-            _context.SaveChanges();
+
+            await _userManager.UpdateAsync(user);
 
             return RedirectToAction("Index", "Dashboard");
 

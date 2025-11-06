@@ -51,6 +51,7 @@ namespace shop_web_app.Controllers
                 ShoeSize shoeSize;
                 List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
                 CartItem newCartItem;
+                bool status = false;
 
 
                 if (Enum.TryParse<InternationalSize>(cartItem.Size, out internationalSize))
@@ -72,8 +73,8 @@ namespace shop_web_app.Controllers
                         AppUserId = userId,
                         Quantity = 1
                     };
-                    _cartRepository.Add(newCartItem);
-                    return Json(new { success = true, message = "Item added to cart." });
+                    status = _cartRepository.Add(newCartItem);
+                    return Json(new { success = status, message = "Item added to cart." });
 
                 }
 
@@ -96,8 +97,8 @@ namespace shop_web_app.Controllers
                         AppUserId = userId,
                         Quantity = 1
                     };
-                    _cartRepository.Add(newCartItem);
-                    return Json(new { success = true, message = "Item added to cart." });
+                    status = _cartRepository.Add(newCartItem);
+                    return Json(new { success = status, message = "Item added to cart." });
                 }
             }
             return RedirectToAction("Error", "Error", new { code = 401 });

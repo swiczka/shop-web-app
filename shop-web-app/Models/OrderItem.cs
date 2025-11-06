@@ -1,6 +1,5 @@
 ﻿using shop_web_app.Enums;
 using shop_web_app.Interfaces;
-using shop_web_app.Models.Clothing;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

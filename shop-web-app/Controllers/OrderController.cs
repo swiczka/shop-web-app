@@ -33,10 +33,17 @@ namespace shop_web_app.Controllers
 
         public async Task<IActionResult> Create()
         {
-            List<CartItem> cartItems = await _userRepository.GetCartItems(_userManager.GetUserId(User));
-            AppUser user = await _userManager.Users
-                .Include(p => p.Address)
-                .FirstOrDefaultAsync(i => i.Id == _userManager.GetUserId(User));
+            var userId = _userManager.GetUserId(User);
+
+            if(userId == null)
+            {
+                TempData["Error"] = "Sesja wygasła";
+                return RedirectToAction("Login", "Account");
+            }
+
+            List<CartItem> cartItems = await _userRepository.GetCartItems(userId);
+    
+            AppUser user = await _userRepository.GetUserWithAddress(userId);
 
             CreateOrderViewModel vm = new CreateOrderViewModel()
             {
@@ -51,15 +58,16 @@ namespace shop_web_app.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateOrderViewModel vm)
         {
-            List <CartItem> cartItems = await _userRepository.GetCartItems(_userManager.GetUserId(User));
-            AppUser user = await _userManager.Users
-                .Include(p => p.Address)
-                .FirstOrDefaultAsync(i => i.Id == _userManager.GetUserId(User));
-            if (user == null)
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
             {
                 TempData["Error"] = "Sesja wygasła";
                 return RedirectToAction("Login", "Account");
             }
+
+            List <CartItem> cartItems = await _userRepository.GetCartItems(userId);
+            AppUser user = await _userRepository.GetUserWithAddress(userId);
 
             vm.AppUser = user;
             vm.CartItems = cartItems;
@@ -152,6 +160,7 @@ namespace shop_web_app.Controllers
 
             if (user == null)
             {
+                TempData["Error"] = "Sesja wygasła";
                 return RedirectToAction("Login", "Account");
             }
             if (order == null)

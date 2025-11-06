@@ -1,6 +1,6 @@
 ﻿using shop_web_app.Enums;
-using System.ComponentModel.DataAnnotations;
 using shop_web_app.Models.SizeQuantity;
+using System.ComponentModel.DataAnnotations;
 
 namespace shop_web_app.Models
 {
