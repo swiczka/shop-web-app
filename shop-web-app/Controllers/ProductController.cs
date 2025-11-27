@@ -151,8 +151,15 @@ namespace shop_web_app.Controllers
             return RedirectToAction("Details", "Product", new { id = vm.ProductId });
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if(user == null || !(User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Employee)))
+            {
+                return RedirectToAction("Error", "Error", new { code = 401 });
+            }
+
             return View();
         }
 
@@ -424,7 +431,7 @@ namespace shop_web_app.Controllers
             AppUser user = await _userManager.GetUserAsync(User);
             var product = await _productRepository.GetByIdAsync(id);
 
-            if (user == null || !User.IsInRole("admin"))
+            if (user == null || !(User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Employee)))
             {
                 return RedirectToAction("Error", "Error", new { code = 401 });
             }
@@ -454,7 +461,9 @@ namespace shop_web_app.Controllers
                 Category = product.Category,
                 SubCategory = product.SubCategory,
                 ProductMaterials= newMaterials,
-                ProductVariants = newVariants
+                ProductVariants = newVariants,
+                ModelUrl = product.ModelUrl ?? "",
+                HasModel = product.HasModel
             };
             return View(productVM);
         }
@@ -464,7 +473,7 @@ namespace shop_web_app.Controllers
         {
             AppUser user = await _userManager.GetUserAsync(User);
 
-            if (user == null || !User.IsInRole("admin"))
+            if (user == null || !(User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Employee)))
             {
                 return RedirectToAction("Error", "Error", new { code = 401 });
             }
@@ -551,7 +560,9 @@ namespace shop_web_app.Controllers
                     Category = productVM.Category,
                     SubCategory = productVM.SubCategory,
                     ProductMaterials = newMaterials,
-                    ProductVariants = newVariants
+                    ProductVariants = newVariants,
+                    HasModel = productVM.HasModel,
+                    ModelUrl = productVM.ModelUrl
                 };
 
                 _productRepository.Update(product);

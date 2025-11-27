@@ -241,18 +241,20 @@ namespace shop_web_app.Data
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
                 if (!await roleManager.RoleExistsAsync(UserRoles.Customer))
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Customer));
+                if (!await roleManager.RoleExistsAsync(UserRoles.Employee))
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Employee));
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-                string adminUserEmail = "aw@aw.pl";
+                string adminUserEmail = "ak@ak.pl";
 
                 var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
                 if (adminUser == null)
                 {
                     var newAdminUser = new AppUser()
                     {
-                        Name = "Anita",
-                        Surname = "Włodarczyk",
+                        Name = "Anna",
+                        Surname = "Kowalska",
                         UserName = adminUserEmail.Split('@')[0],
                         Email = adminUserEmail,
                         EmailConfirmed = true,
@@ -269,7 +271,7 @@ namespace shop_web_app.Data
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
-                string appUserEmail = "user@etickets.com";
+                string appUserEmail = "jk@jk.pl";
 
                 var appUser = await userManager.FindByEmailAsync(appUserEmail);
                 if (appUser == null)
@@ -293,22 +295,53 @@ namespace shop_web_app.Data
                     await userManager.CreateAsync(newAppUser, "Abc-1234");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.Customer);
                 }
+
+                string appEmployeeEmail = "dj@dj.pl";
+
+                var appEmployee = await userManager.FindByEmailAsync(appUserEmail);
+                if (appEmployee == null)
+                {
+                    var newEmployeeUser = new AppUser()
+                    {
+                        Name = "Dominik",
+                        Surname = "Jachaś",
+                        UserName = appEmployeeEmail.Split('@')[0],
+                        Email = appEmployeeEmail,
+                        EmailConfirmed = true,
+                        Gender = Gender.M,
+                        Address = new Address()
+                        {
+                            Street = "W. Pola 4",
+                            City = "Rzeszów",
+                            PostalCode = "35-333",
+                            Voivodship = Voivodship.Subcarpathia
+                        }
+                    };
+                    await userManager.CreateAsync(newEmployeeUser, "Abc-1234");
+                    await userManager.AddToRoleAsync(newEmployeeUser, UserRoles.Employee);
+                }
             }
         }
+
 
         private struct SeedProduct
         {
             public string Name { get; set; }
             public string Url { get; set; }
             public SubCategory Category { get; set; }
+            public string Description { get; set; }
+            public const string descriptionBase = "Nowoczesny design, wygodny krój i najwyższej jakości materiały. Idealny wybór na każdą okazję.";
 
-            public SeedProduct(string name, SubCategory category, string url)
+
+            public SeedProduct(string name, SubCategory category, string url, string description = "")
             {
                 Name = name;
                 Category = category;
                 Url = url;
+                Description = descriptionBase + " " + description;
             }
         }
+
 
         public static async Task SeedProductsAsync(IApplicationBuilder applicationBuilder)
         {
@@ -319,23 +352,23 @@ namespace shop_web_app.Data
             {
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Koszulka", SubCategory.TTShirt, "https://image.hm.com/assets/hm/bd/e4/bde4ef42f917ccb678c4ff1d218520ce2f10ff6d.jpg?imwidth=2160"),
-                    new SeedProduct( "Koszula krótka", SubCategory.TShirt, "https://image.hm.com/assets/003/cd/a2/cda2e1faeca59c0d2c122bf276692bc60f929290.jpg?imwidth=2160"),
-                    new SeedProduct( "Bluza oversize", SubCategory.THoodie, "https://image.hm.com/assets/hm/db/ff/dbffa3571b9d73c6762519abda9ce3a75a30be0c.jpg?imwidth=2160"),
+                    new SeedProduct( "Koszulka", SubCategory.TTShirt, "https://cdn.pixabay.com/photo/2025/06/06/06/07/t-shirt-9644090_1280.jpg", "Źródło: https://t-shirtbedrucken.ch/"),
+                    new SeedProduct( "Koszula długa", SubCategory.TShirt, "https://cdn.pixabay.com/photo/2020/10/18/15/55/man-5665175_1280.jpg", "Źródło: Virat Maurya"),
+                    new SeedProduct( "Bluza oversize", SubCategory.THoodie, "https://cdn.pixabay.com/photo/2019/06/09/06/02/black-4261521_1280.jpg", "Źródło: unpetitvoyou"),
                 },
 
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Jeansy długie", SubCategory.BJeans, "https://image.hm.com/assets/003/12/66/12666c1a776145d3c39ef0f2845c4771c465fb69.jpg?imwidth=2160"),
-                    new SeedProduct( "Szorty dresowe", SubCategory.BShorts, "https://image.hm.com/assets/hm/0f/88/0f88b5de0e3d346f47acf4a549f9783fccbe6695.jpg?imwidth=2160"),
-                    new SeedProduct( "Spodnie do garnituru luźne", SubCategory.BTrousers,"https://image.hm.com/assets/003/20/ba/20ba3499ffc465d3070a0a3e334ac69d7ff33787.jpg?imwidth=2160"),
+                    new SeedProduct( "Jeansy długie", SubCategory.BJeans, "https://pixabay.com/photos/fashion-shooting-guy-man-male-601563/", "Źródło: stokpic"),
+                    new SeedProduct( "Szorty sportowe", SubCategory.BShorts, "https://images.pexels.com/photos/1103832/pexels-photo-1103832.jpeg", "Zdjęcie dodane przez Oliver Sjöström"),
+                    new SeedProduct( "Spodnie do garnituru", SubCategory.BTrousers,"https://images.pexels.com/photos/26336888/pexels-photo-26336888.jpeg", "Zdjęcie dodane przez Pro5 vn"),
                 },
 
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Półbuty", SubCategory.SFlats, "https://image.hm.com/assets/006/0a/53/0a53025a1a93e9ab5ec44d9a64c1b2f1b6005056.jpg?imwidth=2160"),
-                    new SeedProduct( "Sneakersy firmowe", SubCategory.SSneakers, "https://image.hm.com/assets/hm/f1/23/f123c2924cef1ac4cdb18281a525ffd24db9b345.jpg?imwidth=1260"),
-                    new SeedProduct( "Kapcie", SubCategory.SSlippers, "https://image.hm.com/assets/hm/19/bd/19bd62900b43c4dc4025cd4bfe50bc240fdfe9b5.jpg?imwidth=1260"),
+                    new SeedProduct( "Buty zimowe", SubCategory.SBoots, "https://images.pexels.com/photos/30272896/pexels-photo-30272896.jpeg", "Zdjęcie dodane przez 丹 师"),
+                    new SeedProduct( "Sneakersy firmowe", SubCategory.SSneakers, "https://images.pexels.com/photos/1306248/pexels-photo-1306248.jpeg", "Zdjęcie dodane przez Hassan OUAJBIR"),
+                    new SeedProduct( "Mokasyny", SubCategory.SLoafers, "https://images.pexels.com/photos/9003700/pexels-photo-9003700.jpeg", "Zdjęcie dodane przez Nida Kurt"),
                 },
             };
 
@@ -343,27 +376,26 @@ namespace shop_web_app.Data
             {
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Koszulka V-neck", SubCategory.TTShirt, "https://image.hm.com/assets/001/65/e7/65e7a06a2a34707ed4c60e4f1f1241e6b2f2a6d7.jpg?imwidth=2160"),
-                    new SeedProduct( "Koszula kopertowa", SubCategory.TShirt, "https://image.hm.com/assets/005/9f/36/9f364f6c4f71adffbe4910432d4417a1fa883633.jpg?imwidth=2160"),
-                    new SeedProduct("Sukienka", SubCategory.TDress, "https://image.hm.com/assets/hm/93/48/9348e116430b21343f1335e9d4cddccce3529b88.jpg?imwidth=2160"),
+                    new SeedProduct( "Koszulka z nadrukiem", SubCategory.TTShirt, "https://images.pexels.com/photos/17243664/pexels-photo-17243664.jpeg", "Zdjęcie dodane przez PeopleByOwen"),
+                    new SeedProduct( "Koszula dżinsowa", SubCategory.TShirt, "https://images.pexels.com/photos/17245475/pexels-photo-17245475.jpeg", "Zdjęcie dodane przez PeopleByOwen"),
+                    new SeedProduct("Płaszcz", SubCategory.TCoat, "https://images.pexels.com/photos/31539427/pexels-photo-31539427.jpeg", "Zdjęcie dodane przez Mohammed Hassan" ),
                 },
 
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Jeansy szerokie", SubCategory.BJeans, "https://image.hm.com/assets/hm/e7/9b/e79bf614691fa1b4ca4ef9603ad0a1bce3d8375b.jpg?imwidth=2160"),
-                    new SeedProduct("Spódnica tenisowa sportowa", SubCategory.BSkirt, "https://image.hm.com/assets/hm/cf/cd/cfcd7d7c46c5ffdca5cef001af235b78faeea301.jpg?imwidth=1260"),
-                    new SeedProduct("Legginsy", SubCategory.BLeggings, "https://image.hm.com/assets/hm/20/c1/20c1de12d91f5b350aacc7886f020b49b59e2b69.jpg?imwidth=2160"),
+                    new SeedProduct( "Luźne spodnie", SubCategory.BTrousers, "https://images.pexels.com/photos/5566711/pexels-photo-5566711.jpeg", "Zdjęcie dodane przez Thegiansepillo"),
+                    new SeedProduct("Spódnica tenisowa sportowa", SubCategory.BSkirt, "https://images.pexels.com/photos/17243494/pexels-photo-17243494.jpeg", "Zdjęcie dodane przez PeopleByOwen"),
+                    new SeedProduct("Dresy sportowe", SubCategory.BSweatpants, "https://images.pexels.com/photos/17039171/pexels-photo-17039171.jpeg", "Zdjęcia dodane przez Navid Sohrabi"),
                 },
 
                 new List<SeedProduct>()
                 {
-                    new SeedProduct( "Szpilki", SubCategory.SHeels, "https://image.hm.com/assets/hm/32/cb/32cbb7522957f90e3bbe554c6498ff7710c775d9.jpg?imwidth=1260"),
-                    new SeedProduct("Sandały", SubCategory.SSandals, "https://image.hm.com/assets/hm/49/a6/49a61c2ea20f5f9d235ac9084138b2d04d274064.jpg?imwidth=1260"),
-                    new SeedProduct("Sneakersy na podbiciu", SubCategory.SSneakers, "https://image.hm.com/assets/hm/dd/13/dd13c749d3375df744d4033f589f02560d6e3c47.jpg?imwidth=1260"),
+                    new SeedProduct( "Szpilki skórzane", SubCategory.SHeels, "https://images.pexels.com/photos/33505984/pexels-photo-33505984.jpeg", "Zdjęcie dodane przez Mert Coşkun"),
+                    new SeedProduct("Sandały", SubCategory.SSandals, "https://images.pexels.com/photos/4943900/pexels-photo-4943900.jpeg", "Zdjęcie dodane przez Anastasia Shuraeva"),
+                    new SeedProduct("Sneakersy skórzane", SubCategory.SSneakers, "https://cdn.pixabay.com/photo/2018/12/05/13/41/woman-3857758_1280.jpg0"),
                 },
             };
 
-            string descriptionBase = "Nowoczesny design, wygodny krój i najwyższej jakości materiały. Idealny wybór na każdą okazję.";
 
             Random rnd = new Random();
 
@@ -378,7 +410,7 @@ namespace shop_web_app.Data
                     var gender = rnd.Next(2); //0 - female, 1 - male
                     var category = rnd.Next(3); //0 - top, 1 - bottom, 2 - shoes
 
-                    string name = "", photo = "";
+                    string name = "", photo = "", description= "";
                     SubCategory subcategory = SubCategory.TShirt;
 
                     var rndIndex = rnd.Next(3);
@@ -387,12 +419,14 @@ namespace shop_web_app.Data
                         name = femaleProducts[category][rndIndex].Name;
                         photo = femaleProducts[category][rndIndex].Url;
                         subcategory = femaleProducts[category][rndIndex].Category;
+                        description = femaleProducts[category][rndIndex].Description;
                     }
                     else if (gender == 1)
                     {
                         name = maleProducts[category][rndIndex].Name;
                         photo = maleProducts[category][rndIndex].Url;
                         subcategory = maleProducts[category][rndIndex].Category;
+                        description = maleProducts[category][rndIndex].Description;
                     }
 
                     List<ShoeSizeQuantity> ssq = null;
@@ -429,7 +463,7 @@ namespace shop_web_app.Data
                         {
                             Name = name,
                             Price = Math.Round((decimal)(rnd.NextDouble() * 350 + 50), 2),
-                            Description = descriptionBase,
+                            Description = description,
                             Category = category == 2 ? Category.Shoes : (Category)category,
                             SubCategory = subcategory,
                             Gender = gender == 0 ? ClothingGender.F : ClothingGender.M,

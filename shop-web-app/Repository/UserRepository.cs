@@ -79,7 +79,5 @@ namespace shop_web_app.Repository
             }
             return new List<CartItem>();
         }
-
-        //public async Task<CartItem> GetCartItemById(string cartId)
     }
 }

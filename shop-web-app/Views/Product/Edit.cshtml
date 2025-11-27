@@ -208,6 +208,7 @@
                                 <input type="hidden" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Size" value=@sizeQuantity.Size>
                                 <input type="number" name="ProductVariants[@variantIndex].InternationalSizeQuantity[@sizeIndex].Quantity" value=@sizeQuantity.Quantity
                                        placeholder="Ilość" class="form-control" style="width: 100px; margin-right: 8px;">
+                                
                             </div>
                             sizeIndex++;
                         }
@@ -228,11 +229,14 @@
         <button type="button" class="btn btn-secondary" onclick="addVariant()">Dodaj Wariant</button>
     </div>
 
+    <input type="hidden" name="HasModel" value="@Model.HasModel"/>
+    <input type="hidden" name="ModelUrl" value="@Model.ModelUrl"/>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             updateSubCategories();
             adjustVariantIndex();
         });
     </script>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
 </form>

@@ -26,11 +26,6 @@ namespace shop_web_app.Repository
             return Save();
         }
 
-        public Task<List<Order>> GetOrdersByUser(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Order> GetOrderById(int id)
         {
             var order = await _context.Orders

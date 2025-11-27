@@ -10,6 +10,41 @@
 <div class="main-container">
     <section class="bg-white space-sm">
         <div class="container">
+            @if (User.IsInRole("admin") || User.IsInRole("employee"))
+            {
+                <div class="row my-3">
+                    <div class="col bg-danger p-3 rounded bg-opacity-10 mx-2"> 
+                        <h4>Edycja</h4>
+                        <p>Przejdź, aby edytować produkt</p>
+                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" type="button" class="btn btn-outline-danger">Edytuj produkt</a>
+                    </div>
+
+                    <div class="col bg-danger p-3 rounded bg-opacity-10 mx-2">
+                        <h4>Widoczność</h4>
+                        @if (!Model.IsActive)
+                        {
+                            <p>Status produktu: <span class="text-danger">Niewidoczny</span></p>
+                        }
+                        else
+                        {
+                            <p>Status produktu: <span class="text-success">Widoczny</span></p>
+                        }
+                        <a asp-controller="Product" asp-action="ToggleActive" asp-route-id="@Model.Id" type="button" class="btn btn-outline-danger">Zmień status</a>
+                    </div>
+
+                    @{
+                        string modelPresentText = Model.HasModel ? "Tak" : "Nie";
+                        string modelPresentTextColor = Model.HasModel ? "text-success" : "text-danger";
+                    }
+
+                    <div class="mx-2 col bg-info p-3 rounded bg-opacity-10">
+                        <h4>Moduł 3D</h4>
+                        <p>Ma model 3D?: <span class="@modelPresentTextColor">@modelPresentText</span></p>
+
+                        <a asp-controller="Product" asp-action="ManageModel" asp-route-id="@Model.Id" type="button" class="btn btn-outline-dark">Zarządzaj modułem 3D</a>
+                    </div>
+                </div>
+            }
             <div class="row">
                 @{
                     ProductVariant defaultVariant = Model.ProductVariants.ElementAtOrDefault(0);
@@ -64,39 +99,7 @@
                                 <h1 class="mb-2">@Model.Name</h1>
                                 <h2 class="lead mb-3">@Model.Gender.ToFriendlyString()/@Model.SubCategory.ToFriendlyString()</h2>
                             </div>
-                            @if (User.IsInRole("admin") || User.IsInRole("employee"))
-                            {
-                                <div class="row w-50 row-cols-1">
-                                    <div class="col bg-danger p-3 rounded bg-opacity-10 my-2 d-grid">                                     
-                                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" type="button" class="btn btn-lg btn-outline-danger">Edytuj produkt</a>
-                                    </div>
-
-                                    <div class="col bg-danger p-3 rounded bg-opacity-10 my-2">
-                                        <h4>Widoczność</h4>
-                                        @if (!Model.IsActive)
-                                        {
-                                            <p>Status produktu: <span class="text-danger">Niewidoczny</span></p>
-                                        }
-                                        else
-                                        {
-                                            <p>Status produktu: <span class="text-success">Widoczny</span></p>
-                                        }
-                                        <a asp-controller="Product" asp-action="ToggleActive" asp-route-id="@Model.Id" type="button" class="btn btn-outline-danger">Zmień status</a>
-                                    </div>
-
-                                    @{
-                                        string modelPresentText = Model.HasModel ? "Tak" : "Nie";
-                                        string modelPresentTextColor = Model.HasModel ? "text-success" : "text-danger";
-                                    }
-
-                                    <div class="my-2 col bg-info p-3 rounded bg-opacity-10">
-                                        <h4>Moduł 3D</h4>
-                                        <p>Ma model 3D?: <span class="@modelPresentTextColor">@modelPresentText</span></p>
-                                                                     
-                                        <a asp-controller="Product" asp-action="ManageModel" asp-route-id="@Model.Id" type="button" class="btn btn-outline-dark">Zarządzaj modułem 3D</a>
-                                    </div>
-                                </div>
-                            }
+                            
                             
                         </div>
                 

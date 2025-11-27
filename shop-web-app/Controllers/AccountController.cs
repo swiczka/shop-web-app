@@ -118,7 +118,7 @@ namespace shop_web_app.Controllers
                 return RedirectToAction("Error", "Error", new { code = 403 });
             }
 
-            if (vm.NewRole == null || user == null || !(new[] { "admin", "customer", "employee" }).Contains(vm.NewRole))
+            if (vm.NewRole == null || !(new[] { UserRoles.Employee, UserRoles.Admin, UserRoles.Customer }).Contains(vm.NewRole))
                 return RedirectToAction("Error", "Error", new { code = 400 });
 
             if(vm.CurrentRole != null) await _userManager.RemoveFromRoleAsync(user, vm.CurrentRole);

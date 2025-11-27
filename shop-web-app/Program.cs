@@ -11,7 +11,6 @@ using shop_web_app.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
-using Npgsql;
 using Microsoft.AspNetCore.StaticFiles;
 
 

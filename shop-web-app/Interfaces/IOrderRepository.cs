@@ -8,7 +8,6 @@ namespace shop_web_app.Interfaces
         bool Update(Order order);
         bool Delete(Order order);
         bool Save();
-        Task<List<Order>> GetOrdersByUser(string userId);
         Task<Order> GetOrderById(int id);
         Task<Order> GetOnlyOrderById(int id);
         Task<List<Order>> GetAllOrdersAsync();

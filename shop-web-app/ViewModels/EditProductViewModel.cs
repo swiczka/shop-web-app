@@ -14,5 +14,7 @@ namespace shop_web_app.ViewModels
         public ICollection<ProductMaterialViewModel> ProductMaterials { get; set; } = new List<ProductMaterialViewModel>();
         public Category Category { get; set; }
         public SubCategory SubCategory { get; set; }
+        public string ModelUrl { get; set; }
+        public bool HasModel { get; set; }
     }
 }
